@@ -1,10 +1,13 @@
-import BookResult from '@/components/dynamic/Book/BookResult'
-import React from 'react'
+// app/(static-pages)/book/page.js
+import BookResult from '@/components/dynamic/Book/BookResult';
+import React, { Suspense } from 'react';
 
-const book = () => {
+const BookPage = () => {
   return (
-    <BookResult />
-  )
-}
+    <Suspense fallback={<div>Loading...</div>}>
+      <BookResult />
+    </Suspense>
+  );
+};
 
-export default book
+export default BookPage;

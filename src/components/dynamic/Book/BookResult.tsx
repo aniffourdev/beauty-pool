@@ -1,3 +1,4 @@
+// components/dynamic/Book/BookResult.tsx
 "use client";
 import { useSearchParams } from "next/navigation";
 import React, { useState, useEffect } from "react";
