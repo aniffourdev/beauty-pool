@@ -1,0 +1,274 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  background: white;
+}
+.gredient-bg {
+  background: linear-gradient(-45deg, #fe9f8e, #f47c66, #f48673, #fc907d);
+  background-size: 400% 400%;
+  animation: gradient 5s ease infinite;
+}
+
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.gradient-text {
+  background: linear-gradient(180deg, #9960e8, #6d3be2);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* styles/globals.css or your CSS module */
+.flex {
+  display: flex;
+}
+
+.h-screen {
+  height: 100vh;
+}
+
+.p-6 {
+  padding: 1.5rem;
+}
+
+.bg-white {
+  background-color: #ffffff;
+}
+
+.bg-gray-50 {
+  background-color: #f9fafb;
+}
+
+.rounded-md {
+  border-radius: 0.375rem;
+}
+
+.text-2xl {
+  font-size: 1.5rem;
+}
+
+.font-bold {
+  font-weight: 700;
+}
+
+.mb-4 {
+  margin-bottom: 1rem;
+}
+
+.text-sm {
+  font-size: 0.875rem;
+}
+
+.font-medium {
+  font-weight: 500;
+}
+
+.text-gray-700 {
+  color: #4a5568;
+}
+
+.mb-2 {
+  margin-bottom: 0.5rem;
+}
+
+.text-gray-600 {
+  color: #718096;
+}
+
+.space-y-1 > :not([hidden]) ~ :not([hidden]) {
+  margin-top: 0.25rem;
+}
+
+.venue-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.venue-item {
+  display: flex;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.375rem;
+  overflow: hidden;
+}
+
+.venue-image {
+  width: 150px;
+  height: auto;
+  object-fit: cover;
+}
+
+.venue-details {
+  padding: 1rem;
+  flex: 1;
+}
+
+.service-item {
+  margin-top: 0.5rem;
+}
+
+.react-tel-input .form-control {
+  height: 47px !important;
+  width: 100% !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24) !important; /* shadow */
+  border: 1px solid #d1d5db !important; /* border-gray-300 */
+  border-radius: 0.375rem !important; /* rounded */
+  color: #4b5563 !important; /* text-gray-700 */
+  line-height: 1.25 !important; /* leading-tight */
+  outline: none !important; /* focus:outline-none */
+  transition: box-shadow 0.5s ease-in-out !important;
+}
+
+.react-tel-input .form-control:focus {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24) !important; /* shadow */
+  border: 1px solid #d1d5db !important; /* border-gray-300 */
+}
+
+.react-tel-input .selected-flag:hover,
+.react-tel-input .selected-flag:focus {
+  background-color: transparent !important;
+}
+.react-tel-input .flag-dropdown.open .selected-flag {
+  background-color: transparent !important;
+}
+.react-tel-input .selected-flag {
+  padding: 0 0 0 12px !important;
+}
+
+.custom-calendar .rbc-toolbar {
+  background-color: #f8fafc;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.custom-calendar .rbc-toolbar button {
+  background-color: #6b46c1;
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.custom-calendar .rbc-toolbar button:hover {
+  background-color: #5a3faa;
+}
+
+.custom-calendar .rbc-event {
+  background-color: #d6bcfa;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 8px;
+}
+
+.custom-calendar .rbc-event-content {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.mySwiper .swiper-button-next,
+.mySwiper .swiper-button-prev {
+  @apply text-slate-950;
+  @apply bg-slate-50;
+  @apply h-11;
+  @apply w-11;
+  @apply rounded-full;
+}
+
+.swiper-button-prev:after,
+.swiper-rtl .swiper-button-next:after {
+  position: relative !important;
+  font-size: 19px !important;
+  font-weight: bold !important;
+  left: -1px !important;
+}
+
+.swiper-button-next:after,
+.swiper-rtl .swiper-button-next:after {
+  position: relative !important;
+  font-size: 19px !important;
+  font-weight: bold !important;
+  left: -1px !important;
+}
+
+.mySwiper .swiper-button-next:hover,
+.mySwiper .swiper-button-prev:hover {
+  background-color: rgba(255, 255, 255, 1);
+}
+
+.swiper-button-next,
+.swiper-button-prev {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  border-radius: 50%;
+  padding: 10px;
+  cursor: pointer;
+  z-index: 10;
+}
+
+.swiper-button-next {
+  right: 10px;
+}
+
+.swiper-button-prev {
+  left: 10px;
+}
+
+.swiper-button-next::after,
+.swiper-button-prev::after {
+  font-size: 20px;
+}
+
+
+.mapboxgl-popup{
+  max-width: 370px !important;
+}
+.mapboxgl-popup-content{
+  padding: 3px !important;
+  border-radius: 10px !important;
+}
+
+.mapboxgl-popup-close-button{
+  color: white !important;
+  font-size: 30px !important;
+    right: 10px !important;
+    top: 10px !important;
+    background: #00000094 !important;
+    border-radius: 100px !important;
+    width: 30px !important;
+    height: 30px !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    outline: none !important;
+}
+
+.toggle-checkbox:checked + .toggle-slot .toggle-dot {
+  transform: translateX(1rem);
+  background-color: #b64077;
+}
+
+
+/* for madal in calendar*/
+.modal {
+  background: white;
+  border-radius: 8px;
+  padding: 20px;
+  max-width: 400px;
+  margin: auto;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
