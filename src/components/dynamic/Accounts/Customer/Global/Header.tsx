@@ -3,14 +3,7 @@ import { FaBars } from "react-icons/fa";
 import Logo from "./Logo";
 import api from "@/services/auth";
 import UserAccount from "./UserAccount";
-
-interface UserData {
-  id: string;
-  first_name: string;
-  last_name: string;
-  email: string;
-  category: number[];
-}
+import { UserData } from "@/types/UserData"; // Update the path accordingly
 
 interface HeaderProps {
   onUserDataFetched?: (userData: UserData | null) => void;

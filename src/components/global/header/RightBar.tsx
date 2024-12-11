@@ -61,25 +61,24 @@ const RightBar = () => {
         <div className="relative">
           <button
             onClick={toggleDropdown}
-            className="flex items-center gap-2 py-1 px-2 sm:py-1.5 sm:px-3 md:py-2 md:px-4 lg:py-2 lg:px-5 rounded-full bg-gray-900 border-[1px] border-black text-white font-semibold hover:bg-black/80 transition-all"
+            className="flex items-center gap-0.5 py-1 px-2 sm:py-1.5 sm:px-3 md:py-2 md:px-4 lg:py-1.5 lg:px-2 rounded-full border-2 border-[#d2897d5e] text-white font-semibold hover:bg-slate-100 transition-all"
           >
             {userData ? (
               <>
                 {userData.avatar ? (
-                  <Image
-                    src={`https://maoulaty.shop/assets/${userData.avatar}`}
-                    alt={userData.first_name || "User"}
-                    width={25}
-                    height={25}
-                    className="rounded-full"
-                  />
+                  <div
+                    className="bg-slate-200 h-7 w-7 bg-cover bg-center rounded-full"
+                    style={{
+                      backgroundImage: `url('https://maoulaty.shop/assets/${userData.avatar}')`,
+                    }}
+                  ></div>
                 ) : (
                   <div className="bg-purple-100 rounded-full h-6 w-6 sm:h-7 sm:w-7 md:h-8 md:w-8 lg:h-9 lg:w-9 flex items-center justify-center text-purple-600 text-xs font-bold">
                     {userData.first_name?.[0]?.toUpperCase()}
                     {userData.last_name?.[0]?.toUpperCase()}
                   </div>
                 )}
-                <span className="text-xs sm:text-sm md:text-base lg:text-lg px-1.5">
+                <span className="text-xs sm:text-sm md:text-base font-medium px-1.5 text-black">
                   {userData.first_name}{" "}
                   <span className="hidden lg:inline">{userData.last_name}</span>
                 </span>

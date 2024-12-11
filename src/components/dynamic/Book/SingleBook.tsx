@@ -10,6 +10,7 @@ import { FaArrowDown } from "react-icons/fa";
 import Link from "next/link";
 import BookingSteps from "@/components/dynamic/Book/Steps/BookingSteps";
 import BookingHeader from "@/components/global/booking-header/BookingHeader";
+import Services from "@/components/dynamic/Book/Services"; // Import the NavTabs component
 
 // Define interfaces for Article, Review, User, and Service
 interface UserData {
@@ -40,20 +41,16 @@ interface Article {
 
 interface SubService {
   name: string;
+  price: number;
+  duration: number;
   description: string;
-  price: string;
-  duration: string;
-}
-
-interface ParentService {
-  name: string;
-  description: string;
-  sub_services: SubService[];
+  price_type: string;
 }
 
 interface Service {
   id: string;
-  parent_service: ParentService;
+  name: string;
+  sub_services: SubService[];
 }
 
 interface SingleBookProps {
@@ -117,34 +114,26 @@ const SingleBook: React.FC<SingleBookProps> = ({ slug }) => {
 
             // Fetch services using the article ID
             const servicesResponse = await api.get(
-              `/items/articles/${articleData.id}?fields=sub_service.sub_services_id.name,sub_service.sub_services_id.duration,sub_service.sub_services_id.price,sub_service.sub_services_id.description,sub_service.sub_services_id.parent_service.name,sub_service.sub_services_id.parent_service.description`
+              `https://maoulaty.shop/items/articles/${articleData.id}?fields=service.Services_id.name,service.Services_id.sub_services.name,service.Services_id.sub_services.price,service.Services_id.sub_services.duration,service.Services_id.sub_services.description,service.Services_id.sub_services.price_type`
             );
-            const parentServices: { [key: string]: ParentService } = {};
+            const servicesData = servicesResponse.data.data.service;
 
-            servicesResponse.data.data.sub_service.forEach((service: { sub_services_id: { name: string; description: string; price: string; duration: string; parent_service: { name: string; description: string } } }) => {
-              const parentServiceName =
-                service.sub_services_id.parent_service.name;
-              if (!parentServices[parentServiceName]) {
-                parentServices[parentServiceName] = {
-                  name: parentServiceName,
-                  description:
-                    service.sub_services_id.parent_service.description,
+            const parentServices: { [key: string]: Service } = {};
+
+            servicesData.forEach((service: { Services_id: { name: string, sub_services: SubService[] } }) => {
+              const serviceName = service.Services_id.name;
+              if (!parentServices[serviceName]) {
+                parentServices[serviceName] = {
+                  id: String(Object.keys(parentServices).length + 1),
+                  name: serviceName,
                   sub_services: [],
                 };
               }
-              parentServices[parentServiceName].sub_services.push({
-                name: service.sub_services_id.name,
-                description: service.sub_services_id.description,
-                price: service.sub_services_id.price,
-                duration: service.sub_services_id.duration,
-              });
+              parentServices[serviceName].sub_services.push(...service.Services_id.sub_services);
             });
 
             setServices(
-              Object.keys(parentServices).map((key, index) => ({
-                id: String(index),
-                parent_service: parentServices[key],
-              }))
+              Object.keys(parentServices).map((key) => parentServices[key])
             );
           } else {
             setArticle(null);
@@ -455,45 +444,7 @@ const SingleBook: React.FC<SingleBookProps> = ({ slug }) => {
             <div className="lg:w-8/12">
               <div>
                 <h1 className="text-3xl font-bold mb-4">Services</h1>
-                {/* <Tabs value="html">
-                  <div className="flex justify-between items-center gap-3">
-                    <TabsHeader>
-                      {services.map((service) => (
-                        <Tab key={service.id} value={service.id}>
-                          {service.parent_service.name}
-                        </Tab>
-                      ))}
-                    </TabsHeader>
-                  </div>
-                  {selectedService && (
-                    <div className="mt-10">
-                      <TabsBody>
-                        {selectedService.parent_service.sub_services.map(
-                          (subService, subIndex) => (
-                            <TabPanel key={subIndex} value={subService.name}>
-                              <div className="border rounded-lg p-4 flex justify-between items-center bg-white shadow-sm">
-                                <div>
-                                  <h2 className="text-lg font-semibold">
-                                    {subService.name}
-                                  </h2>
-                                  <p className="text-gray-500">
-                                    {subService.duration}
-                                  </p>
-                                  <p className="text-lg font-semibold mt-2 text-[#dd0067dc]">
-                                    €{subService.price}
-                                  </p>
-                                </div>
-                                <button className="border rounded-full px-4 py-2 text-sm font-semibold bg-slate-900 text-slate-100 duration-300 transition-all hover:text-slate-900 hover:bg-gray-100">
-                                  Book now
-                                </button>
-                              </div>
-                            </TabPanel>
-                          )
-                        )}
-                      </TabsBody>
-                    </div>
-                  )}
-                </Tabs> */}
+                <Services services={services} /> {/* Use the NavTabs component */}
 
                 {/* Reviews Section */}
                 <div className="mt-16" id="reviews">
@@ -566,12 +517,13 @@ const SingleBook: React.FC<SingleBookProps> = ({ slug }) => {
         <div className="bg-white fixed left-0 top-0 w-full h-full z-50 p-10 overflow-auto">
           <div>
             {userData && (
-              <BookingSteps
-                article={article}
-                onClose={() => setBooking(false)}
-                services={services}
-                userData={userData}
-              />
+              // <BookingSteps
+              //   article={article}
+              //   onClose={() => setBooking(false)}
+              //   services={services}
+              //   userData={userData}
+              // />
+              <></>
             )}
           </div>
         </div>

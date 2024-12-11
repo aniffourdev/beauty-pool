@@ -25,7 +25,7 @@ const Hero = () => {
             Explore local <span className="text-[#f4b8ae]">beauty</span> and
             wellness services tailored for you
           </h1>
-          <div className="mt-10 px-5 lg:px-0">
+          <div className="mt-10">
             <BookingForm />
           </div>
 
