@@ -1,8 +1,6 @@
 "use client";
+import React from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
-import api from "@/services/auth";
 import { LuCalendar, LuSettings, LuUsers } from "react-icons/lu";
 import {
   MdOutlineDashboard,
@@ -11,10 +9,9 @@ import {
 } from "react-icons/md";
 import { BsBoxes } from "react-icons/bs";
 
-interface UserData {
-  avatar?: string;
-  first_name?: string;
-  last_name?: string;
+interface SidebarProps {
+  isOpen: boolean;
+  toggleSidebar: () => void;
 }
 
 const sidenavItems = [
@@ -55,50 +52,36 @@ const sidenavItems = [
   },
 ];
 
-const Sidenav = () => {
-  const [activeItem, setActiveItem] = useState("Profile");
-  const [, setUserData] = useState<UserData | null>(null);
-  const router = useRouter();
-
-  useEffect(() => {
-    const getMe = async () => {
-      try {
-        const response = await api.get("/users/me");
-        setUserData(response.data.data);
-      } catch (error) {
-        console.error("Error fetching user data:", error);
-        router.push("/login");
-      }
-    };
-    getMe();
-  }, [router]);
-
-  useEffect(() => {}, []);
+const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
+  const [activeItem, setActiveItem] = React.useState("Dashboard");
 
   return (
-    <div className="w-48 h-screen bg-slate-800 shadow-md p-4 pt-10 fixed top-[60px] hidden lg:block">
-      <>
-        <ul>
+    <aside
+      className={`fixed top-0 left-0 z-40 w-64 h-screen pt-20 transition-transform bg-white border-r border-gray-200 dark:bg-gray-800 dark:border-gray-700 ${
+        isOpen ? "translate-x-0" : "-translate-x-full sm:translate-x-0"
+      }`}
+      aria-label="Sidebar"
+    >
+      <div className="h-full px-3 pb-4 pt-5 overflow-y-auto bg-slate-800">
+        <ul className="space-y-2 font-medium">
           {sidenavItems.map((item) => (
-            <li key={item.name} className="mb-4">
+            <li key={item.name} className="">
               <Link
                 href={item.link}
-                className={`flex items-center text-violet-300 gap-1 p-2 rounded-md ${
-                  activeItem === item.name ? "bg-slate-900" : ""
+                className={`flex items-center p-2 font-semibold text-white hover:bg-slate-900 rounded group ${
+                  activeItem === item.name ? "text-[#b64077]" : "text-[#b64077]"
                 }`}
                 onClick={() => setActiveItem(item.name)}
               >
                 {item.icon}
-                <span className="font-semibold text-slate-100">
-                  {item.name}
-                </span>
+                <span className="ms-3">{item.name}</span>
               </Link>
             </li>
           ))}
         </ul>
-      </>
-    </div>
+      </div>
+    </aside>
   );
 };
 
-export default Sidenav;
+export default Sidebar;
