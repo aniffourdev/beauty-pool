@@ -25,7 +25,7 @@ const sidenavItems = [
   {
     name: "Favorites",
     icon: <TiHeartOutline className="size-6 text-[#f47c66]" />,
-    link: "/favorites",
+    link: "/favourites",
   },
   {
     name: "Setting",

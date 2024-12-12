@@ -7,6 +7,7 @@ import api from "@/services/auth";
 import Link from "next/link";
 import { HiOutlineDotsVertical } from "react-icons/hi";
 import { Gruppo } from "next/font/google";
+import { Toaster, toast } from 'react-hot-toast';
 
 // Define a type for user data
 interface UserData {
@@ -57,11 +58,16 @@ const gruppo = Gruppo({
 const Services: React.FC = () => {
   const [data, setData] = useState<UserCategoryData | null>(null);
   const [userData, setUserData] = useState<UserData | null>(null);
-  const [activeCategory, setActiveCategory] = useState<string>("All categories");
+  const [activeCategory, setActiveCategory] =
+    useState<string>("All categories");
   const [addCategory, setAddCategory] = useState<boolean>(false);
-  const [availableCategories, setAvailableCategories] = useState<Category[]>([]);
+  const [availableCategories, setAvailableCategories] = useState<Category[]>(
+    []
+  );
   const [selectedCategories, setSelectedCategories] = useState<number[]>([]);
-  const [openServiceMenus, setOpenServiceMenus] = useState<Record<number, boolean>>({});
+  const [openServiceMenus, setOpenServiceMenus] = useState<
+    Record<number, boolean>
+  >({});
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -105,6 +111,7 @@ const Services: React.FC = () => {
         },
       });
       setData(response.data.data);
+      toast.success("Category Removed");
     } catch (err: unknown) {
       console.error("Error removing category:", err);
     }
@@ -156,6 +163,7 @@ const Services: React.FC = () => {
           },
         });
         setData(response.data.data);
+        toast.success("Category Added");
       } catch (err: unknown) {
         console.error("Error saving categories:", err);
       }
@@ -302,7 +310,12 @@ const Services: React.FC = () => {
             htmlFor={`category-${id}`}
             className="cursor-pointer flex justify-center items-center flex-col space-y-2"
           >
-            <div className="h-7 w-7 bg-cover bg-center mb-2" style={{ backgroundImage: `url('https://maoulaty.shop/assets/${icon}')` }}></div>
+            <div
+              className="h-7 w-7 bg-cover bg-center mb-2"
+              style={{
+                backgroundImage: `url('https://maoulaty.shop/assets/${icon}')`,
+              }}
+            ></div>
             <p className="text-black font-semibold text-sm">{label}</p>
           </label>
         </div>
@@ -404,7 +417,10 @@ const Services: React.FC = () => {
                       <div className="h-5 w-5 skeleton rounded-full"></div>
                     </li>
                     {[...Array(3)].map((_, index) => (
-                      <li key={index} className="flex justify-between items-center mb-3.5">
+                      <li
+                        key={index}
+                        className="flex justify-between items-center mb-3.5"
+                      >
                         <div className="flex justify-start items-center gap-1">
                           <div className="h-4 skeleton rounded w-4"></div>
                           <div className="h-6 skeleton rounded w-3/4"></div>
@@ -427,7 +443,10 @@ const Services: React.FC = () => {
                     <div key={index} className="mb-4">
                       <div className="h-6 skeleton rounded w-3/4 mb-2"></div>
                       {[...Array(2)].map((_, subIndex) => (
-                        <div key={subIndex} className="skeleton mb-3 flex items-center p-2.5">
+                        <div
+                          key={subIndex}
+                          className="skeleton mb-3 flex items-center p-2.5"
+                        >
                           <div className="flex items-start">
                             <div className="ml-4">
                               <div className="h-6 skeleton rounded w-3/4 mb-2"></div>
@@ -639,6 +658,7 @@ const Services: React.FC = () => {
           </div>
         </div>
       )}
+      <Toaster position="top-center" reverseOrder={true} />
     </div>
   );
 };

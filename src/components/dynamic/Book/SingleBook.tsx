@@ -521,7 +521,7 @@ const SingleBook: React.FC<SingleBookProps> = ({ slug }) => {
         </section>
       </div>
       {booking && (
-        <div className="bg-white fixed left-0 top-0 w-full h-full z-50 p-10 overflow-auto">
+        <div className="bg-white fixed left-0 top-0 w-full h-full z-50 p-2 overflow-auto">
           <div>
             {/* {userData && (
               <BookingSteps

@@ -12,6 +12,7 @@ import Mastercard from "../../../../../public/assets/payments/mastercard.svg";
 import Discover from "../../../../../public/assets/payments/discover.svg";
 import AmericanExpress from "../../../../../public/assets/payments/american-express.svg";
 import { IoStar } from "react-icons/io5";
+import { PiSealWarning } from "react-icons/pi";
 
 interface Review {
   date_created: string;
@@ -487,15 +488,36 @@ const BookingSteps: React.FC<BookingStepsProps> = ({
     <div>
       {renderStep()}
       {isModalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 p-3">
+          <div className="max-w-2xl mx-auto">
           <div className="bg-white p-6 rounded-lg shadow-lg">
-            <p className="text-lg font-semibold">I WILL TAKE 20%</p>
+          <div className="flex justify-start items-center gap-1">
+          <PiSealWarning className="inline size-7 text-red-700 relative -top-[11px]" />
+            <h3 className="text-xl md:text-2xl text-slate-900 font-semibold mb-6">
+              Booking and Payment Policy
+            </h3>
+          </div>
+            <p className="text-md text-slate-700 font-normal mb-3">
+              To secure your appointment, we require a 20% deposit of the total
+              service cost at the time of booking. This deposit is
+              non-refundable and ensures that your appointment is reserved just
+              for you.
+            </p>
+            <p className="text-md text-slate-700 font-normal mb-5">
+              The remaining 80% of the payment will be due at the time of your
+              visit to the salon. This allows us to provide you with a seamless
+              and convenient booking experience.
+            </p>
+            <p className="text-slate-900 text-sm font-semibold">Thank you for your trust in BEAUTYPOOL.</p>
+            <div className="flex justify-center items-center mt-10">
             <button
-              className="mt-4 py-2 px-4 bg-black text-white rounded-lg"
+              className="py-1.5 px-3 bg-black text-white rounded font-semibold text-sm"
               onClick={() => setIsModalOpen(false)}
             >
-              Close
+              I understand
             </button>
+            </div>
+          </div>
           </div>
         </div>
       )}

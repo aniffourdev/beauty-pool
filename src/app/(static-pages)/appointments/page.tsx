@@ -1,9 +1,8 @@
-import React from 'react'
+import Appointments from "@/components/dynamic/Accounts/Customer/Appointments";
+import React from "react";
 
 const appointments = () => {
-  return (
-    <div>appointments</div>
-  )
-}
+  return <Appointments />;
+};
 
-export default appointments
+export default appointments;

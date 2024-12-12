@@ -25,7 +25,7 @@ const gruppo = Gruppo({
   weight: "400",
 });
 
-const Favourites = () => {
+const Appointments = () => {
   const router = useRouter();
   const [userData, setUserData] = useState<UserData | null>(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -54,7 +54,7 @@ const Favourites = () => {
         >
           <div className="p-4 mt-20 max-w-6xl mx-auto">
               <>
-                <h1 className={`${gruppo.className} text-3xl font-bold mb-8`}>Favourites</h1>
+                <h1 className={`${gruppo.className} text-3xl font-bold mb-8`}>Appointments</h1>
               </>
           </div>
         </div>
@@ -63,4 +63,4 @@ const Favourites = () => {
   );
 };
 
-export default Favourites;
+export default Appointments;

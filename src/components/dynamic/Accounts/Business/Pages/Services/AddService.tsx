@@ -4,6 +4,8 @@ import Sidebar from "@/components/dynamic/Accounts/Business/Global/Sidebar";
 import Header from "@/components/dynamic/Accounts/Business/Global/Header";
 import api from "@/services/auth";
 import { Gruppo } from "next/font/google";
+import Swal from "sweetalert2";
+import { useRouter } from "next/navigation";
 
 interface Category {
   id: number;
@@ -54,6 +56,8 @@ const AddService = () => {
   const [loading, setLoading] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [userData, setUserData] = useState<UserData | null>(null);
+
+  const router = useRouter();
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -161,7 +165,6 @@ const AddService = () => {
       console.log("Response:", response);
 
       if (response.status === 200 || response.status === 201) {
-        alert("Sub-service created successfully!");
         setFormData({
           name: "",
           duration: 30,
@@ -172,6 +175,12 @@ const AddService = () => {
           price_type: "fixed",
           service: services[0]?.id || 0,
         });
+        Swal.fire({
+          icon: "success",
+          title: "Success",
+          text: "Service created successfully!",
+        });
+        router.push("/business/services");
       }
     } catch (error) {
       console.error("Error creating sub-service:", error);

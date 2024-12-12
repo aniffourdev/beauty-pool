@@ -572,7 +572,7 @@ const RegisterBusiness = () => {
       {customer && <RegisterCustomer />}
 
       {showOtpPopup && (
-        <div className="otp-popup fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
+        <div className="otp-popup fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 p-3">
           <div className="max-w-md mx-auto text-center bg-white px-4 sm:px-8 py-10 rounded-xl shadow">
             <h1 className="text-2xl font-bold mb-1">Enter OTP Code</h1>
             <p className="text-[15px] text-slate-500">
