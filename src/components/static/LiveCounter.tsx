@@ -44,7 +44,7 @@ export default function LiveCounter() {
   return (
     <div className=" flex flex-col justify-center items-center mt-16 ">
       <div className={`${gruppo.className} text-lg md:text-xl lg:text-2xl `}>
-        <span className="text-[#f4b8ae] font-bold">{count}</span>{" "}
+        <span className="text-[#f4b8ae] text-4xl font-bold">{count}</span>{" "}
         <span className="text-gray-800 font-semibold">
           Appointments Booked Today
         </span>
