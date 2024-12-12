@@ -1,10 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
 
-// const stripePromise = loadStripe(
-//   "pk_test_51PqnMzCMCpxFz40MVwOUjcuR9TIEwHGKXk7G9SLptwqTq6RaC2EhUDa4QICmWgG6aPqihsjszOmHLq7F5MjwzoSC00HCbYjVe9"
-// );
-
 interface PaymentFormProps {
   calculateTotal: () => number;
 }
@@ -29,13 +25,13 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ calculateTotal }) => {
       body: JSON.stringify({ amount: calculateTotal() * 100, currency: "eur" }),
     })
       .then((res) => res.json())
-      .then((data) => setPaymentIntent(data.paymentIntent));
+      .then((data) => setPaymentIntent(data));
   }, [calculateTotal]);
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
-    if (!stripe || !elements) {
+    if (!stripe || !elements || !paymentIntent) {
       return;
     }
 
@@ -53,7 +49,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ calculateTotal }) => {
       console.error(error);
     } else {
       const { error: confirmationError } = await stripe.confirmCardPayment(
-        paymentIntent!.client_secret,
+        paymentIntent.client_secret,
         {
           payment_method: paymentMethod!.id,
         }

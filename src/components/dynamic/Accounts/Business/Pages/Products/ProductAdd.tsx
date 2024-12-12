@@ -52,7 +52,9 @@ const ProductAdd = () => {
           isSidebarOpen ? "sm:ml-64" : "sm:ml-64"
         }`}
       >
-        <div className="p-4 mt-20">ADD PRODUCTD FORM</div>
+        <div className="p-4 mt-20">
+          
+        </div>
       </div>
     </div>
   );

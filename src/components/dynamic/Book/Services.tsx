@@ -2,16 +2,20 @@ import React, { useState, useRef, useEffect } from 'react';
 
 interface SubService {
   name: string;
-  price: number;
-  duration: number;
+  price: string; // Change to string to match BookingSteps.tsx
+  duration: string; // Change to string to match BookingSteps.tsx
   description: string;
-  price_type: string;
+}
+
+interface ParentService {
+  name: string;
+  description: string;
+  sub_services: SubService[];
 }
 
 interface Service {
   id: string;
-  name: string;
-  sub_services: SubService[];
+  parent_service: ParentService;
 }
 
 interface NavTabsProps {
@@ -90,7 +94,7 @@ const Services: React.FC<NavTabsProps> = ({ services }) => {
                 role="tab"
                 aria-selected={activeTab === service.id}
               >
-                {service.name}
+                {service.parent_service.name}
               </button>
             </li>
           ))}
@@ -106,7 +110,7 @@ const Services: React.FC<NavTabsProps> = ({ services }) => {
             className={`${activeTab === service.id ? '' : 'hidden'}`}
             aria-labelledby={`tabs-with-pill-item-${service.id.slice(-1)}`}
           >
-            {service.sub_services.map((subService, index) => (
+            {service.parent_service.sub_services.map((subService, index) => (
               <div key={index} className="border rounded-lg p-4 flex justify-between items-center bg-white shadow-sm mb-4">
                 <div>
                   <h2 className="text-lg font-semibold">{subService.name}</h2>

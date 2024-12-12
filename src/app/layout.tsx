@@ -1,6 +1,8 @@
+// src/app/layout.tsx
 import type { Metadata } from "next";
 import "./globals.css";
 import { Inter } from "next/font/google";
+import SessionProviderWrapper from "@/components/auth/SessionProviderWrapper";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -21,7 +23,7 @@ export default function RootLayout({
   return (
     <html lang="en" data-theme="light">
       <body className={`${inter.className} h-screen w-full antialiased`}>
-        {children}
+        <SessionProviderWrapper>{children}</SessionProviderWrapper>
       </body>
     </html>
   );

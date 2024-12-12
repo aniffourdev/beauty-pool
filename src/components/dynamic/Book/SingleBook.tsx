@@ -41,16 +41,20 @@ interface Article {
 
 interface SubService {
   name: string;
-  price: number;
-  duration: number;
+  price: string; // Change to string to match BookingSteps.tsx
+  duration: string; // Change to string to match BookingSteps.tsx
   description: string;
-  price_type: string;
+}
+
+interface ParentService {
+  name: string;
+  description: string;
+  sub_services: SubService[];
 }
 
 interface Service {
   id: string;
-  name: string;
-  sub_services: SubService[];
+  parent_service: ParentService;
 }
 
 interface SingleBookProps {
@@ -114,27 +118,30 @@ const SingleBook: React.FC<SingleBookProps> = ({ slug }) => {
 
             // Fetch services using the article ID
             const servicesResponse = await api.get(
-              `https://maoulaty.shop/items/articles/${articleData.id}?fields=service.Services_id.name,service.Services_id.sub_services.name,service.Services_id.sub_services.price,service.Services_id.sub_services.duration,service.Services_id.sub_services.description,service.Services_id.sub_services.price_type`
+              `https://maoulaty.shop/items/articles/${articleData.id}?fields=service.Services_id.name,service.Services_id.sub_services.name,service.Services_id.sub_services.price,service.Services_id.sub_services.duration,service.Services_id.sub_services.description`
             );
             const servicesData = servicesResponse.data.data.service;
 
-            const parentServices: { [key: string]: Service } = {};
+            const parentServices: { [key: string]: ParentService } = {};
 
             servicesData.forEach((service: { Services_id: { name: string, sub_services: SubService[] } }) => {
               const serviceName = service.Services_id.name;
               if (!parentServices[serviceName]) {
                 parentServices[serviceName] = {
-                  id: String(Object.keys(parentServices).length + 1),
                   name: serviceName,
+                  description: "", // Add a default description if needed
                   sub_services: [],
                 };
               }
               parentServices[serviceName].sub_services.push(...service.Services_id.sub_services);
             });
 
-            setServices(
-              Object.keys(parentServices).map((key) => parentServices[key])
-            );
+            const formattedServices = Object.keys(parentServices).map((key, index) => ({
+              id: String(index + 1),
+              parent_service: parentServices[key],
+            }));
+
+            setServices(formattedServices);
           } else {
             setArticle(null);
           }
@@ -516,15 +523,20 @@ const SingleBook: React.FC<SingleBookProps> = ({ slug }) => {
       {booking && (
         <div className="bg-white fixed left-0 top-0 w-full h-full z-50 p-10 overflow-auto">
           <div>
-            {userData && (
-              // <BookingSteps
-              //   article={article}
-              //   onClose={() => setBooking(false)}
-              //   services={services}
-              //   userData={userData}
-              // />
-              <></>
-            )}
+            {/* {userData && (
+              <BookingSteps
+                article={article}
+                onClose={() => setBooking(false)}
+                services={services}
+                // userData={userData}
+              />
+            )} */}
+            <BookingSteps
+                article={article}
+                onClose={() => setBooking(false)}
+                services={services}
+                // userData={userData}
+              />
           </div>
         </div>
       )}

@@ -14,6 +14,7 @@ import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 import Link from "next/link";
 import api from "@/services/auth";
 import { Gruppo } from "next/font/google";
+import { signIn } from "next-auth/react";
 
 interface SignUpFormData {
   first_name: string;
@@ -54,10 +55,10 @@ const defaultFormData: SignUpFormData = {
 };
 
 const gruppo = Gruppo({
-    subsets: ['latin'],
-    variable: "--font-geist-mono",
-    weight: "400",
-  });
+  subsets: ['latin'],
+  variable: "--font-geist-mono",
+  weight: "400",
+});
 
 const RegisterCustomer = () => {
   const [customer, setCustomer] = React.useState(true);
@@ -215,6 +216,10 @@ const RegisterCustomer = () => {
     await sendOtpEmail(email);
   };
 
+  const handleGoogleSignUp = () => {
+    signIn("google");
+  };
+
   return (
     <>
       {customer && (
@@ -237,7 +242,10 @@ const RegisterCustomer = () => {
                       <MdFacebook className="text-blue-600 mr-2 size-6" />
                       Continue with Facebook
                     </button>
-                    <button className="flex items-center justify-center w-full px-4 py-2 mb-4 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50">
+                    <button
+                      className="flex items-center justify-center w-full px-4 py-2 mb-4 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50"
+                      onClick={handleGoogleSignUp}
+                    >
                       <svg
                         viewBox="0 0 32 32"
                         className="size-6 mr-2"

@@ -13,17 +13,7 @@ import Discover from "../../../../../public/assets/payments/discover.svg";
 import AmericanExpress from "../../../../../public/assets/payments/american-express.svg";
 import { IoStar } from "react-icons/io5";
 
-// Define interfaces for Article, Review, User, and Service
-interface User {
-  first_name: string;
-  last_name: string;
-  email: string;
-  address: string;
-  phone: string;
-}
-
 interface Review {
-  user_created: User;
   date_created: string;
   rating: number;
   comment: string;
@@ -60,7 +50,6 @@ interface Service {
 interface BookingStepsProps {
   article: Article;
   services: Service[];
-  userData: User; // Add userData prop
   onClose: () => void;
 }
 
@@ -76,6 +65,7 @@ const BookingSteps: React.FC<BookingStepsProps> = ({
   const [currentStep, setCurrentStep] = useState(1);
   const [selectedServices, setSelectedServices] = useState<SubService[]>([]);
   const [savedServices, setSavedServices] = useState<SubService[]>([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     gsap.fromTo(
@@ -84,6 +74,15 @@ const BookingSteps: React.FC<BookingStepsProps> = ({
       { opacity: 1, y: 0, duration: 0.5, stagger: 0.1 }
     );
   }, []);
+
+  useEffect(() => {
+    if (currentStep === 3) {
+      const timer = setTimeout(() => {
+        setIsModalOpen(true);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [currentStep]);
 
   const handleServiceClick = (subService: SubService) => {
     if (selectedServices.some((s) => s.name === subService.name)) {
@@ -164,6 +163,11 @@ const BookingSteps: React.FC<BookingStepsProps> = ({
         total + parseFloat(String(subService.price).replace("€", "")),
       0
     );
+  };
+
+  const calculateDiscountedTotal = () => {
+    const total = calculateTotal();
+    return total * 0.2;
   };
 
   // Render different steps
@@ -459,9 +463,14 @@ const BookingSteps: React.FC<BookingStepsProps> = ({
                   <div className="h-26">
                     <div className="flex justify-between items-center">
                       <span className="font-bold">Total</span>
-                      <span className="font-bold text-green-500">
-                        €{calculateTotal()}
-                      </span>
+                      <div>
+                        <span className="line-through text-gray-500">
+                          €{calculateTotal()}
+                        </span>
+                        <span className="font-bold text-green-500 ml-2">
+                          €{calculateDiscountedTotal()}
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -474,7 +483,24 @@ const BookingSteps: React.FC<BookingStepsProps> = ({
     }
   };
 
-  return <div>{renderStep()}</div>;
+  return (
+    <div>
+      {renderStep()}
+      {isModalOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg">
+            <p className="text-lg font-semibold">I WILL TAKE 20%</p>
+            <button
+              className="mt-4 py-2 px-4 bg-black text-white rounded-lg"
+              onClick={() => setIsModalOpen(false)}
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
 };
 
 export default BookingSteps;
