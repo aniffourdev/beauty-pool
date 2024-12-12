@@ -354,7 +354,7 @@ const BookingSteps: React.FC<BookingStepsProps> = ({
               </p>
               <div className="mt-16">
                 <Elements stripe={stripePromise}>
-                  <PaymentForm calculateTotal={calculateTotal} />
+                  <PaymentForm calculateTotal={calculateDiscountedTotal} />
                 </Elements>
                 <div className="flex justify-start items-center gap-2 mt-5 mb">
                   <div className="text-sm">Pay securely with:</div>
