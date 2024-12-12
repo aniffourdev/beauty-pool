@@ -1,4 +1,3 @@
-// components/dynamic/Book/BookResult.tsx
 "use client";
 import { useSearchParams } from "next/navigation";
 import React, { useState, useEffect } from "react";
@@ -52,6 +51,12 @@ const determineSearchScope = (location: string): string => {
 
 const BookingResult = () => {
   const searchParams = useSearchParams();
+
+  if (!searchParams) {
+    console.error("searchParams is null");
+    return null; // or handle the null case appropriately
+  }
+
   const location = searchParams.get("location");
   const latitude = searchParams.get("latitude");
   const longitude = searchParams.get("longitude");
@@ -117,11 +122,6 @@ const BookingResult = () => {
     };
     getArticles();
   }, [location]);
-
-  if (!searchParams) {
-    console.error("searchParams is null");
-    return null; // or handle the null case appropriately
-  }
 
   return (
     <div className="lg:flex h-screen">
