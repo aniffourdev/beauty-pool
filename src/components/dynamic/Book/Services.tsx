@@ -2,8 +2,8 @@ import React, { useState, useRef, useEffect } from 'react';
 
 interface SubService {
   name: string;
-  price: string; // Change to string to match BookingSteps.tsx
-  duration: string; // Change to string to match BookingSteps.tsx
+  price: string;
+  duration: string;
   description: string;
 }
 
@@ -49,6 +49,10 @@ const Services: React.FC<NavTabsProps> = ({ services }) => {
       setActiveTab(tabId);
     }
   };
+
+  useEffect(() => {
+    console.log("Services Component Received:", services);
+  }, [services]);
 
   return (
     <div className="tabs w-full max-w-4xl">
@@ -114,10 +118,11 @@ const Services: React.FC<NavTabsProps> = ({ services }) => {
               <div key={index} className="border rounded-lg p-4 flex justify-between items-center bg-white shadow-sm mb-4">
                 <div>
                   <h2 className="text-lg font-semibold">{subService.name}</h2>
-                  <p className="text-gray-500 text-sm mt-0.5">{subService.duration} minutes</p>
+                  <p className="text-gray-500 text-sm mt-0.5">{subService.description}</p>
                   <p className="text-lg font-semibold mt-3 text-[#dd0067dc]">
-                  {subService.price} AED
+                    {subService.price} AED
                   </p>
+                  <p className="text-gray-500 text-sm mt-0.5">{subService.duration} minutes</p>
                 </div>
                 <button className="border rounded-full px-4 py-2 text-sm font-semibold bg-slate-900 text-slate-100 duration-300 transition-all hover:text-slate-900 hover:bg-gray-100">
                   Book now

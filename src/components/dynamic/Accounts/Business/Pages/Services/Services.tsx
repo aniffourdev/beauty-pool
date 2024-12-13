@@ -7,7 +7,7 @@ import api from "@/services/auth";
 import Link from "next/link";
 import { HiOutlineDotsVertical } from "react-icons/hi";
 import { Gruppo } from "next/font/google";
-import { Toaster, toast } from 'react-hot-toast';
+import { Toaster, toast } from "react-hot-toast";
 
 // Define a type for user data
 interface UserData {
@@ -102,11 +102,11 @@ const Services: React.FC = () => {
             "category.id",
             "category.Categorie_id.label",
             "category.Categorie_id.services.Categorie_id.services.Services_id.name",
-            "category.Categorie_id.services.Categorie_id.services.Services_id.sub_services.name",
-            "category.Categorie_id.services.Categorie_id.services.Services_id.sub_services.price",
-            "category.Categorie_id.services.Categorie_id.services.Services_id.sub_services.duration",
-            "category.Categorie_id.services.Categorie_id.services.Services_id.sub_services.price_type",
-            "category.Categorie_id.services.Categorie_id.services.Services_id.sub_services.description",
+            "category.Categorie_id.services.Categorie_id.services.Services_id.sub_services.sub_services_id.name",
+            "category.Categorie_id.services.Categorie_id.services.Services_id.sub_services.sub_services_id.price",
+            "category.Categorie_id.services.Categorie_id.services.Services_id.sub_services.sub_services_id.duration",
+            "category.Categorie_id.services.Categorie_id.services.Services_id.sub_services.sub_services_id.price_type",
+            "category.Categorie_id.services.Categorie_id.services.Services_id.sub_services.sub_services_id.description",
           ],
         },
       });
@@ -154,11 +154,11 @@ const Services: React.FC = () => {
               "category.id",
               "category.Categorie_id.label",
               "category.Categorie_id.services.Categorie_id.services.Services_id.name",
-              "category.Categorie_id.services.Categorie_id.services.Services_id.sub_services.name",
-              "category.Categorie_id.services.Categorie_id.services.Services_id.sub_services.price",
-              "category.Categorie_id.services.Categorie_id.services.Services_id.sub_services.duration",
-              "category.Categorie_id.services.Categorie_id.services.Services_id.sub_services.price_type",
-              "category.Categorie_id.services.Categorie_id.services.Services_id.sub_services.description",
+              "category.Categorie_id.services.Categorie_id.services.Services_id.sub_services.sub_services_id.name",
+              "category.Categorie_id.services.Categorie_id.services.Services_id.sub_services.sub_services_id.price",
+              "category.Categorie_id.services.Categorie_id.services.Services_id.sub_services.sub_services_id.duration",
+              "category.Categorie_id.services.Categorie_id.services.Services_id.sub_services.sub_services_id.price_type",
+              "category.Categorie_id.services.Categorie_id.services.Services_id.sub_services.sub_services_id.description",
             ],
           },
         });
@@ -182,11 +182,11 @@ const Services: React.FC = () => {
             "category.id",
             "category.Categorie_id.label",
             "category.Categorie_id.services.Categorie_id.services.Services_id.name",
-            "category.Categorie_id.services.Categorie_id.services.Services_id.sub_services.name",
-            "category.Categorie_id.services.Categorie_id.services.Services_id.sub_services.price",
-            "category.Categorie_id.services.Categorie_id.services.Services_id.sub_services.duration",
-            "category.Categorie_id.services.Categorie_id.services.Services_id.sub_services.price_type",
-            "category.Categorie_id.services.Categorie_id.services.Services_id.sub_services.description",
+            "category.Categorie_id.services.Categorie_id.services.Services_id.sub_services.sub_services_id.name",
+            "category.Categorie_id.services.Categorie_id.services.Services_id.sub_services.sub_services_id.price",
+            "category.Categorie_id.services.Categorie_id.services.Services_id.sub_services.sub_services_id.duration",
+            "category.Categorie_id.services.Categorie_id.services.Services_id.sub_services.sub_services_id.price_type",
+            "category.Categorie_id.services.Categorie_id.services.Services_id.sub_services.sub_services_id.description",
           ],
         },
       });
@@ -205,12 +205,12 @@ const Services: React.FC = () => {
               "category.id",
               "category.Categorie_id.label",
               "category.Categorie_id.services.Categorie_id.services.Services_id.name",
-              "category.Categorie_id.services.Categorie_id.services.Services_id.sub_services.id",
-              "category.Categorie_id.services.Categorie_id.services.Services_id.sub_services.name",
-              "category.Categorie_id.services.Categorie_id.services.Services_id.sub_services.price",
-              "category.Categorie_id.services.Categorie_id.services.Services_id.sub_services.duration",
-              "category.Categorie_id.services.Categorie_id.services.Services_id.sub_services.price_type",
-              "category.Categorie_id.services.Categorie_id.services.Services_id.sub_services.description",
+              "category.Categorie_id.services.Categorie_id.services.Services_id.sub_services.sub_services_id.id",
+              "category.Categorie_id.services.Categorie_id.services.Services_id.sub_services.sub_services_id.name",
+              "category.Categorie_id.services.Categorie_id.services.Services_id.sub_services.sub_services_id.price",
+              "category.Categorie_id.services.Categorie_id.services.Services_id.sub_services.sub_services_id.duration",
+              "category.Categorie_id.services.Categorie_id.services.Services_id.sub_services.sub_services_id.price_type",
+              "category.Categorie_id.services.Categorie_id.services.Services_id.sub_services.sub_services_id.description",
             ],
           },
         });
@@ -253,16 +253,17 @@ const Services: React.FC = () => {
 
   const servicesForActiveCategory =
     activeCategory === "All categories"
-      ? data?.category.flatMap((cat) =>
+      ? data?.category?.flatMap((cat) =>
           getServicesForCategory(cat.Categorie_id.label)
         ) || []
       : getServicesForCategory(activeCategory);
 
-  const categoryServiceCounts = data?.category.map((cat) => ({
-    label: cat.Categorie_id.label,
-    count: getServicesForCategory(cat.Categorie_id.label).length,
-    id: cat.id, // Add the category ID here
-  }));
+  const categoryServiceCounts =
+    data?.category?.map((cat) => ({
+      label: cat.Categorie_id.label,
+      count: getServicesForCategory(cat.Categorie_id.label).length,
+      id: cat.id, // Add the category ID here
+    })) || [];
 
   const existingCategoryIds =
     data?.category.map((cat) => cat.Categorie_id.id) || [];
@@ -364,10 +365,7 @@ const Services: React.FC = () => {
 
   return (
     <div className="">
-      <Header
-        toggleSidebar={toggleSidebar}
-        onUserDataFetched={handleUserDataFetched}
-      />
+      <Header toggleSidebar={toggleSidebar} />
       <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
       <div
         className={`p-4 transition-transform ${
@@ -537,6 +535,7 @@ const Services: React.FC = () => {
                         </span>
                       </li>
                     ))}
+
                     <li className="mt-4">
                       <button
                         className="text-sm font-semibold text-[#b64077] underline"
@@ -556,7 +555,7 @@ const Services: React.FC = () => {
                 </div>
 
                 {activeCategory === "All categories" ? (
-                  data?.category.map((cat, catIndex) => (
+                  data?.category?.map((cat, catIndex) => (
                     <div key={catIndex} className="mb-4">
                       <h3 className="text-md font-bold text-black mb-2">
                         {cat.Categorie_id.label}

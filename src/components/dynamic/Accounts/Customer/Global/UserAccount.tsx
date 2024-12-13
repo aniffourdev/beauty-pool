@@ -1,41 +1,21 @@
+// UserAccount.tsx
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Link from "next/link";
-import { IoLogOutOutline, IoNotificationsOutline } from "react-icons/io5";
+import { IoLogOutOutline } from "react-icons/io5";
 import Cookies from "js-cookie";
-import api from "@/services/auth";
 import { FiUser } from "react-icons/fi";
 import { LuSettings } from "react-icons/lu";
 import { useRouter } from "next/navigation";
-
-interface UserData {
-  avatar?: string;
-  first_name?: string;
-  last_name?: string;
-}
+import { useUser } from "@/context/UserContext";
 
 const UserAccount = () => {
-  const [userData, setUserData] = useState<UserData | null>(null);
-  const [, setLoading] = useState(true);
+  const { userData, loading } = useUser();
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const router = useRouter();
 
-  useEffect(() => {
-    const getMe = async () => {
-      try {
-        const response = await api.get("/users/me");
-        setUserData(response.data.data);
-      } catch (error) {
-        console.error("Error fetching user data:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    getMe();
-  }, []);
-
   const toggleDropdown = () => {
-    setDropdownVisible(!dropdownVisible);
+    setDropdownVisible((prev) => !prev);
   };
 
   const handleLogout = () => {
@@ -46,6 +26,30 @@ const UserAccount = () => {
     setDropdownVisible(false);
   };
 
+  const renderUserAvatar = () => {
+    if (loading) {
+      return <div className="skeleton h-8 w-32 rounded-full"></div>;
+    }
+
+    if (userData?.avatar) {
+      return (
+        <div
+          className="bg-purple-100 rounded-full h-7 w-7 bg-cover bg-center"
+          style={{
+            backgroundImage: `url(https://maoulaty.shop/assets/${userData.avatar})`,
+          }}
+        ></div>
+      );
+    }
+
+    return (
+      <div className="bg-purple-100 rounded-full h-8 w-8 flex items-center justify-center text-purple-600 text-sm font-bold">
+        {userData?.first_name?.[0]?.toUpperCase()}
+        {userData?.last_name?.[0]?.toUpperCase()}
+      </div>
+    );
+  };
+
   return (
     <div className="relative top-0.5">
       <div className="flex justify-center items-center gap-3">
@@ -54,27 +58,11 @@ const UserAccount = () => {
             onClick={toggleDropdown}
             className="flex items-center gap-1.5 transition-all cursor-pointer"
           >
-            {userData ? (
-              <>
-                {userData.avatar ? (
-                  <div
-                    className="bg-purple-100 rounded-full h-7 w-7 bg-cover bg-center"
-                    style={{
-                      backgroundImage: `url(https://maoulaty.shop/assets/${userData.avatar})`,
-                    }}
-                  ></div>
-                ) : (
-                  <div className="bg-purple-100 rounded-full h-8 w-8 flex items-center justify-center text-purple-600 text-sm font-bold">
-                    {userData.first_name?.[0]?.toUpperCase()}
-                    {userData.last_name?.[0]?.toUpperCase()}
-                  </div>
-                )}
-                <span className="font-semibold text-black">
-                  {userData.first_name} {userData.last_name}
-                </span>
-              </>
-            ) : (
-              <div className="skeleton h-8 w-32 rounded-full"></div>
+            {renderUserAvatar()}
+            {userData && (
+              <span className="font-semibold text-black">
+                {userData.first_name} {userData.last_name}
+              </span>
             )}
           </div>
 

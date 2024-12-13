@@ -45,6 +45,23 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
+// ./src/services/auth.ts
+
+export const fetchUserRole = async (accessToken: string) => {
+  try {
+    const response = await api.get("/users/me", {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    return response.data.role;
+  } catch (error) {
+    console.error("Error fetching user role:", error);
+    return null;
+  }
+};
+
+
 // Response interceptor: Handle token expiration (401 Unauthorized)
 api.interceptors.response.use(
   (response) => response,
