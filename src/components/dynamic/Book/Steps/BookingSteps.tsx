@@ -31,6 +31,7 @@ interface Article {
 }
 
 interface SubService {
+  id: string; // Add the id property
   name: string;
   description: string;
   price: string;
@@ -67,6 +68,7 @@ const BookingSteps: React.FC<BookingStepsProps> = ({
   const [selectedServices, setSelectedServices] = useState<SubService[]>([]);
   const [savedServices, setSavedServices] = useState<SubService[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [time, setTime] = useState<string>(""); // Add state for time
 
   useEffect(() => {
     gsap.fromTo(
@@ -86,9 +88,9 @@ const BookingSteps: React.FC<BookingStepsProps> = ({
   }, [currentStep]);
 
   const handleServiceClick = (subService: SubService) => {
-    if (selectedServices.some((s) => s.name === subService.name)) {
+    if (selectedServices.some((s) => s.id === subService.id)) {
       setSelectedServices(
-        selectedServices.filter((s) => s.name !== subService.name)
+        selectedServices.filter((s) => s.id !== subService.id)
       );
     } else {
       setSelectedServices([...selectedServices, subService]);
@@ -133,7 +135,7 @@ const BookingSteps: React.FC<BookingStepsProps> = ({
               className="text-2xl text-gray-500"
               onClick={() => handleServiceClick(subService)}
             >
-              {selectedServices.some((s) => s.name === subService.name) ? (
+              {selectedServices.some((s) => s.id === subService.id) ? (
                 <BsCheck className="text-green-500 size-8" />
               ) : (
                 <BsPlus className="text-slate-600 size-8" />
@@ -268,7 +270,15 @@ const BookingSteps: React.FC<BookingStepsProps> = ({
                     Payments
                   </span>
                 </div>
-                <h1 className="text-3xl font-bold mb-7 mt-20">THIS IS TIME</h1>
+                <h1 className="text-3xl font-bold mb-7 mt-20">Select Time</h1>
+                {/* Add your time selection logic here */}
+                <input
+                  type="time"
+                  value={time}
+                  onChange={(e) => setTime(e.target.value)}
+                  className="py-3.5 border-2 border-slate-300 px-4 rounded w-full mt-1"
+                  placeholder="Select time"
+                />
               </div>
               <div className="w-full lg:w-1/3 lg:ml-8 mt-8 lg:mt-0">
                 <div className="border rounded-lg p-4">
@@ -317,7 +327,7 @@ const BookingSteps: React.FC<BookingStepsProps> = ({
                   </div>
                   <button
                     className="w-full py-2.5 font-semibold bg-black text-white rounded-lg"
-                    disabled={selectedServices.length === 0}
+                    disabled={selectedServices.length === 0 || !time}
                     onClick={() => setCurrentStep(3)}
                   >
                     Continue
@@ -355,7 +365,15 @@ const BookingSteps: React.FC<BookingStepsProps> = ({
               </p>
               <div className="mt-16">
                 <Elements stripe={stripePromise}>
-                  <PaymentForm calculateTotal={calculateDiscountedTotal} />
+                  <PaymentForm
+                    calculateTotal={calculateDiscountedTotal}
+                    articleId={article.id}
+                    selectedServices={selectedServices.map(service => ({
+                      id: service.id,
+                      price: service.price,
+                    }))}
+                    time={time}
+                  />
                 </Elements>
                 <div className="flex justify-start items-center gap-2 mt-5 mb">
                   <div className="text-sm">Pay securely with:</div>

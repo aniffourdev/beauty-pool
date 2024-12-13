@@ -3,17 +3,18 @@ import React, { useState, useRef, useEffect } from "react";
 import api from "@/services/auth";
 import Cookies from "js-cookie";
 import { IoStar } from "react-icons/io5";
-import { GoHeart } from "react-icons/go";
+import { GoHeart, GoHeartFill } from "react-icons/go";
 import { GoShareAndroid } from "react-icons/go";
 import { CiClock1, CiLocationOn } from "react-icons/ci";
 import { FaArrowDown } from "react-icons/fa";
 import Link from "next/link";
 import BookingSteps from "@/components/dynamic/Book/Steps/BookingSteps";
 import BookingHeader from "@/components/global/booking-header/BookingHeader";
-import Services from "@/components/dynamic/Book/Services"; // Import the NavTabs component
+import Services from "@/components/dynamic/Book/Services";
+import { OrbitProgress } from "react-loading-indicators";
 
-// Define interfaces for Article, Review, User, and Service
 interface UserData {
+  id: string;
   first_name: string;
   last_name: string;
   email: string;
@@ -40,9 +41,10 @@ interface Article {
 }
 
 interface SubService {
+  id: string; // Add the id property
   name: string;
-  price: string; // Change to string to match BookingSteps.tsx
-  duration: string; // Change to string to match BookingSteps.tsx
+  price: string;
+  duration: string;
   description: string;
 }
 
@@ -69,7 +71,10 @@ const SingleBook: React.FC<SingleBookProps> = ({ slug }) => {
   const [currentIndex, ] = useState(0);
   const carouselRef = useRef<HTMLDivElement>(null);
   const [booking, setBooking] = useState(false);
-  const [userData, ] = useState<UserData | null>(null); // Add userData state
+  const [currentUser, setCurrentUser] = useState<UserData | null>(null);
+  const [isFavorited, setIsFavorited] = useState(false);
+  const [favoriteLoading, setFavoriteLoading] = useState(false);
+  const [favoriteId, setFavoriteId] = useState<string | null>(null);
 
   const handleBooking = () => {
     setBooking(true);
@@ -86,9 +91,9 @@ const SingleBook: React.FC<SingleBookProps> = ({ slug }) => {
   }, [currentIndex]);
 
   useEffect(() => {
-    console.log("useEffect triggered with slug:", slug); // Debugging log
+    console.log("useEffect triggered with slug:", slug);
     const getArticle = async () => {
-      const accessToken = Cookies.get("access_token"); // Retrieve the access token from cookies
+      const accessToken = Cookies.get("access_token");
       if (slug && accessToken) {
         try {
           const response = await api.get("/items/articles", {
@@ -106,34 +111,36 @@ const SingleBook: React.FC<SingleBookProps> = ({ slug }) => {
             },
           });
           const articleData = response.data.data[0];
-          console.log("Article Data:", articleData); // Debugging log
+          console.log("Article Data:", articleData);
 
           if (articleData) {
-            // Adjust the data structure to match the expected format
             const adjustedArticleData: Article = {
               ...articleData,
               reviews: articleData.reviews ? [articleData.reviews] : [],
             };
             setArticle(adjustedArticleData);
 
-            // Fetch services using the article ID
             const servicesResponse = await api.get(
-              `https://maoulaty.shop/items/articles/${articleData.id}?fields=service.Services_id.name,service.Services_id.sub_services.name,service.Services_id.sub_services.price,service.Services_id.sub_services.duration,service.Services_id.sub_services.description`
+              `https://maoulaty.shop/items/articles/${articleData.id}?fields=service.Services_id.name,service.Services_id.sub_services.sub_services_id.name,service.Services_id.sub_services.sub_services_id.price,service.Services_id.sub_services.sub_services_id.duration,service.Services_id.sub_services.sub_services_id.description`
             );
             const servicesData = servicesResponse.data.data.service;
 
             const parentServices: { [key: string]: ParentService } = {};
 
-            servicesData.forEach((service: { Services_id: { name: string, sub_services: SubService[] } }) => {
+            servicesData.forEach((service: { Services_id: { name: string, sub_services: { sub_services_id: SubService }[] } }) => {
               const serviceName = service.Services_id.name;
               if (!parentServices[serviceName]) {
                 parentServices[serviceName] = {
                   name: serviceName,
-                  description: "", // Add a default description if needed
+                  description: "",
                   sub_services: [],
                 };
               }
-              parentServices[serviceName].sub_services.push(...service.Services_id.sub_services);
+              service.Services_id.sub_services.forEach((subService) => {
+                if (subService.sub_services_id) {
+                  parentServices[serviceName].sub_services.push(subService.sub_services_id);
+                }
+              });
             });
 
             const formattedServices = Object.keys(parentServices).map((key, index) => ({
@@ -154,7 +161,6 @@ const SingleBook: React.FC<SingleBookProps> = ({ slug }) => {
     };
     getArticle();
 
-    // Cleanup function to clear state on unmount
     return () => {
       setArticle(null);
       setServices([]);
@@ -162,19 +168,73 @@ const SingleBook: React.FC<SingleBookProps> = ({ slug }) => {
     };
   }, [slug]);
 
+  useEffect(() => {
+    const fetchCurrentUser = async () => {
+      try {
+        const response = await api.get("/users/me");
+        setCurrentUser(response.data.data);
+      } catch (error) {
+        console.error("Error fetching current user:", error);
+      }
+    };
+
+    const checkIfFavorited = async () => {
+      if (article && currentUser) {
+        try {
+          const response = await api.get("/items/favorites", {
+            params: {
+              filter: {
+                article: article.id,
+                favorited: currentUser.id,
+              },
+            },
+          });
+          const favorites = response.data.data;
+          if (favorites.length > 0) {
+            setIsFavorited(true);
+            setFavoriteId(favorites[0].id);
+          }
+        } catch (error) {
+          console.error("Error checking if article is favorited:", error);
+        }
+      }
+    };
+
+    fetchCurrentUser();
+    checkIfFavorited();
+  }, [article, currentUser]);
+
   const handleFavorite = async (article: Article) => {
+    if (!currentUser) return;
+
+    setFavoriteLoading(true);
+
     try {
-      await api.post("/items/favourites", {
-        data: {
-          user_created: "6128350b-c213-485f-b375-9ad7c684fd2d",
-          article_id: article?.id,
-          status: "Published",
-        },
-      });
-    } catch {}
+      if (isFavorited) {
+        // Remove from favorites
+        if (favoriteId) {
+          await api.delete(`/items/favorites/${favoriteId}`);
+          setIsFavorited(false);
+          setFavoriteId(null);
+        }
+      } else {
+        // Add to favorites
+        const response = await api.post("/items/favorites", {
+          favorited: currentUser.id,
+          article: article.id,
+          status: "published"
+        });
+        setIsFavorited(true);
+        setFavoriteId(response.data.data.id);
+      }
+    } catch (error) {
+      console.error("Error toggling favorite:", error);
+    } finally {
+      setFavoriteLoading(false);
+    }
   };
 
-  console.log("Rendering with slug:", slug); // Debugging log
+  console.log("Rendering with slug:", slug);
 
   if (loading) {
     return (
@@ -288,8 +348,15 @@ const SingleBook: React.FC<SingleBookProps> = ({ slug }) => {
             <button
               onClick={() => handleFavorite(article)}
               className="text-gray-800 border border-slate-200 h-12 w-12 flex justify-center items-center rounded-full"
+              disabled={favoriteLoading}
             >
-              <GoHeart className="size-6" />
+              {favoriteLoading ? (
+                <OrbitProgress variant="disc" color="#d3d3d3" size="small" text="" textColor="" />
+              ) : isFavorited ? (
+                <GoHeartFill className="size-6 text-red-500" />
+              ) : (
+                <GoHeart className="size-6" />
+              )}
             </button>
             <button className="text-gray-800 border border-slate-200 h-12 w-12 flex justify-center items-center rounded-full">
               <GoShareAndroid className="size-6" />
@@ -451,7 +518,7 @@ const SingleBook: React.FC<SingleBookProps> = ({ slug }) => {
             <div className="lg:w-8/12">
               <div>
                 <h1 className="text-3xl font-bold mb-4">Services</h1>
-                <Services services={services} /> {/* Use the NavTabs component */}
+                <Services services={services} />
 
                 {/* Reviews Section */}
                 <div className="mt-16" id="reviews">
@@ -523,20 +590,11 @@ const SingleBook: React.FC<SingleBookProps> = ({ slug }) => {
       {booking && (
         <div className="bg-white fixed left-0 top-0 w-full h-full z-50 p-2 overflow-auto">
           <div>
-            {/* {userData && (
-              <BookingSteps
-                article={article}
-                onClose={() => setBooking(false)}
-                services={services}
-                // userData={userData}
-              />
-            )} */}
             <BookingSteps
-                article={article}
-                onClose={() => setBooking(false)}
-                services={services}
-                // userData={userData}
-              />
+              article={article}
+              onClose={() => setBooking(false)}
+              services={services}
+            />
           </div>
         </div>
       )}

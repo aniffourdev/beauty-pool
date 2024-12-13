@@ -436,10 +436,7 @@ const CustomerProfile = () => {
     <>
       <ToastContainer />
       <div className="">
-        <Header
-          toggleSidebar={toggleSidebar}
-          onUserDataFetched={handleUserDataFetched}
-        />
+        <Header toggleSidebar={toggleSidebar} />
         <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
         <div
           className={`p-4 transition-transform ${

@@ -59,7 +59,9 @@ const ProductAdd = () => {
   const [subServices, setSubServices] = useState<SubService[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
   const [selectedService, setSelectedService] = useState<number | null>(null);
-  const [selectedSubService, setSelectedSubService] = useState<number | null>(null);
+  const [selectedSubService, setSelectedSubService] = useState<number | null>(
+    null
+  );
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -78,14 +80,19 @@ const ProductAdd = () => {
     watch,
   } = useForm();
 
-  const handleFeaturedImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFeaturedImageChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const file = e.target.files?.[0];
     if (file) {
       setFeaturedImage(file);
     }
   };
 
-  const handleGalleryImageChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
+  const handleGalleryImageChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    index: number
+  ) => {
     const file = e.target.files?.[0];
     if (file) {
       const newGalleryImages: File[] = [...galleryImages];
@@ -129,89 +136,92 @@ const ProductAdd = () => {
   }, []);
 
   useEffect(() => {
-  const fetchServices = async () => {
-    if (selectedCategory) {
-      try {
-        const response = await api.get("users/me", {
-          params: {
-            fields: [
-              "category.Categorie_id.*",
-              "category.Categorie_id.services.Services_id.*"
-            ],
-          },
-        });
+    const fetchServices = async () => {
+      if (selectedCategory) {
+        try {
+          const response = await api.get("users/me", {
+            params: {
+              fields: [
+                "category.Categorie_id.*",
+                "category.Categorie_id.services.Services_id.*",
+              ],
+            },
+          });
 
-        // Find the selected category and extract its services
-        const selectedCategoryData = response.data.data.category.find(
-          (cat: any) => cat.Categorie_id.id === selectedCategory
-        );
+          // Find the selected category and extract its services
+          const selectedCategoryData = response.data.data.category.find(
+            (cat: any) => cat.Categorie_id.id === selectedCategory
+          );
 
-        const serviceData = selectedCategoryData
-          ? selectedCategoryData.Categorie_id.services.map((service: any) => ({
-              id: service.Services_id.id,
-              name: service.Services_id.name,
-            }))
-          : [];
-
-        setServices(serviceData);
-        
-        // Reset selected service and sub-services when category changes
-        setSelectedService(null);
-        setSubServices([]);
-      } catch (error) {
-        console.error("Error fetching services:", error);
-        setServices([]);
-      }
-    }
-  };
-
-  if (selectedCategory) {
-    fetchServices();
-  }
-}, [selectedCategory]);
-
-useEffect(() => {
-  const fetchSubServices = async () => {
-    if (selectedCategory && selectedService) {
-      try {
-        const response = await api.get("users/me", {
-          params: {
-            fields: [
-              "category.Categorie_id.services.Services_id.*",
-              "category.Categorie_id.services.Services_id.sub_services.*"
-            ],
-          },
-        });
-
-        // Find the selected category
-        const selectedCategoryData = response.data.data.category.find(
-          (cat: any) => cat.Categorie_id.id === selectedCategory
-        );
-
-        // Find sub-services for the selected service within the selected category
-        const subServiceData = selectedCategoryData
-          ? selectedCategoryData.Categorie_id.services
-              .filter((service: any) => service.Services_id.id === selectedService)
-              .flatMap((service: any) =>
-                service.Services_id.sub_services.map((subService: any) => ({
-                  id: subService.id,
-                  name: subService.name,
-                }))
+          const serviceData = selectedCategoryData
+            ? selectedCategoryData.Categorie_id.services.map(
+                (service: any) => ({
+                  id: service.Services_id.id,
+                  name: service.Services_id.name,
+                })
               )
-          : [];
+            : [];
 
-        setSubServices(subServiceData);
-      } catch (error) {
-        console.error("Error fetching sub-services:", error);
-        setSubServices([]);
+          setServices(serviceData);
+
+          // Reset selected service and sub-services when category changes
+          setSelectedService(null);
+          setSubServices([]);
+        } catch (error) {
+          console.error("Error fetching services:", error);
+          setServices([]);
+        }
       }
+    };
+
+    if (selectedCategory) {
+      fetchServices();
     }
-  };
+  }, [selectedCategory]);
 
-  fetchSubServices();
-}, [selectedCategory, selectedService]);
+  useEffect(() => {
+    const fetchSubServices = async () => {
+      if (selectedCategory && selectedService) {
+        try {
+          const response = await api.get("users/me", {
+            params: {
+              fields: [
+                "category.Categorie_id.services.Services_id.*",
+                "category.Categorie_id.services.Services_id.sub_services.*",
+              ],
+            },
+          });
 
-  
+          // Find the selected category
+          const selectedCategoryData = response.data.data.category.find(
+            (cat: any) => cat.Categorie_id.id === selectedCategory
+          );
+
+          // Find sub-services for the selected service within the selected category
+          const subServiceData = selectedCategoryData
+            ? selectedCategoryData.Categorie_id.services
+                .filter(
+                  (service: any) => service.Services_id.id === selectedService
+                )
+                .flatMap((service: any) =>
+                  service.Services_id.sub_services.map((subService: any) => ({
+                    id: subService.id,
+                    name: subService.name,
+                  }))
+                )
+            : [];
+
+          setSubServices(subServiceData);
+        } catch (error) {
+          console.error("Error fetching sub-services:", error);
+          setSubServices([]);
+        }
+      }
+    };
+
+    fetchSubServices();
+  }, [selectedCategory, selectedService]);
+
   useEffect(() => {
     const fetchSubServices = async () => {
       if (selectedService) {
@@ -220,24 +230,26 @@ useEffect(() => {
             params: {
               fields: [
                 "category.Categorie_id.services.Services_id.*",
-                "category.Categorie_id.services.Services_id.sub_services.*"
+                "category.Categorie_id.services.Services_id.sub_services.*",
               ],
             },
           });
-  
+
           // Find sub-services for the selected service
-          const subServiceData = response.data.data.category
-            .flatMap((cat: any) => 
+          const subServiceData = response.data.data.category.flatMap(
+            (cat: any) =>
               cat.Categorie_id.services
-                .filter((service: any) => service.Services_id.id === selectedService)
-                .flatMap((service: any) => 
+                .filter(
+                  (service: any) => service.Services_id.id === selectedService
+                )
+                .flatMap((service: any) =>
                   service.Services_id.sub_services.map((subService: any) => ({
                     id: subService.id,
                     name: subService.name,
                   }))
                 )
-            );
-  
+          );
+
           setSubServices(subServiceData);
         } catch (error) {
           console.error("Error fetching sub-services:", error);
@@ -245,7 +257,7 @@ useEffect(() => {
         }
       }
     };
-  
+
     if (selectedService) {
       fetchSubServices();
     }
@@ -288,13 +300,13 @@ useEffect(() => {
     try {
       let featuredImageId = null;
       let galleryImageIds = [];
-  
+
       // Upload featured image
       if (featuredImage) {
         const formData = new FormData();
         formData.append("file", featuredImage);
         formData.append("folder", "your-folder-id"); // Replace with your folder ID
-  
+
         const response = await axios.post(
           "https://maoulaty.shop/files",
           formData,
@@ -306,14 +318,14 @@ useEffect(() => {
         );
         featuredImageId = response.data.data.id;
       }
-  
+
       // Upload gallery images
       for (const file of galleryImages) {
         if (file) {
           const formData = new FormData();
           formData.append("file", file);
           formData.append("folder", "your-folder-id"); // Replace with your folder ID
-  
+
           const response = await axios.post(
             "https://maoulaty.shop/files",
             formData,
@@ -326,7 +338,7 @@ useEffect(() => {
           galleryImageIds.push(response.data.data.id);
         }
       }
-  
+
       // Prepare the payload
       const payload = {
         status: "published",
@@ -345,7 +357,10 @@ useEffect(() => {
             {
               articles_id: "+",
               Services_id: {
-                id: data.services && data.services.length > 0 ? data.services[0] : 189,
+                id:
+                  data.services && data.services.length > 0
+                    ? data.services[0]
+                    : 189,
               },
             },
           ],
@@ -353,14 +368,17 @@ useEffect(() => {
           delete: [],
         },
         sub_service: {
-          create: data.sub_services && data.sub_services.length > 0 ? [
-            {
-              articles_id: "+",
-              sub_services_id: {
-                id: data.sub_services[0],
-              },
-            },
-          ] : [],
+          create:
+            data.sub_services && data.sub_services.length > 0
+              ? [
+                  {
+                    articles_id: "+",
+                    sub_services_id: {
+                      id: data.sub_services[0],
+                    },
+                  },
+                ]
+              : [],
           update: [],
           delete: [],
         },
@@ -380,12 +398,12 @@ useEffect(() => {
         sunday_open: openTimes.sunday ? data.sunday_open : null,
         sunday_close: openTimes.sunday ? data.sunday_close : null,
       };
-  
+
       console.log("THIS IS PAYLOAD", payload);
-  
+
       // Send the payload to the API
       await api.post("/items/articles", payload);
-  
+
       toast.success("Article added successfully!");
     } catch (error) {
       console.error("Error adding article:", error);
@@ -394,15 +412,10 @@ useEffect(() => {
       setLoading(false);
     }
   };
-  
-  
 
   return (
     <div className="">
-      <Header
-        toggleSidebar={toggleSidebar}
-        onUserDataFetched={handleUserDataFetched}
-      />
+      <Header toggleSidebar={toggleSidebar} />
       <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
       <div
         className={`p-4 transition-transform ${
@@ -410,183 +423,295 @@ useEffect(() => {
         }`}
       >
         <div className="p-4 mt-20">
-          <div className="p-4">
-            <ToastContainer />
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-              <div>
-                <label htmlFor="label" className="block mb-2">
-                  Label
-                </label>
-                <input
-                  type="text"
-                  id="label"
-                  {...register("label", { required: "Label is required" })}
-                  className="w-full p-2 border rounded"
-                />
-              </div>
+          <ToastContainer />
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+            <div className="flex justify-between items-center mb-5">
+              <h2
+                className={`${gruppo.className} text-4xl text-black font-bold`}
+              >
+                New Product
+              </h2>
+              <button
+                type="submit"
+                className="py-2 px-4 rounded bg-slate-900 text-white font-semibold"
+                disabled={loading}
+              >
+                {loading ? "Saving..." : "Save"}
+              </button>
+            </div>
+            <div className="lg:flex gap-8">
+              <div className="lg:w-8/12">
+                <div className="bg-white p-4 rounded-lg border border-slate-200 mb-8">
+                  <h4 className="text-lg font-semibold pb-4 -ml-4 px-4 -mr-4 border-b border-slate-200 mb-4">
+                    Basic details
+                  </h4>
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+                    <div>
+                      <label
+                        className="block text-gray-900 text-[13px] font-semibold mb-1"
+                        htmlFor="label"
+                      >
+                        Product name
+                      </label>
+                      <input
+                        type="text"
+                        id="label"
+                        {...register("label", {
+                          required: "Label is required",
+                        })}
+                        className="shadow appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                      />
+                    </div>
+                    <div>
+                      <label
+                        className="block text-gray-900 text-[13px] font-semibold mb-1"
+                        htmlFor="slug"
+                      >
+                        Product slug
+                      </label>
+                      <input
+                        type="text"
+                        id="slug"
+                        {...register("slug", { required: "Slug is required" })}
+                        className="shadow appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                      />
+                    </div>
+                  </div>
+                  <div className="my-4">
+                    <div>
+                      <label
+                        className="block text-gray-900 text-[13px] font-semibold mb-1"
+                        htmlFor="description"
+                      >
+                        Product description
+                      </label>
+                      <textarea
+                        id="description"
+                        {...register("description", {
+                          required: "Description is required",
+                        })}
+                        className="shadow appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                      />
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
+                    <div>
+                      <label
+                        className="block text-gray-900 text-[13px] font-semibold mb-1"
+                        htmlFor="category"
+                      >
+                        Product Category
+                      </label>
+                      <select
+                        id="category"
+                        {...register("category", {
+                          required: "Category is required",
+                        })}
+                        className="shadow appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        onChange={(e) => {
+                          setSelectedCategory(Number(e.target.value));
+                        }}
+                      >
+                        <option value="">Select a category</option>
+                        {categories.map((category) => (
+                          <option key={category.id} value={category.id}>
+                            {category.label}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
 
-              <div>
-                <label htmlFor="slug" className="block mb-2">
-                  Slug
-                </label>
-                <input
-                  type="text"
-                  id="slug"
-                  {...register("slug", { required: "Slug is required" })}
-                  className="w-full p-2 border rounded"
-                />
-              </div>
+                    <div>
+                      <label
+                        className="block text-gray-900 text-[13px] font-semibold mb-1"
+                        htmlFor="services"
+                      >
+                        Product Service
+                      </label>
+                      <select
+                        id="services"
+                        {...register("services", {
+                          required: "Service is required",
+                        })}
+                        className="shadow appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        onChange={(e) => {
+                          setSelectedService(Number(e.target.value));
+                        }}
+                      >
+                        <option value="">Select a service</option>
+                        {services.map((service) => (
+                          <option key={service.id} value={service.id}>
+                            {service.name}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
 
-              <div>
-                <label htmlFor="description" className="block mb-2">
-                  Description
-                </label>
-                <textarea
-                  id="description"
-                  {...register("description", { required: "Description is required" })}
-                  className="w-full p-2 border rounded"
-                />
-              </div>
-
-              <div>
-                <label htmlFor="featuredImage" className="block mb-2">
-                  Featured Image
-                </label>
-                <input
-                  type="file"
-                  id="featuredImage"
-                  onChange={handleFeaturedImageChange}
-                  className="w-full p-2 border rounded"
-                />
-              </div>
-
-              <div>
-                <label htmlFor="gallery" className="block mb-2">
-                  Gallery Images
-                </label>
-                {[...Array(4)].map((_, index) => (
-                  <input
-                    key={index}
-                    type="file"
-                    onChange={(e) => handleGalleryImageChange(e, index)}
-                    className="w-full p-2 border rounded mb-2"
-                  />
-                ))}
-              </div>
-
-              <div>
-                <label htmlFor="category" className="block mb-2">
-                  Category
-                </label>
-                <select
-                  id="category"
-                  {...register("category", { required: "Category is required" })}
-                  className="w-full p-2 border rounded"
-                  onChange={(e) => {
-                    setSelectedCategory(Number(e.target.value));
-                  }}
-                >
-                  <option value="">Select a category</option>
-                  {categories.map((category) => (
-                    <option key={category.id} value={category.id}>
-                      {category.label}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div>
-                <label htmlFor="services" className="block mb-2">
-                  Services
-                </label>
-                <select
-                  id="services"
-                  {...register("services", { required: "Service is required" })}
-                  className="w-full p-2 border rounded"
-                  onChange={(e) => {
-                    setSelectedService(Number(e.target.value));
-                  }}
-                >
-                  <option value="">Select a service</option>
-                  {services.map((service) => (
-                    <option key={service.id} value={service.id}>
-                      {service.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div>
-  <label htmlFor="sub_services" className="block mb-2">
-    Sub Services
-  </label>
-  <select
-    id="sub_services"
-    {...register("sub_services", { required: "Sub Service is required" })}
-    className="w-full p-2 border rounded"
-    onChange={(e) => {
-      setSelectedSubService(Number(e.target.value));
-    }}
-  >
-    <option value="">Select a sub service</option>
-    {subServices.map((subService) => (
-      <option key={subService.id} value={subService.id}>
-        {subService.name}
-      </option>
-    ))}
-  </select>
-</div>
-
-
-              <div>
-                <label htmlFor="address" className="block mb-2">
-                  Address
-                </label>
-                <input
-                  type="text"
-                  id="address"
-                  {...register("address", { required: "Address is required" })}
-                  className="w-full p-2 border rounded"
-                />
-              </div>
-
-              {/* Opening Times */}
-              {["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"].map((day) => (
-                <div key={day}>
-                  <label className="block mb-2">
+                    <div>
+                      <label
+                        className="block text-gray-900 text-[13px] font-semibold mb-1"
+                        htmlFor="sub_services"
+                      >
+                        Product sub service
+                      </label>
+                      <select
+                        id="sub_services"
+                        {...register("sub_services", {
+                          required: "Sub Service is required",
+                        })}
+                        className="shadow appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        onChange={(e) => {
+                          setSelectedSubService(Number(e.target.value));
+                        }}
+                      >
+                        <option value="">Select a sub service</option>
+                        {subServices.map((subService) => (
+                          <option key={subService.id} value={subService.id}>
+                            {subService.name}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div className="bg-white p-4 rounded-lg border border-slate-200 mb-8">
+                  <h4 className="text-lg font-semibold pb-4 -ml-4 px-4 -mr-4 border-b border-slate-200 mb-4">
+                    Address
+                  </h4>
+                  <div>
+                    <label
+                      className="block text-gray-900 text-[13px] font-semibold mb-1"
+                      htmlFor="address"
+                    >
+                      Product Address
+                    </label>
                     <input
-                      type="checkbox"
-                      checked={openTimes[day as keyof typeof openTimes]}
-                      onChange={() => handleOpenTimeChange(day)}
-                    />
-                    {` Open on ${day.charAt(0).toUpperCase() + day.slice(1)}`}
-                  </label>
-                  <div className="flex space-x-2">
-                    <input
-                      type="time"
-                      {...register(`${day}_open`)}
-                      disabled={!openTimes[day as keyof typeof openTimes]}
-                      className="w-full p-2 border rounded"
-                    />
-                    <input
-                      type="time"
-                      {...register(`${day}_close`)}
-                      disabled={!openTimes[day as keyof typeof openTimes]}
-                      className="w-full p-2 border rounded"
+                      type="text"
+                      id="address"
+                      {...register("address", {
+                        required: "Address is required",
+                      })}
+                      className="shadow appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                     />
                   </div>
                 </div>
-              ))}
+                <div className="bg-white p-4 rounded-lg border border-slate-200">
+                  <h4 className="text-lg font-semibold pb-4 -ml-4 px-4 -mr-4 border-b border-slate-200 mb-4">
+                    Openings Time
+                  </h4>
+                  {/* Opening Times */}
+                  {[
+                    "monday",
+                    "tuesday",
+                    "wednesday",
+                    "thursday",
+                    "friday",
+                    "saturday",
+                    "sunday",
+                  ].map((day) => (
+                    <div
+                      key={day}
+                      className="bg-white shadow-sm rounded-lg p-4 mb-3 border border-gray-100"
+                    >
+                      <div className="flex items-center justify-between">
+                        <label className="flex items-center space-x-3 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={openTimes[day as keyof typeof openTimes]}
+                            onChange={() => handleOpenTimeChange(day)}
+                            className="hidden peer"
+                            id={`${day}-checkbox`}
+                          />
+                          <div
+                            className={`
+          w-14 h-7 rounded-full transition-all duration-300 relative
+          ${
+            openTimes[day as keyof typeof openTimes]
+              ? "bg-[#f47c66]"
+              : "bg-gray-300"
+          }
+        `}
+                          >
+                            <span
+                              className={`
+            absolute top-0.5 left-0.5 w-6 h-6 bg-white rounded-full shadow-md transform transition-transform
+            ${
+              openTimes[day as keyof typeof openTimes]
+                ? "translate-x-7"
+                : "translate-x-0"
+            }
+          `}
+                            ></span>
+                          </div>
+                          <span className="text-gray-700 font-medium capitalize">
+                            Open on {day}
+                          </span>
+                        </label>
 
-              <button
-                type="submit"
-                className="w-full bg-blue-500 text-white p-2 rounded"
-                disabled={loading}
-              >
-                {loading ? "Adding..." : "Add Article"}
-              </button>
-            </form>
-          </div>
+                        <div className="flex space-x-2">
+                          <input
+                            type="time"
+                            {...register(`${day}_open`)}
+                            disabled={!openTimes[day as keyof typeof openTimes]}
+                            className={`p-2 border rounded-md transition-all duration-300 
+          ${
+            openTimes[day as keyof typeof openTimes]
+              ? "bg-white border-gray-300 cursor-default"
+              : "bg-gray-100 border-gray-200 cursor-not-allowed"
+          }`}
+                          />
+                          <input
+                            type="time"
+                            {...register(`${day}_close`)}
+                            disabled={!openTimes[day as keyof typeof openTimes]}
+                            className={`p-2 border rounded-md transition-all duration-300 
+          ${
+            openTimes[day as keyof typeof openTimes]
+              ? "bg-white border-gray-300 cursor-default"
+              : "bg-gray-100 border-gray-200 cursor-not-allowed"
+          }`}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="lg:w-4/12">
+                <div className="bg-white p-4 rounded-lg border border-slate-200 sticky top-28">
+                  <h4 className="text-lg font-semibold pb-4 -ml-4 px-4 -mr-4 border-b border-slate-200 mb-4">
+                    Product Images
+                  </h4>
+                  <div>
+                    <label htmlFor="featuredImage" className="block mb-2">
+                      Featured Image
+                    </label>
+                    <input
+                      type="file"
+                      id="featuredImage"
+                      onChange={handleFeaturedImageChange}
+                      className="w-full p-2 border rounded"
+                    />
+                  </div>
+
+                  <div>
+                    <label htmlFor="gallery" className="block mb-2">
+                      Gallery Images
+                    </label>
+                    {[...Array(4)].map((_, index) => (
+                      <input
+                        key={index}
+                        type="file"
+                        onChange={(e) => handleGalleryImageChange(e, index)}
+                        className="w-full p-2 border rounded mb-2"
+                      />
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
         </div>
       </div>
     </div>

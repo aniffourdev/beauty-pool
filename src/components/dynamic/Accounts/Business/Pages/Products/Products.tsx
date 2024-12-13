@@ -39,10 +39,6 @@ const Products = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
-  const handleUserDataFetched = (data: UserData | null) => {
-    setUserData(data);
-  };
-
   useEffect(() => {
     const fetchArticles = async () => {
       try {
@@ -66,9 +62,7 @@ const Products = () => {
   return (
     <div className="">
       <Header
-        toggleSidebar={toggleSidebar}
-        onUserDataFetched={handleUserDataFetched}
-      />
+        toggleSidebar={toggleSidebar} />
       <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
       <div
         className={`p-4 transition-transform ${

@@ -1,46 +1,17 @@
-import React, { useState, useEffect } from "react";
+// Header.tsx
+import React from "react";
 import { FaBars } from "react-icons/fa";
 import Logo from "./Logo";
-import api from "@/services/auth";
 import UserAccount from "./UserAccount";
-import { UserData } from "@/types/UserData"; // Update the path accordingly
+import BookForm from "./BookForm";
+import { useUser } from "@/context/UserContext";
 
 interface HeaderProps {
-  onUserDataFetched?: (userData: UserData | null) => void;
   toggleSidebar: () => void;
 }
 
-const Header: React.FC<HeaderProps> = ({ onUserDataFetched, toggleSidebar }) => {
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [userData, setUserData] = useState<UserData | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  const toggleDropdown = () => {
-    setIsDropdownOpen(!isDropdownOpen);
-  };
-
-  useEffect(() => {
-    const getMe = async () => {
-      try {
-        const response = await api.get("/users/me");
-        const fetchedUserData = response.data.data;
-        setUserData(fetchedUserData);
-
-        if (onUserDataFetched) {
-          onUserDataFetched(fetchedUserData);
-        }
-      } catch (error) {
-        console.error("Error fetching user data:", error);
-        if (onUserDataFetched) {
-          onUserDataFetched(null);
-        }
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    getMe();
-  }, [onUserDataFetched]);
+const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
+  const { userData, loading } = useUser();
 
   return (
     <nav className="fixed top-0 z-50 w-full bg-white border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700">
@@ -56,11 +27,13 @@ const Header: React.FC<HeaderProps> = ({ onUserDataFetched, toggleSidebar }) => 
             </button>
             <Logo />
           </div>
+          <div className="hidden lg:block">
+            <BookForm />
+          </div>
           <div className="flex items-center">
             <div className="flex items-center ms-3">
               <div>
                 <div
-                  onClick={toggleDropdown}
                   className="flex text-sm cursor-pointer"
                   aria-expanded="false"
                 >
