@@ -1,13 +1,14 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import Sidebar from "@/components/dynamic/Accounts/Business/Global/Sidebar";
-import Header from "@/components/dynamic/Accounts/Business/Global/Header";
-import { HiOutlineDotsVertical } from "react-icons/hi";
-import { FiPlus } from "react-icons/fi";
-import api from "@/services/auth";
+import Sidebar from "@/components/dynamic/Accounts/Customer/Global/Sidebar";
+import Header from "@/components/dynamic/Accounts/Customer/Global/Header";
 import Image from "next/image";
 import Link from "next/link";
 import { Gruppo } from "next/font/google";
+import api from "@/services/auth";
+import { GoHeartFill } from "react-icons/go";
+import { TiLocationOutline } from "react-icons/ti";
+import { OrbitProgress } from "react-loading-indicators";
 
 const gruppo = Gruppo({
   subsets: ["latin"],
@@ -22,18 +23,27 @@ interface UserData {
 
 interface Article {
   id: string;
+  slug: string;
   label: string;
   featured_image: string;
-  address: string;
+  Address: string;
   user_created: string;
+}
+
+interface Favorite {
+  id: string;
+  article: Article;
 }
 
 const Favorites = () => {
   const [userData, setUserData] = useState<UserData | null>(null);
-  const [articles, setArticles] = useState<Article[]>([]);
+  const [favorites, setFavorites] = useState<Favorite[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [removingFavoriteId, setRemovingFavoriteId] = useState<string | null>(
+    null
+  );
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -54,34 +64,43 @@ const Favorites = () => {
   }, []);
 
   useEffect(() => {
-    const fetchArticles = async () => {
+    const fetchFavorites = async () => {
       if (userData?.id) {
         try {
           const response = await api.get(
-            `/items/favorites?filter[user_created][_eq]=${userData.id}`
+            `/items/favorites?filter[user_created][_eq]=${userData.id}&fields=*,article.id,article.slug,article.label,article.featured_image,article.Address`
           );
-          setArticles(response.data.data);
+          setFavorites(response.data.data);
         } catch (error) {
-          console.error("Error fetching articles:", error);
-          setError("Failed to fetch articles");
+          console.error("Error fetching favorites:", error);
+          setError("Failed to fetch favorites");
         } finally {
           setLoading(false);
         }
       }
     };
 
-    fetchArticles();
+    fetchFavorites();
   }, [userData?.id]);
 
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center mx-auto">
-        <div className="flex justify-center items-center">
-          <>Loading...</>
-        </div>
-      </div>
-    );
-  }
+  const handleRemoveFavorite = async (
+    event: React.MouseEvent, 
+    favoriteId: string
+  ) => {
+    event.stopPropagation(); // Prevent event from bubbling up
+    event.preventDefault(); // Prevent default link navigation
+    
+    setRemovingFavoriteId(favoriteId);
+    try {
+      await api.delete(`/items/favorites/${favoriteId}`);
+      setFavorites(favorites.filter((favorite) => favorite.id !== favoriteId));
+    } catch (error) {
+      console.error("Error removing favorite:", error);
+      setError("Failed to remove favorite");
+    } finally {
+      setRemovingFavoriteId(null);
+    }
+  };
 
   if (error) {
     return (
@@ -113,20 +132,85 @@ const Favorites = () => {
                 </h2>
               </div>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {articles.map((article) => (
-                <div key={article.id} className="bg-white rounded-lg shadow-md p-4">
-                  {/* <Image
-                    src={`https://maoulaty.shop/assets/${article.featured_image}`}
-                    alt={article.label}
-                    width={300}
-                    height={200}
-                    className="rounded-lg"
-                  /> */}
-                  <h3 className="text-xl font-semibold mt-2">{article.label}</h3>
-                  <p className="text-gray-600 mt-1">{article.address}</p>
-                </div>
-              ))}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+              {loading
+                ? Array.from({ length: 6 }).map((_, index) => (
+                    <div
+                      key={index}
+                      className="bg-white rounded-lg shadow-md overflow-hidden animate-pulse"
+                    >
+                      <div className="relative">
+                        <div className="w-full h-48 bg-gray-300"></div>
+                        <div className="absolute top-2 right-2">
+                          <div className="bg-white rounded-full p-2 shadow-md">
+                            <div className="w-5 h-5 bg-gray-300"></div>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="p-4">
+                        <div className="h-6 bg-gray-300 rounded w-3/4 mb-2"></div>
+                        <div className="h-4 bg-gray-300 rounded w-1/2 mb-2"></div>
+                        <div className="h-4 bg-gray-300 rounded w-1/4 mb-2"></div>
+                        <div className="h-4 bg-gray-300 rounded w-1/3 mt-4"></div>
+                      </div>
+                    </div>
+                  ))
+                : favorites.map((favorite) => (
+                    <Link
+                      href={`/a/${favorite.article.slug}`}
+                      key={favorite.article.id}
+                    >
+                      <div className="bg-white rounded-lg shadow-md overflow-hidden">
+                        <div className="relative">
+                          <Image
+                            alt="Therapy room with two massage tables"
+                            className="w-full h-48 object-cover"
+                            height={400}
+                            src={`https://maoulaty.shop/assets/${favorite.article.featured_image}`}
+                            width={600}
+                          />
+                          <div className="absolute top-2 right-2">
+                          <button
+  className="bg-white rounded-full p-2 shadow-md"
+  onClick={(e) => handleRemoveFavorite(e, favorite.id)}
+  disabled={removingFavoriteId === favorite.id}
+>
+  {removingFavoriteId === favorite.id ? (
+    <OrbitProgress
+      variant="disc"
+      color="#d3d3d3"
+      size="small"
+      text=""
+      textColor=""
+    />
+  ) : (
+    <GoHeartFill className="size-5 text-red-500" />
+  )}
+</button>
+                          </div>
+                        </div>
+                        <div className="p-4">
+                          <h2 className="text-lg font-semibold">
+                            {favorite.article.label}
+                          </h2>
+                          <div className="flex items-center text-sm text-gray-600 mt-2">
+                            <i className="fas fa-star text-black"></i>
+                            <span className="ml-1">5.0</span>
+                            <span className="ml-1">(214)</span>
+                          </div>
+                          <p className="text-gray-600 mt-2 text-sm flex justify-start items-center gap-0.5">
+                            <TiLocationOutline className="size-5 text-slate-500" />
+                            <span>{favorite.article.Address}</span>
+                          </p>
+                          <div className="mt-4">
+                            <span className="inline-block bg-[#ffeeeb] text-[#f47c66] font-semibold text-xs px-2 py-1 rounded-full">
+                              Therapy Center
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </Link>
+                  ))}
             </div>
           </div>
         </div>
