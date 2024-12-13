@@ -17,37 +17,37 @@ interface SidebarProps {
 const sidenavItems = [
   {
     name: "Dashboard",
-    icon: <MdOutlineDashboard className="size-5 text-[#b64077]" />,
+    icon: <MdOutlineDashboard className="size-5 text-[#ee8b7a]" />,
     link: "/business",
   },
   {
     name: "Calendar",
-    icon: <LuCalendar className="size-5 text-[#b64077]" />,
+    icon: <LuCalendar className="size-5 text-[#ee8b7a]" />,
     link: "/business/calendar",
   },
   {
     name: "Clients",
-    icon: <LuUsers className="size-6 text-[#b64077]" />,
+    icon: <LuUsers className="size-6 text-[#ee8b7a]" />,
     link: "/business/clients",
   },
   {
     name: "Products",
-    icon: <BsBoxes className="size-5 text-[#b64077]" />,
+    icon: <BsBoxes className="size-5 text-[#ee8b7a]" />,
     link: "/business/products",
   },
   {
     name: "Services",
-    icon: <MdOutlineHomeRepairService className="size-5 text-[#b64077]" />,
+    icon: <MdOutlineHomeRepairService className="size-5 text-[#ee8b7a]" />,
     link: "/business/services",
   },
   {
     name: "Payments",
-    icon: <MdOutlinePayments className="size-5 text-[#b64077]" />,
+    icon: <MdOutlinePayments className="size-5 text-[#ee8b7a]" />,
     link: "/business/payments",
   },
   {
     name: "Settings",
-    icon: <LuSettings className="size-5 text-[#b64077]" />,
+    icon: <LuSettings className="size-5 text-[#ee8b7a]" />,
     link: "/business/settings",
   },
 ];
@@ -69,7 +69,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
               <Link
                 href={item.link}
                 className={`flex items-center p-2 font-semibold text-white hover:bg-slate-900 rounded group ${
-                  activeItem === item.name ? "text-[#b64077]" : "text-[#b64077]"
+                  activeItem === item.name ? "text-[#ee8b7a]" : "text-[#ee8b7a]"
                 }`}
                 onClick={() => setActiveItem(item.name)}
               >
