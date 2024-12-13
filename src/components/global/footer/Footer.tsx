@@ -1,4 +1,5 @@
-import React from "react";
+"use client"
+import React, { useEffect } from "react";
 import {
   FaFacebookF,
   FaTwitter,
@@ -7,8 +8,34 @@ import {
 } from "react-icons/fa";
 import Image from "next/image";
 import Link from "next/link";
+import api from "@/services/auth";
 
+
+interface Article {
+  id: string;
+  title: string;
+  slug: string;
+  
+}
 export default function Footer() {
+
+  const [articles, setArticles] = React.useState<Article[]>([]);
+
+  useEffect(() => {
+    const getNewArticles = async () => {
+      try {
+        const response = await api.get(
+          "/items/footer_menu"
+        );
+        console.log(response.data.data); // Debugging: Log the articles data
+        setArticles(response.data.data); // Storing data as an array
+      } catch (error) {
+        console.error("Error fetching articles:", error);
+      }
+    };
+    getNewArticles();
+  }, []);
+
   return (
     <footer className="bg-gray-50 py-4 px-4 sm:py-6 md:py-8">
       <div className="max-w-5xl mx-auto">
@@ -51,25 +78,25 @@ export default function Footer() {
         </div>
 
         {/* Links for Privacy Policy, Terms of Service, and Contact Us */}
-        <div className="text-center">
+        <div className="text-center ">
           <p className="text-gray-600 text-xs sm:text-sm">
-            <a
-              href="/privacy-policy"
-              className="hover:underline transition-all duration-200"
+          {articles.length > 0 ? (
+            articles.map((article) => (
+            <Link
+              key={article.id}
+              href={`/page/${article.slug}`}
+              className="hover:underline transition-all duration-200 ml-4"
             >
-              Privacy Policy
-            </a>{" "}
-            |{" "}
-            <a
-              href="/terms-of-service"
-              className="hover:underline transition-all duration-200"
-            >
-              Terms of Service
-            </a>{" "}
-            |{" "}
+              {article.title}
+            </Link>
+               ))
+              ) : (
+              <></>
+              )}
+         
             <a
               href="/contact-us"
-              className="hover:underline transition-all duration-200"
+              className="hover:underline transition-all duration-200 ml-4"
             >
               Contact Us
             </a>

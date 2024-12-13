@@ -114,7 +114,7 @@ const HomeDashboard = () => {
                 />
                 <button
                   type="submit"
-                  className="text-white absolute end-2.5 bottom-2.5 bg-[#b64077c6] hover:bg-[#b64077] transition-all duration-100 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2"
+                  className="text-white absolute end-2.5 bottom-2.5 bg-[#f39685] hover:bg-[#f08774] transition-all duration-100 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2"
                 >
                   Search
                 </button>
