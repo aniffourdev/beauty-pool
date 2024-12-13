@@ -3,7 +3,7 @@ import React, { useState, useRef, useEffect } from "react";
 import api from "@/services/auth";
 import Cookies from "js-cookie";
 import { IoStar } from "react-icons/io5";
-import { GoHeart } from "react-icons/go";
+import { GoHeart, GoHeartFill } from "react-icons/go";
 import { GoShareAndroid } from "react-icons/go";
 import { CiClock1, CiLocationOn } from "react-icons/ci";
 import { FaArrowDown } from "react-icons/fa";
@@ -11,8 +11,10 @@ import Link from "next/link";
 import BookingSteps from "@/components/dynamic/Book/Steps/BookingSteps";
 import BookingHeader from "@/components/global/booking-header/BookingHeader";
 import Services from "@/components/dynamic/Book/Services";
+import { OrbitProgress } from "react-loading-indicators";
 
 interface UserData {
+  id: string;
   first_name: string;
   last_name: string;
   email: string;
@@ -69,7 +71,10 @@ const SingleBook: React.FC<SingleBookProps> = ({ slug }) => {
   const [currentIndex, ] = useState(0);
   const carouselRef = useRef<HTMLDivElement>(null);
   const [booking, setBooking] = useState(false);
-  const [userData, ] = useState<UserData | null>(null);
+  const [currentUser, setCurrentUser] = useState<UserData | null>(null);
+  const [isFavorited, setIsFavorited] = useState(false);
+  const [favoriteLoading, setFavoriteLoading] = useState(false);
+  const [favoriteId, setFavoriteId] = useState<string | null>(null);
 
   const handleBooking = () => {
     setBooking(true);
@@ -163,16 +168,70 @@ const SingleBook: React.FC<SingleBookProps> = ({ slug }) => {
     };
   }, [slug]);
 
+  useEffect(() => {
+    const fetchCurrentUser = async () => {
+      try {
+        const response = await api.get("/users/me");
+        setCurrentUser(response.data.data);
+      } catch (error) {
+        console.error("Error fetching current user:", error);
+      }
+    };
+
+    const checkIfFavorited = async () => {
+      if (article && currentUser) {
+        try {
+          const response = await api.get("/items/favorites", {
+            params: {
+              filter: {
+                article: article.id,
+                favorited: currentUser.id,
+              },
+            },
+          });
+          const favorites = response.data.data;
+          if (favorites.length > 0) {
+            setIsFavorited(true);
+            setFavoriteId(favorites[0].id);
+          }
+        } catch (error) {
+          console.error("Error checking if article is favorited:", error);
+        }
+      }
+    };
+
+    fetchCurrentUser();
+    checkIfFavorited();
+  }, [article, currentUser]);
+
   const handleFavorite = async (article: Article) => {
+    if (!currentUser) return;
+
+    setFavoriteLoading(true);
+
     try {
-      await api.post("/items/favourites", {
-        data: {
-          user_created: "6128350b-c213-485f-b375-9ad7c684fd2d",
-          article_id: article?.id,
-          status: "Published",
-        },
-      });
-    } catch {}
+      if (isFavorited) {
+        // Remove from favorites
+        if (favoriteId) {
+          await api.delete(`/items/favorites/${favoriteId}`);
+          setIsFavorited(false);
+          setFavoriteId(null);
+        }
+      } else {
+        // Add to favorites
+        const response = await api.post("/items/favorites", {
+          favorited: currentUser.id,
+          article: article.id,
+          status: "published"
+        });
+        setIsFavorited(true);
+        setFavoriteId(response.data.data.id);
+      }
+    } catch (error) {
+      console.error("Error toggling favorite:", error);
+    } finally {
+      setFavoriteLoading(false);
+    }
   };
 
   console.log("Rendering with slug:", slug);
@@ -289,8 +348,15 @@ const SingleBook: React.FC<SingleBookProps> = ({ slug }) => {
             <button
               onClick={() => handleFavorite(article)}
               className="text-gray-800 border border-slate-200 h-12 w-12 flex justify-center items-center rounded-full"
+              disabled={favoriteLoading}
             >
-              <GoHeart className="size-6" />
+              {favoriteLoading ? (
+                <OrbitProgress variant="disc" color="#d3d3d3" size="small" text="" textColor="" />
+              ) : isFavorited ? (
+                <GoHeartFill className="size-6 text-red-500" />
+              ) : (
+                <GoHeart className="size-6" />
+              )}
             </button>
             <button className="text-gray-800 border border-slate-200 h-12 w-12 flex justify-center items-center rounded-full">
               <GoShareAndroid className="size-6" />

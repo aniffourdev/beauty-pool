@@ -44,7 +44,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ calculateTotal, articleId, se
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ amount: calculateTotal() * 100, currency: "eur" }),
+      body: JSON.stringify({ amount: calculateTotal() * 100, currency: "AED" }),
     })
       .then((res) => res.json())
       .then((data) => setPaymentIntent(data));
