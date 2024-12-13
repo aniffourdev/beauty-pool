@@ -8,6 +8,7 @@ interface UserData {
   first_name: string;
   last_name: string;
   email: string;
+  birthday?: Date | null; // Add birthday to UserData interface
 }
 
 interface EditModalProps {
@@ -21,6 +22,7 @@ const EditModal: React.FC<EditModalProps> = ({ userData, onClose }) => {
     first_name: userData.first_name,
     last_name: userData.last_name,
     email: userData.email,
+    birthday: userData.birthday ?? null, // Initialize birthday with null if undefined
   });
 
   useEffect(() => {
@@ -38,6 +40,13 @@ const EditModal: React.FC<EditModalProps> = ({ userData, onClose }) => {
     setFormData({
       ...formData,
       [name]: value,
+    });
+  };
+
+  const handleDateChange = (date: Date | null) => {
+    setFormData({
+      ...formData,
+      birthday: date,
     });
   };
 
@@ -113,6 +122,24 @@ const EditModal: React.FC<EditModalProps> = ({ userData, onClose }) => {
             placeholder="Email address"
             value={formData.email}
             onChange={handleChange}
+            autoComplete="off"
+          />
+        </div>
+
+        <div className="mb-4">
+          <label
+            className="block text-gray-700 text-sm font-bold mb-2"
+            htmlFor="birthday"
+          >
+            Birthday
+          </label>
+          <input
+            className="shadow appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            id="birthday"
+            type="date"
+            name="birthday"
+            value={formData.birthday ? formData.birthday.toISOString().split('T')[0] : ''}
+            onChange={(e) => handleDateChange(e.target.value ? new Date(e.target.value) : null)}
             autoComplete="off"
           />
         </div>
