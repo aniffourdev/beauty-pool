@@ -1,18 +1,14 @@
 import React, { useState, useEffect, useRef } from "react";
 import { gsap } from "gsap";
-import PhoneInput from "react-phone-input-2";
+// import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
-import api from "@/services/auth";
-import { DayPicker } from 'react-day-picker';
-import 'react-day-picker/dist/style.css';
-import { format } from 'date-fns';
+import api from "@/services/auth"; // Ensure you have the correct path to your API service
 
 interface UserData {
   first_name: string;
   last_name: string;
   email: string;
-  phone: string;
-  birthday?: string; // Add birthday to UserData interface
+  birthday?: Date | null; // Add birthday to UserData interface
 }
 
 interface EditModalProps {
@@ -26,8 +22,7 @@ const EditModal: React.FC<EditModalProps> = ({ userData, onClose }) => {
     first_name: userData.first_name,
     last_name: userData.last_name,
     email: userData.email,
-    phone: userData.phone,
-    birthday: userData.birthday ? new Date(userData.birthday) : null, // Initialize birthday from userData or null
+    birthday: userData.birthday ?? null, // Initialize birthday with null if undefined
   });
 
   useEffect(() => {
@@ -48,14 +43,7 @@ const EditModal: React.FC<EditModalProps> = ({ userData, onClose }) => {
     });
   };
 
-  const handlePhoneChange = (value: string) => {
-    setFormData({
-      ...formData,
-      phone: value,
-    });
-  };
-
-  const handleBirthdayChange = (date: Date | undefined) => {
+  const handleDateChange = (date: Date | null) => {
     setFormData({
       ...formData,
       birthday: date,
@@ -64,12 +52,9 @@ const EditModal: React.FC<EditModalProps> = ({ userData, onClose }) => {
 
   const handleSubmit = async () => {
     try {
-      const response = await api.patch("/users/me", {
-        ...formData,
-        birthday: formData.birthday ? format(formData.birthday, 'yyyy-MM-dd') : null, // Format the date as YYYY-MM-DD
-      });
+      const response = await api.patch("/users/me", formData);
       console.log("User updated successfully:", response.data.data);
-      onClose();
+      onClose(); // Close the modal after successful update
     } catch (error) {
       console.error("Error updating user data:", error);
     }
@@ -80,7 +65,7 @@ const EditModal: React.FC<EditModalProps> = ({ userData, onClose }) => {
       <div className="absolute inset-0 bg-black bg-opacity-50 px-5" onClick={onClose}></div>
       <div
         ref={modalRef}
-        className="bg-white p-6 rounded-lg shadow-lg z-10 w-full max-w-md md:max-w-lg lg:max-w-xl max-h-[90vh] overflow-y-auto"
+        className="bg-white p-6 rounded-lg shadow-lg z-10 w-[500px]"
       >
         <h2 className="text-xl font-bold mb-4">Edit profile details</h2>
 
@@ -144,64 +129,18 @@ const EditModal: React.FC<EditModalProps> = ({ userData, onClose }) => {
         <div className="mb-4">
           <label
             className="block text-gray-700 text-sm font-bold mb-2"
-            htmlFor="phone"
-          >
-            Phone number
-          </label>
-          <PhoneInput
-            country={"us"}
-            value={formData.phone}
-            onChange={handlePhoneChange}
-            inputClass="shadow appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          />
-        </div>
-
-        <div className="mb-4">
-          <label
-            className="block text-gray-700 text-sm font-bold mb-2"
             htmlFor="birthday"
           >
             Birthday
           </label>
-          <DayPicker
-            mode="single"
-            selected={formData.birthday}
-            onSelect={handleBirthdayChange}
-            fromYear={1900}
-            toYear={new Date().getFullYear()}
-            showOutsideDays
-            components={{
-              YearDropdown: ({ year, onChange }) => (
-                <select
-                  value={year}
-                  onChange={(e) => onChange(Number(e.target.value))}
-                  className="shadow appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                >
-                  {Array.from({ length: new Date().getFullYear() - 1900 + 1 }, (_, i) => (
-                    <option key={i} value={1900 + i}>
-                      {1900 + i}
-                    </option>
-                  ))}
-                </select>
-              ),
-            }}
-            styles={{
-              caption: {
-                fontSize: '1rem',
-              },
-              day: {
-                fontSize: '0.875rem',
-              },
-              headCell: {
-                fontSize: '0.875rem',
-              },
-              month: {
-                fontSize: '0.875rem',
-              },
-              weekday: {
-                fontSize: '0.875rem',
-              },
-            }}
+          <input
+            className="shadow appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            id="birthday"
+            type="date"
+            name="birthday"
+            value={formData.birthday ? formData.birthday.toISOString().split('T')[0] : ''}
+            onChange={(e) => handleDateChange(e.target.value ? new Date(e.target.value) : null)}
+            autoComplete="off"
           />
         </div>
 

@@ -1,23 +1,14 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import Header from "@/components/dynamic/Accounts/Customer/Global/Header";
 import Sidebar from "@/components/dynamic/Accounts/Customer/Global/Sidebar";
-import { useRouter } from "next/navigation";
-import api from "@/services/auth";
-import EditModal from "@/components/dynamic/Accounts/Customer/Profile/EditProfile";
-import { TbHome } from "react-icons/tb";
-import { MdOutlineBusinessCenter } from "react-icons/md";
-import HomeAddress from "@/components/dynamic/Accounts/Customer/Profile/HomeAddress";
-import WorkAddress from "@/components/dynamic/Accounts/Customer/Profile/WorkAddress";
-import { AiOutlineCamera } from "react-icons/ai";
-import axios from "axios";
-import { toast, ToastContainer } from "react-toastify";
-import Swal from "sweetalert2";
-import "react-toastify/dist/ReactToastify.css";
+import Header from "@/components/dynamic/Accounts/Customer/Global/Header";
+import Image from "next/image";
+import Link from "next/link";
 import { Gruppo } from "next/font/google";
-import { UserData } from "@/types/UserData"; // Update the path accordingly
-import Skeleton from "react-loading-skeleton";
-import "react-loading-skeleton/dist/skeleton.css";
+import api from "@/services/auth";
+import { GoHeartFill } from "react-icons/go";
+import { TiLocationOutline } from "react-icons/ti";
+import { OrbitProgress } from "react-loading-indicators";
 
 const gruppo = Gruppo({
   subsets: ["latin"],
@@ -25,39 +16,207 @@ const gruppo = Gruppo({
   weight: "400",
 });
 
-const Favourites = () => {
-  const router = useRouter();
+interface UserData {
+  id: string;
+  first_name: string;
+}
+
+interface Article {
+  id: string;
+  slug: string;
+  label: string;
+  featured_image: string;
+  Address: string;
+  user_created: string;
+}
+
+interface Favorite {
+  id: string;
+  article: Article;
+}
+
+const Favorites = () => {
   const [userData, setUserData] = useState<UserData | null>(null);
+  const [favorites, setFavorites] = useState<Favorite[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [removingFavoriteId, setRemovingFavoriteId] = useState<string | null>(
+    null
+  );
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
-  const handleUserDataFetched = (data: UserData | null) => {
-    setUserData(data);
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const response = await api.get("/users/me");
+        setUserData(response.data.data);
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+        setError("Failed to fetch user data");
+      }
+    };
+
+    fetchUserData();
+  }, []);
+
+  useEffect(() => {
+    const fetchFavorites = async () => {
+      if (userData?.id) {
+        try {
+          const response = await api.get(
+            `/items/favorites?filter[user_created][_eq]=${userData.id}&fields=*,article.id,article.slug,article.label,article.featured_image,article.Address`
+          );
+          setFavorites(response.data.data);
+        } catch (error) {
+          console.error("Error fetching favorites:", error);
+          setError("Failed to fetch favorites");
+        } finally {
+          setLoading(false);
+        }
+      }
+    };
+
+    fetchFavorites();
+  }, [userData?.id]);
+
+  const handleRemoveFavorite = async (
+    event: React.MouseEvent, 
+    favoriteId: string
+  ) => {
+    event.stopPropagation(); // Prevent event from bubbling up
+    event.preventDefault(); // Prevent default link navigation
+    
+    setRemovingFavoriteId(favoriteId);
+    try {
+      await api.delete(`/items/favorites/${favoriteId}`);
+      setFavorites(favorites.filter((favorite) => favorite.id !== favoriteId));
+    } catch (error) {
+      console.error("Error removing favorite:", error);
+      setError("Failed to remove favorite");
+    } finally {
+      setRemovingFavoriteId(null);
+    }
   };
 
+  if (error) {
+    return (
+      <div className="flex justify-center items-center mx-auto">
+        <div className="flex justify-center items-center">
+          <>{error}</>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <>
-      <ToastContainer />
-      <div className="">
-        <Header toggleSidebar={toggleSidebar} />
-        <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
-        <div
-          className={`p-4 transition-transform ${
-            isSidebarOpen ? "sm:ml-64" : "sm:ml-64"
-          }`}
-        >
-          <div className="p-4 mt-20 max-w-6xl mx-auto">
-              <>
-                <h1 className={`${gruppo.className} text-3xl font-bold mb-8`}>Favourites</h1>
-              </>
+    <div className="">
+      <Header toggleSidebar={toggleSidebar} />
+      <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
+      <div
+        className={`p-4 transition-transform ${
+          isSidebarOpen ? "sm:ml-64" : "sm:ml-64"
+        }`}
+      >
+        <div className="p-4 mt-20">
+          <div className="max-w-6xl mx-auto">
+            <div className="flex justify-between items-center mb-5">
+              <div>
+                <h2
+                  className={`${gruppo.className} text-4xl text-black font-bold`}
+                >
+                  Favorites
+                </h2>
+              </div>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+              {loading
+                ? Array.from({ length: 6 }).map((_, index) => (
+                    <div
+                      key={index}
+                      className="bg-white rounded-lg shadow-md overflow-hidden animate-pulse"
+                    >
+                      <div className="relative">
+                        <div className="w-full h-48 bg-gray-300"></div>
+                        <div className="absolute top-2 right-2">
+                          <div className="bg-white rounded-full p-2 shadow-md">
+                            <div className="w-5 h-5 bg-gray-300"></div>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="p-4">
+                        <div className="h-6 bg-gray-300 rounded w-3/4 mb-2"></div>
+                        <div className="h-4 bg-gray-300 rounded w-1/2 mb-2"></div>
+                        <div className="h-4 bg-gray-300 rounded w-1/4 mb-2"></div>
+                        <div className="h-4 bg-gray-300 rounded w-1/3 mt-4"></div>
+                      </div>
+                    </div>
+                  ))
+                : favorites.map((favorite) => (
+                    <Link
+                      href={`/a/${favorite.article.slug}`}
+                      key={favorite.article.id}
+                    >
+                      <div className="bg-white rounded-lg shadow-md overflow-hidden">
+                        <div className="relative">
+                          <Image
+                            alt="Therapy room with two massage tables"
+                            className="w-full h-48 object-cover"
+                            height={400}
+                            src={`https://maoulaty.shop/assets/${favorite.article.featured_image}`}
+                            width={600}
+                          />
+                          <div className="absolute top-2 right-2">
+                          <button
+  className="bg-white rounded-full p-2 shadow-md"
+  onClick={(e) => handleRemoveFavorite(e, favorite.id)}
+  disabled={removingFavoriteId === favorite.id}
+>
+  {removingFavoriteId === favorite.id ? (
+    <OrbitProgress
+      variant="disc"
+      color="#d3d3d3"
+      size="small"
+      text=""
+      textColor=""
+    />
+  ) : (
+    <GoHeartFill className="size-5 text-red-500" />
+  )}
+</button>
+                          </div>
+                        </div>
+                        <div className="p-4">
+                          <h2 className="text-lg font-semibold">
+                            {favorite.article.label}
+                          </h2>
+                          <div className="flex items-center text-sm text-gray-600 mt-2">
+                            <i className="fas fa-star text-black"></i>
+                            <span className="ml-1">5.0</span>
+                            <span className="ml-1">(214)</span>
+                          </div>
+                          <p className="text-gray-600 mt-2 text-sm flex justify-start items-center gap-0.5">
+                            <TiLocationOutline className="size-5 text-slate-500" />
+                            <span>{favorite.article.Address}</span>
+                          </p>
+                          <div className="mt-4">
+                            <span className="inline-block bg-[#ffeeeb] text-[#f47c66] font-semibold text-xs px-2 py-1 rounded-full">
+                              Therapy Center
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </Link>
+                  ))}
+            </div>
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
-export default Favourites;
+export default Favorites;
