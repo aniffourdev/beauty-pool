@@ -250,7 +250,7 @@ const BookingSteps: React.FC<BookingStepsProps> = ({
     switch (currentStep) {
       case 1:
         return (
-          <div className="flex flex-col lg:flex-row p-4 lg:p-8">
+          <div className="flex flex-col lg:flex-row p-4 lg:p-8 pt-10 max-w-7xl mx-auto">
             <div className="flex-1">
               <div className="flex items-center mb-4">
                 <BsArrowLeft
@@ -323,7 +323,7 @@ const BookingSteps: React.FC<BookingStepsProps> = ({
       case 2:
         return (
           <>
-            <div className="flex flex-col lg:flex-row p-4 lg:p-8">
+            <div className="flex flex-col lg:flex-row p-4 lg:p-8 pt-10 max-w-7xl mx-auto">
               <div className="flex-1">
                 <div className="flex items-center mb-4">
                   <BsArrowLeft
@@ -348,8 +348,8 @@ const BookingSteps: React.FC<BookingStepsProps> = ({
                     (day) => (
                       <div
                         key={day}
-                        className={`cursor-pointer p-2 m-1 rounded-lg border ${
-                          selectedDay === day ? "bg-blue-500 text-white" : "bg-gray-100"
+                        className={`cursor-pointer py-1.5 px-3.5 m-1 rounded-full font-semibold ${
+                          selectedDay === day ? "bg-[#ffe1dc] text-[#f47c66]" : "bg-gray-100"
                         }`}
                         onClick={() => {
                           setSelectedDay(day);
@@ -362,13 +362,13 @@ const BookingSteps: React.FC<BookingStepsProps> = ({
                   )}
                 </div>
                 {selectedDay && (
-                  <div>
+                  <div className="grid grid-cols-2 lg:grid-cols-2 gap-2">
                     {availableTimes.length > 0 ? (
                       availableTimes.map((timeSlot, index) => (
                         <button
                           key={index}
-                          className={`py-3.5 border-2 border-slate-300 px-4 rounded w-full mt-1 ${
-                            selectedTime === timeSlot ? 'bg-gray-300' : ''
+                          className={`py-4 border-2 border-slate-200 px-4 rounded w-full ${
+                            selectedTime === timeSlot ? 'bg-slate-50 border-[#fe9f8e] text-lg font-semibold' : ''
                           }`}
                           onClick={() => setSelectedTime(timeSlot)}
                         >
@@ -440,7 +440,7 @@ const BookingSteps: React.FC<BookingStepsProps> = ({
         );
       case 3:
         return (
-          <div className="flex flex-col lg:flex-row p-4 lg:p-8">
+          <div className="flex flex-col lg:flex-row p-4 lg:p-8 pt-10 max-w-7xl mx-auto">
             <div className="flex-1">
               <div className="flex items-center mb-4">
                 <BsArrowLeft

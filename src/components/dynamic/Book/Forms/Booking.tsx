@@ -851,9 +851,9 @@ export default function BookingForm() {
         className="space-y-0 rounded-lg bg-white p-4"
       >
         {/* Venue and Treatment Selection */}
-        <div className="flex gap-3 md:flex-row">
+        <div className="flex flex-col gap-3 md:flex-row">
           {/* Location Search Input */}
-          <div className="w-6/12 md:w-6/12 lg:w-7/12">
+          <div className="w-full md:w-6/12 lg:w-7/12">
             <div className="mb-2 lg:mb-0">
               <div className="flex items-center border rounded-full px-4 py-0.5 space-x-2">
                 <IoLocationOutline className="text-gray-500" />
@@ -866,7 +866,7 @@ export default function BookingForm() {
                 />
               </div>
               {results.length > 0 && (
-                <div className="mt-2 bg-white border rounded-md shadow-lg max-h-60 overflow-y-auto absolute w-auto">
+                <div className="mt-2 bg-white border rounded-md shadow-lg max-h-60 overflow-y-auto absolute w-full md:w-auto">
                   <ul>
                     {results.map((result, index) => (
                       <li
@@ -903,7 +903,7 @@ export default function BookingForm() {
             </div>
           </div>
           {/* Treatment Input */}
-          <div className="w-6/12 md:w-6/12 lg:w-5/12">
+          <div className="w-full md:w-6/12 lg:w-5/12">
             <div className="mb-2">
               <div className="flex items-center space-x-4 mb-4">
                 <div className="flex items-center border rounded-full px-4 py-0.5 space-x-2 w-full">
@@ -919,7 +919,7 @@ export default function BookingForm() {
                 </div>
               </div>
               {dropdownOpen && (
-                <div className="bg-white p-4 rounded-lg shadow-md absolute w-auto h-[250px] overflow-auto">
+                <div className="bg-white p-4 rounded-lg shadow-md absolute w-full md:w-auto h-[250px] overflow-auto">
                   <div className="flex items-center space-x-2 mb-4">
                     {/* <div
                       className="w-7 h-7 bg-cover bg-center relative -top-1.5"
@@ -960,19 +960,19 @@ export default function BookingForm() {
             </div>
           </div>
         </div>
-        <div className="flex gap-3 md:flex-row">
+        <div className="flex flex-col gap-3 md:flex-row">
           {/* Date Selection */}
-          <div className="w-6/12 md:w-6/12 lg:w-4/12 mb-2">
+          <div className="w-full md:w-6/12 lg:w-4/12 mb-2">
             <div className="flex items-center border rounded-full px-4 py-0.5 space-x-2">
-            <DatePicker
-              id="date-picker"
-              value={date ? date.toISOString().split('T')[0] : ''}
-              onChange={(selectedDate) => setDate(selectedDate)}
-            />
+              <DatePicker
+                id="date-picker"
+                value={date ? date.toISOString().split('T')[0] : ''}
+                onChange={(selectedDate) => setDate(selectedDate)}
+              />
             </div>
           </div>
           {/* Time Selection */}
-          <div className="w-6/12 md:w-6/12 lg:w-4/12 mb-2">
+          <div className="w-full md:w-6/12 lg:w-4/12 mb-2">
             <div className="flex items-center border rounded-full px-4 py-0.5 space-x-2">
               <AiOutlineClockCircle className="text-gray-500" />
               <input
@@ -986,7 +986,7 @@ export default function BookingForm() {
               {showFilter && (
                 <div
                   ref={timePopupRef}
-                  className="mt-4 bg-white rounded-lg shadow-md p-4 absolute w-auto"
+                  className="mt-4 bg-white rounded-lg shadow-md p-4 absolute w-full md:w-auto"
                 >
                   <div className="flex space-x-2 mb-4">
                     <button
@@ -1082,58 +1082,32 @@ export default function BookingForm() {
               )}
             </div>
           </div>
-          <div className="w-full md:w-6/12 lg:w-4/12 mb-2 hidden lg:block">
-          {/* Submit Button */}
-          <button
-            type="submit"
-            disabled={
-              loading ||
-              !venueAndTreatment ||
-              !location ||
-              !date ||
-              !selectedTime ||
-              !selectedCategoryId
-            }
-            className={`w-full border rounded-full px-4 py-2 text-white font-medium ${
-              loading ||
-              !venueAndTreatment ||
-              !location ||
-              !date ||
-              !selectedTime ||
-              !selectedCategoryId
-                ? "bg-gray-400 cursor-not-allowed border"
-                : "bg-black hover:bg-zinc-800"
-            }`}
-          >
-            {loading ? "Searching..." : "Search"}
-          </button>
-        </div>
-        </div>
-        <div className="w-12/12 md:w-full lg:w-4/12 mb-2 block lg:hidden">
-          {/* Submit Button */}
-          <button
-            type="submit"
-            disabled={
-              loading ||
-              !venueAndTreatment ||
-              !location ||
-              !date ||
-              !selectedTime ||
-              !selectedCategoryId
-            }
-            className={`w-full border rounded-full px-4 py-2 text-white font-medium ${
-              loading ||
-              !venueAndTreatment ||
-              !location ||
-              !date ||
-              !selectedTime ||
-              !selectedCategoryId
-                ? "bg-gray-400 cursor-not-allowed"
-                : "bg-black hover:bg-zinc-800"
-            }`}
-          >
-            {loading ? "Searching..." : "Search"}
-          </button>
+          <div className="w-full mb-2">
+            {/* Submit Button */}
+            <button
+              type="submit"
+              disabled={
+                loading ||
+                !venueAndTreatment ||
+                !location ||
+                !date ||
+                !selectedTime ||
+                !selectedCategoryId
+              }
+              className={`w-full border rounded-full px-4 py-2 text-white font-medium ${
+                loading ||
+                !venueAndTreatment ||
+                !location ||
+                !date ||
+                !selectedTime ||
+                !selectedCategoryId
+                  ? "bg-gray-400 cursor-not-allowed"
+                  : "bg-black hover:bg-zinc-800"
+              }`}
+            >
+              {loading ? "Searching..." : "Search"}
+            </button>
+          </div>
         </div>
       </form>
     </div>

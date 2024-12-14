@@ -18,7 +18,7 @@ const Hero = () => {
         <Navbar />
       </div>
       <div className="absolute z-40 inset-0 flex pl-5 lg:pl-0 pr-8 lg:pr-0 items-center">
-        <div className="max-w-5xl mx-auto -mt-20 lg:mt-20">
+        <div className="max-w-5xl mx-auto mt-36 lg:mt-20">
           <h1
             className={`${gruppo.className} text-gray-900 text-3xl md:text-4xl lg:text-6xl xl:text-6xl text-center mx-auto`}
           >
