@@ -94,12 +94,12 @@ export default function Footer() {
               <></>
               )}
          
-            <a
-              href="/contact-us"
+            <Link
+              href="/contact"
               className="hover:underline transition-all duration-200 ml-4"
             >
               Contact Us
-            </a>
+            </Link>
           </p>
         </div>
       </div>
