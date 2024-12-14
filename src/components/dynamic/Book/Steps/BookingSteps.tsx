@@ -113,10 +113,10 @@ const BookingSteps: React.FC<BookingStepsProps> = ({
   const fetchAvailableTimes = async (day: string) => {
     const openTimeKey = `${day.toLowerCase()}_open` as keyof Article;
     const closeTimeKey = `${day.toLowerCase()}_close` as keyof Article;
-  
+
     const openTime = article[openTimeKey];
     const closeTime = article[closeTimeKey];
-  
+
     // Check if both open and close times exist and are not null
     if (openTime && closeTime) {
       const timeSlots = generateTimeSlots(openTime as string, closeTime as string);
@@ -130,7 +130,7 @@ const BookingSteps: React.FC<BookingStepsProps> = ({
   useEffect(() => {
     // Set Monday as the default selected day when component mounts
     setSelectedDay('Monday');
-    
+
     // Fetch available times for Monday automatically
     if (article) {
       fetchAvailableTimes('Monday');
@@ -141,33 +141,43 @@ const BookingSteps: React.FC<BookingStepsProps> = ({
     // Remove seconds from the time strings if present
     const cleanOpenTime = openTime.slice(0, 5);
     const cleanCloseTime = closeTime.slice(0, 5);
-  
+
     const startTime = new Date(`1970-01-01T${cleanOpenTime}:00`);
     const endTime = new Date(`1970-01-01T${cleanCloseTime}:00`);
     const timeSlots: string[] = [];
     let currentTime = new Date(startTime);
-  
+
     while (currentTime <= endTime) {
       // Format time in HH:MM with leading zeros
       const timeString = currentTime.toTimeString().slice(0, 5);
       timeSlots.push(timeString);
-      
+
       // Increment by 1 hour
       currentTime.setHours(currentTime.getHours() + 1);
     }
-  
+
     return timeSlots;
   };
 
   const handleServiceClick = (subService: SubService) => {
-    if (selectedServices.some((s) => s.id === subService.id)) {
-      setSelectedServices(
-        selectedServices.filter((s) => s.id !== subService.id)
-      );
-    } else {
-      setSelectedServices([...selectedServices, subService]);
-    }
+    console.log("Clicked service:", subService);
+    setSelectedServices((prevSelectedServices) => {
+      const isSelected = prevSelectedServices.some((s) => s.id === subService.id);
+      console.log("Is selected:", isSelected);
+      if (isSelected) {
+        return prevSelectedServices.filter((s) => s.id !== subService.id);
+      } else {
+        return [...prevSelectedServices, subService];
+      }
+    });
   };
+
+  // const handleContinue = () => {
+  //   if (selectedServices.length > 0 && selectedTime) {
+  //     setSavedServices(selectedServices);
+  //     setCurrentStep(3);
+  //   }
+  // };
 
   const handleContinue = () => {
     if (selectedServices.length > 0 && selectedTime) {
@@ -177,12 +187,12 @@ const BookingSteps: React.FC<BookingStepsProps> = ({
   };
 
   const renderServices = () => {
-    return services.map((service, index) => (
-      <div key={index} className="mb-4">
+    return services.map((service) => (
+      <div key={service.id} className="mb-4">
         <h3 className="font-bold mb-2">{service.parent_service.name}</h3>
-        {service.parent_service.sub_services.map((subService, subIndex) => (
+        {service.parent_service.sub_services.map((subService) => (
           <div
-            key={subIndex}
+            key={subService.id}
             className="service-card p-4 border rounded-lg flex justify-between items-center mb-2"
           >
             <div className="flex justify-start items-center gap-5">
@@ -205,7 +215,10 @@ const BookingSteps: React.FC<BookingStepsProps> = ({
             </div>
             <button
               className="text-2xl text-gray-500"
-              onClick={() => handleServiceClick(subService)}
+              onClick={(e) => {
+                e.stopPropagation();
+                handleServiceClick(subService);
+              }}
             >
               {selectedServices.some((s) => s.id === subService.id) ? (
                 <BsCheck className="text-green-500 size-8" />
@@ -220,8 +233,8 @@ const BookingSteps: React.FC<BookingStepsProps> = ({
   };
 
   const renderSelectedServices = () => {
-    return selectedServices.map((subService, index) => (
-      <div key={index} className="pb-4 border-b mb-4">
+    return selectedServices.map((subService) => (
+      <div key={subService.id} className="pb-4 border-b mb-4">
         <h3 className="font-bold">{subService.name}</h3>
         <p className="text-sm text-gray-500">{subService.duration}</p>
         {subService.description && (
@@ -249,14 +262,82 @@ const BookingSteps: React.FC<BookingStepsProps> = ({
   const renderStep = () => {
     switch (currentStep) {
       case 1:
+        // return (
+        //   <div className="flex flex-col lg:flex-row p-4 lg:p-8 pt-10 max-w-7xl mx-auto">
+        //     <div className="flex-1">
+        //       <div className="flex items-center mb-4">
+        //         <BsArrowLeft
+        //           className="size-7 text-black cursor-pointer"
+        //           onClick={onClose}
+        //         />
+        //       </div>
+        //       <div className="text-sm text-gray-500 mb-2">
+        //         <span className="mr-1.5 font-semibold text-black">
+        //           Services
+        //         </span>
+        //         <GoChevronRight className="inline" />
+        //         <span className="ml-1.5 mr-1.5">Time</span>
+        //         <GoChevronRight className="inline" />
+        //         <span className="ml-1.5 text-sm text-gray-500 mb-2">
+        //           Payments
+        //         </span>
+        //       </div>
+        //       <h1 className="text-3xl font-bold mb-7 mt-4">Select services</h1>
+        //       <div className="space-y-4">{renderServices()}</div>
+        //     </div>
+        //     <div className="w-full lg:w-1/3 lg:ml-8 mt-8 lg:mt-0">
+        //       <div className="border rounded-lg p-4">
+        //         <div className="flex items-center mb-4">
+        //           <img
+        //             src={`https://maoulaty.shop/assets/${article.featured_image}`}
+        //             alt={article.label}
+        //             className="w-12 h-12 rounded-full mr-4"
+        //           />
+        //           <div>
+        //             <h3 className="font-bold">{article.label}</h3>
+        //             <div className="flex items-center text-sm text-gray-500">
+        //               <span className="mr-1">4.9</span>
+        //               <div className="flex ml-2 text-yellow-500">
+        //                 <IoStar />
+        //                 <IoStar />
+        //                 <IoStar />
+        //                 <IoStar />
+        //                 <IoStar />
+        //               </div>
+        //               <span className="ml-1">(4,749)</span>
+        //             </div>
+        //             <p className="text-sm text-gray-500">{article.location}</p>
+        //           </div>
+        //         </div>
+        //         {selectedServices.length > 0 ? (
+        //           <div>{renderSelectedServices()}</div>
+        //         ) : (
+        //           <p className="text-sm text-gray-500 mb-4">
+        //             No services selected
+        //           </p>
+        //         )}
+        //         <div className="flex justify-between items-center mb-4">
+        //           <span className="font-bold">Total</span>
+        //           <span className="font-bold text-green-500">
+        //             €{calculateTotal()}
+        //           </span>
+        //         </div>
+        //         <button
+        //           className="w-full py-2.5 font-semibold bg-black text-white rounded-lg"
+        //           disabled={selectedServices.length === 0}
+        //           onClick={() => setCurrentStep(2)}
+        //         >
+        //           Continue
+        //         </button>
+        //       </div>
+        //     </div>
+        //   </div>
+        // );
         return (
-          <div className="flex flex-col lg:flex-row p-4 lg:p-8 pt-10 max-w-7xl mx-auto">
+          <div className="flex flex-col lg:flex-row p-4 lg:p-8">
             <div className="flex-1">
               <div className="flex items-center mb-4">
-                <BsArrowLeft
-                  className="size-7 text-black cursor-pointer"
-                  onClick={onClose}
-                />
+                <BsArrowLeft className="size-7 text-black cursor-pointer" onClick={onClose} />
               </div>
               <div className="text-sm text-gray-500 mb-2">
                 <span className="mr-1.5 font-semibold text-black">
@@ -276,7 +357,7 @@ const BookingSteps: React.FC<BookingStepsProps> = ({
               <div className="border rounded-lg p-4">
                 <div className="flex items-center mb-4">
                   <img
-                    src={`https://maoulaty.shop/assets/${article.featured_image}`}
+                    src={`http://109.199.103.20:2022/assets/${article.featured_image}`}
                     alt={article.label}
                     className="w-12 h-12 rounded-full mr-4"
                   />
@@ -312,7 +393,7 @@ const BookingSteps: React.FC<BookingStepsProps> = ({
                 <button
                   className="w-full py-2.5 font-semibold bg-black text-white rounded-lg"
                   disabled={selectedServices.length === 0}
-                  onClick={() => setCurrentStep(2)}
+                  onClick={handleContinue}
                 >
                   Continue
                 </button>
@@ -407,9 +488,9 @@ const BookingSteps: React.FC<BookingStepsProps> = ({
                       </p>
                     </div>
                   </div>
-                  {savedServices.map((subService, index) => (
+                  {savedServices.map((subService) => (
                     <div
-                      key={index}
+                      key={subService.id}
                       className="flex justify-between items-center space-y-2"
                     >
                       <p>{subService.name}</p>{" "}
@@ -570,9 +651,9 @@ const BookingSteps: React.FC<BookingStepsProps> = ({
                     <p className="text-sm text-gray-500">{article.location}</p>
                   </div>
                 </div>
-                {savedServices.map((subService, index) => (
+                {savedServices.map((subService) => (
                   <div
-                    key={index}
+                    key={subService.id}
                     className="flex justify-between items-center space-y-2"
                   >
                     <p>{subService.name}</p>{" "}

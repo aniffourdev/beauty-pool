@@ -13,7 +13,7 @@ const gruppo = Gruppo({
 const Logo = () => {
   return (
     <div>
-      <Link href="/business" className="flex justify-center items-center">
+      <Link href="/" className="flex justify-center items-center">
         <Image src={LogO} alt="logo" width={50} height={0} className="-mr-3" />
         <span
           className={`${gruppo.className} text-2xl font-semibold hidden md:block text-[#cb887c]`}
