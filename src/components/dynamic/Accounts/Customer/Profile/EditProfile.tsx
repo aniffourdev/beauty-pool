@@ -1,7 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
 import { gsap } from "gsap";
-// import PhoneInput from "react-phone-input-2";
-import "react-phone-input-2/lib/style.css";
 import api from "@/services/auth"; // Ensure you have the correct path to your API service
 
 interface UserData {

@@ -11,10 +11,10 @@ import { MdFacebook } from "react-icons/md";
 import { Gruppo } from "next/font/google";
 
 const gruppo = Gruppo({
-    subsets: ["latin"],
-    variable: "--font-geist-mono",
-    weight: "400",
-  });
+  subsets: ["latin"],
+  variable: "--font-geist-mono",
+  weight: "400",
+});
 
 const LoginCustomer = () => {
   const [customer] = React.useState(true);
@@ -22,7 +22,7 @@ const LoginCustomer = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const [passwordVisible, setPasswordVisible] = useState(false);
   const router = useRouter();
 
@@ -30,9 +30,16 @@ const LoginCustomer = () => {
     setPasswordVisible(!passwordVisible);
   };
 
-  const handleLogin = async () => {
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
     setLoading(true);
     setError(null);
+
+    if (!email || !password) {
+      setError("Please enter your email address & password!");
+      setLoading(false);
+      return;
+    }
 
     try {
       const response = await api.post("/auth/login", { email, password });
@@ -48,7 +55,7 @@ const LoginCustomer = () => {
 
       router.push("/");
     } catch (loginError) {
-      setError("Login failed. Please check your credentials.");
+      setError("Invalid user credentials!");
       console.error("Login error:", loginError);
     } finally {
       setLoading(false);
@@ -136,7 +143,9 @@ const LoginCustomer = () => {
                       Address Email
                     </label>
                     <input
-                      className="shadow appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                      className={`shadow appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${
+                        error ? "border-red-500" : ""
+                      }`}
                       id="email"
                       type="email"
                       placeholder="Email"
@@ -153,7 +162,9 @@ const LoginCustomer = () => {
                       Password
                     </label>
                     <input
-                      className="shadow appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                      className={`shadow appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${
+                        error ? "border-red-500" : ""
+                      }`}
                       id="password"
                       type={passwordVisible ? "text" : "password"}
                       placeholder="Password"
@@ -172,11 +183,15 @@ const LoginCustomer = () => {
                       )}
                     </div>
                   </div>
+                  {error && (
+                    <p className="text-red-500 text-sm font-bold mb-4">
+                      {error}
+                    </p>
+                  )}
                   <button
                     type="submit"
                     className="w-full px-4 py-4 text-md font-semibold text-white bg-black rounded-md shadow-sm hover:bg-gray-800"
                     disabled={loading}
-                    onClick={handleLogin}
                   >
                     {loading ? "Signing in..." : "Sign In"}
                   </button>

@@ -38,7 +38,23 @@ interface Article {
   Address: string;
   featured_image: string;
   location: string;
+  monday_open?: string;
+  monday_close?: string;
+  tuesday_open?: string;
+  tuesday_close?: string;
+  wednesday_open?: string;
+  wednesday_close?: string;
+  thursday_open?: string;
+  thursday_close?: string;
+  friday_open?: string;
+  friday_close?: string;
+  saturday_open?: string;
+  saturday_close?: string;
+  sunday_open?: string;
+  sunday_close?: string;
+  [key: string]: string | Review[] | undefined; // Index signature to allow dynamic property access
 }
+
 
 interface SubService {
   id: string; // Add the id property
@@ -62,6 +78,48 @@ interface Service {
 interface SingleBookProps {
   slug: string;
 }
+
+interface OpeningTime {
+  day: string;
+  time: string;
+  open: boolean;
+  bold?: boolean; // Optional property
+}
+
+const formatTime = (time: string | null): string => {
+  if (!time) return "Closed";
+  const [hours, minutes] = time.split(":");
+  return `${hours}:${minutes}`;
+};
+
+const getCurrentOpeningTime = (article: Article): string => {
+  const now = new Date();
+  const dayOfWeek = now.getDay();
+  const currentHour = now.getHours();
+  const currentMinute = now.getMinutes();
+
+  const days = [
+    { open: article.sunday_open ?? null, close: article.sunday_close ?? null },
+    { open: article.monday_open ?? null, close: article.monday_close ?? null },
+    { open: article.tuesday_open ?? null, close: article.tuesday_close ?? null },
+    { open: article.wednesday_open ?? null, close: article.wednesday_close ?? null },
+    { open: article.thursday_open ?? null, close: article.thursday_close ?? null },
+    { open: article.friday_open ?? null, close: article.friday_close ?? null },
+    { open: article.saturday_open ?? null, close: article.saturday_close ?? null },
+  ];
+
+  const today = days[dayOfWeek];
+  if (!today.open || !today.close) return "Closed";
+
+  const [openHour, openMinute] = today.open.split(":").map(Number);
+  const [closeHour, closeMinute] = today.close.split(":").map(Number);
+
+  const isOpen =
+    (currentHour > openHour || (currentHour === openHour && currentMinute >= openMinute)) &&
+    (currentHour < closeHour || (currentHour === closeHour && currentMinute < closeMinute));
+
+  return isOpen ? formatTime(today.close) : "Closed";
+};
 
 const SingleBook: React.FC<SingleBookProps> = ({ slug }) => {
   const [article, setArticle] = useState<Article | null>(null);
@@ -104,7 +162,7 @@ const SingleBook: React.FC<SingleBookProps> = ({ slug }) => {
                 },
               },
               fields:
-                "*,reviews.*,reviews.user_created.first_name,reviews.user_created.last_name",
+                "*,reviews.*,reviews.user_created.first_name,reviews.user_created.last_name,monday_open,monday_close,tuesday_open,tuesday_close,wednesday_open,wednesday_close,thursday_open,thursday_close,friday_open,friday_close,saturday_open,saturday_close,sunday_open,sunday_close",
             },
             headers: {
               Authorization: `Bearer ${accessToken}`,
@@ -256,9 +314,48 @@ const SingleBook: React.FC<SingleBookProps> = ({ slug }) => {
     );
   }
 
+  const openingTimes: OpeningTime[] = [
+    {
+      day: "Monday",
+      time: formatTime(article.monday_open ?? null) + " – " + formatTime(article.monday_close ?? null),
+      open: !!article.monday_open && !!article.monday_close,
+    },
+    {
+      day: "Tuesday",
+      time: formatTime(article.tuesday_open ?? null) + " – " + formatTime(article.tuesday_close ?? null),
+      open: !!article.tuesday_open && !!article.tuesday_close,
+    },
+    {
+      day: "Wednesday",
+      time: formatTime(article.wednesday_open ?? null) + " – " + formatTime(article.wednesday_close ?? null),
+      open: !!article.wednesday_open && !!article.wednesday_close,
+    },
+    {
+      day: "Thursday",
+      time: formatTime(article.thursday_open ?? null) + " – " + formatTime(article.thursday_close ?? null),
+      open: !!article.thursday_open && !!article.thursday_close,
+      bold: true, // Example of setting bold to true
+    },
+    {
+      day: "Friday",
+      time: formatTime(article.friday_open ?? null) + " – " + formatTime(article.friday_close ?? null),
+      open: !!article.friday_open && !!article.friday_close,
+    },
+    {
+      day: "Saturday",
+      time: formatTime(article.saturday_open ?? null) + " – " + formatTime(article.saturday_close ?? null),
+      open: !!article.saturday_open && !!article.saturday_close,
+    },
+    {
+      day: "Sunday",
+      time: formatTime(article.sunday_open ?? null) + " – " + formatTime(article.sunday_close ?? null),
+      open: !!article.sunday_open && !!article.sunday_close,
+    },
+  ];
+
   return (
     <div className="h-screen w-full bg-white" key={article.id}>
-      <div className="hidden lg:block">
+      <div className="">
         <BookingHeader />
       </div>
       <div className="px-5 lg:px-12 relative top-28">
@@ -316,12 +413,12 @@ const SingleBook: React.FC<SingleBookProps> = ({ slug }) => {
             </li>
           </ol>
         </div>
-        <header className="flex flex-col md:flex-row mt-3 items-start md:items-center justify-between">
+        <header className="flex justify-between">
           <div>
             <h1 className="text-3xl font-bold">{article.label}</h1>
             <div className="flex flex-col md:flex-row items-start md:items-center text-sm text-gray-600 mt-3">
               <span className="text-lg font-bold mr-1 text-black">5.0</span>
-              <span className="flex items-center">
+              <span className="flex items-center justify-center">
                 <IoStar className="text-yellow-500" />
                 <IoStar className="text-yellow-500" />
                 <IoStar className="text-yellow-500" />
@@ -332,7 +429,7 @@ const SingleBook: React.FC<SingleBookProps> = ({ slug }) => {
                 </span>
               </span>
               <span className="hidden md:inline mx-2">•</span>
-              <span>Open until 8:00PM</span>
+              <span>Open until {getCurrentOpeningTime(article)}</span>
               <span className="hidden md:inline mx-2">•</span>
               <span>{article.location}</span>
               <Link
@@ -427,7 +524,7 @@ const SingleBook: React.FC<SingleBookProps> = ({ slug }) => {
                     onClick={() => setIsOpen(!isOpen)}
                   >
                     <CiClock1 className="size-7 text-slate-600 -mr-0.5" />
-                    <span className="ml-2">Open until 8:00PM</span>
+                    <span className="ml-2">Open until {getCurrentOpeningTime(article)}</span>
                     <FaArrowDown
                       className={`fas fa-chevron-${
                         isOpen ? "up" : "down"
@@ -436,40 +533,7 @@ const SingleBook: React.FC<SingleBookProps> = ({ slug }) => {
                   </div>
                   {isOpen && (
                     <div className="mt-4">
-                      {[
-                        {
-                          day: "Monday",
-                          time: "09:00 AM – 04:30 PM",
-                          open: true,
-                        },
-                        {
-                          day: "Tuesday",
-                          time: "09:00 AM – 04:30 PM",
-                          open: true,
-                        },
-                        {
-                          day: "Wednesday",
-                          time: "09:00 AM – 08:00 PM",
-                          open: true,
-                        },
-                        {
-                          day: "Thursday",
-                          time: "09:00 AM – 08:00 PM",
-                          open: true,
-                          bold: true,
-                        },
-                        {
-                          day: "Friday",
-                          time: "09:00 AM – 08:00 PM",
-                          open: true,
-                        },
-                        {
-                          day: "Saturday",
-                          time: "09:00 AM – 04:30 PM",
-                          open: true,
-                        },
-                        { day: "Sunday", time: "Closed", open: false },
-                      ].map((item, index) => (
+                      {openingTimes.map((item, index) => (
                         <div key={index} className="flex items-center mt-2">
                           <span
                             className={`w-2.5 h-2.5 rounded-full ${

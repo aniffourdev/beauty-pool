@@ -13,6 +13,7 @@ import Discover from "../../../../../public/assets/payments/discover.svg";
 import AmericanExpress from "../../../../../public/assets/payments/american-express.svg";
 import { IoStar } from "react-icons/io5";
 import { PiSealWarning } from "react-icons/pi";
+import api from "@/services/auth";
 
 interface Review {
   date_created: string;
@@ -28,6 +29,20 @@ interface Article {
   reviews: Review[];
   featured_image: string;
   location: string;
+  monday_open?: string;
+  monday_close?: string;
+  tuesday_open?: string;
+  tuesday_close?: string;
+  wednesday_open?: string;
+  wednesday_close?: string;
+  thursday_open?: string;
+  thursday_close?: string;
+  friday_open?: string;
+  friday_close?: string;
+  saturday_open?: string;
+  saturday_close?: string;
+  sunday_open?: string;
+  sunday_close?: string;
 }
 
 interface SubService {
@@ -68,7 +83,9 @@ const BookingSteps: React.FC<BookingStepsProps> = ({
   const [selectedServices, setSelectedServices] = useState<SubService[]>([]);
   const [savedServices, setSavedServices] = useState<SubService[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [time, setTime] = useState<string>(""); // Add state for time
+  const [selectedDay, setSelectedDay] = useState<string | null>(null);
+  const [availableTimes, setAvailableTimes] = useState<string[]>([]);
+  const [selectedTime, setSelectedTime] = useState<string | null>(null);
 
   useEffect(() => {
     gsap.fromTo(
@@ -87,6 +104,61 @@ const BookingSteps: React.FC<BookingStepsProps> = ({
     }
   }, [currentStep]);
 
+  useEffect(() => {
+    if (selectedDay && selectedServices.length > 0) {
+      fetchAvailableTimes(selectedDay);
+    }
+  }, [selectedDay, selectedServices]);
+
+  const fetchAvailableTimes = async (day: string) => {
+    const openTimeKey = `${day.toLowerCase()}_open` as keyof Article;
+    const closeTimeKey = `${day.toLowerCase()}_close` as keyof Article;
+  
+    const openTime = article[openTimeKey];
+    const closeTime = article[closeTimeKey];
+  
+    // Check if both open and close times exist and are not null
+    if (openTime && closeTime) {
+      const timeSlots = generateTimeSlots(openTime as string, closeTime as string);
+      setAvailableTimes(timeSlots);
+    } else {
+      console.log(`No open or close time for ${day}`);
+      setAvailableTimes([]);
+    }
+  };
+
+  useEffect(() => {
+    // Set Monday as the default selected day when component mounts
+    setSelectedDay('Monday');
+    
+    // Fetch available times for Monday automatically
+    if (article) {
+      fetchAvailableTimes('Monday');
+    }
+  }, [article]);
+
+  const generateTimeSlots = (openTime: string, closeTime: string): string[] => {
+    // Remove seconds from the time strings if present
+    const cleanOpenTime = openTime.slice(0, 5);
+    const cleanCloseTime = closeTime.slice(0, 5);
+  
+    const startTime = new Date(`1970-01-01T${cleanOpenTime}:00`);
+    const endTime = new Date(`1970-01-01T${cleanCloseTime}:00`);
+    const timeSlots: string[] = [];
+    let currentTime = new Date(startTime);
+  
+    while (currentTime <= endTime) {
+      // Format time in HH:MM with leading zeros
+      const timeString = currentTime.toTimeString().slice(0, 5);
+      timeSlots.push(timeString);
+      
+      // Increment by 1 hour
+      currentTime.setHours(currentTime.getHours() + 1);
+    }
+  
+    return timeSlots;
+  };
+
   const handleServiceClick = (subService: SubService) => {
     if (selectedServices.some((s) => s.id === subService.id)) {
       setSelectedServices(
@@ -98,9 +170,9 @@ const BookingSteps: React.FC<BookingStepsProps> = ({
   };
 
   const handleContinue = () => {
-    if (selectedServices.length > 0) {
+    if (selectedServices.length > 0 && selectedTime) {
       setSavedServices(selectedServices);
-      setCurrentStep(2);
+      setCurrentStep(3);
     }
   };
 
@@ -240,7 +312,7 @@ const BookingSteps: React.FC<BookingStepsProps> = ({
                 <button
                   className="w-full py-2.5 font-semibold bg-black text-white rounded-lg"
                   disabled={selectedServices.length === 0}
-                  onClick={handleContinue}
+                  onClick={() => setCurrentStep(2)}
                 >
                   Continue
                 </button>
@@ -271,14 +343,43 @@ const BookingSteps: React.FC<BookingStepsProps> = ({
                   </span>
                 </div>
                 <h1 className="text-3xl font-bold mb-7 mt-20">Select Time</h1>
-                {/* Add your time selection logic here */}
-                <input
-                  type="time"
-                  value={time}
-                  onChange={(e) => setTime(e.target.value)}
-                  className="py-3.5 border-2 border-slate-300 px-4 rounded w-full mt-1"
-                  placeholder="Select time"
-                />
+                <div className="flex flex-wrap mb-4">
+                  {["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"].map(
+                    (day) => (
+                      <div
+                        key={day}
+                        className={`cursor-pointer p-2 m-1 rounded-lg border ${
+                          selectedDay === day ? "bg-blue-500 text-white" : "bg-gray-100"
+                        }`}
+                        onClick={() => {
+                          setSelectedDay(day);
+                          fetchAvailableTimes(day);
+                        }}
+                      >
+                        {day}
+                      </div>
+                    )
+                  )}
+                </div>
+                {selectedDay && (
+                  <div>
+                    {availableTimes.length > 0 ? (
+                      availableTimes.map((timeSlot, index) => (
+                        <button
+                          key={index}
+                          className={`py-3.5 border-2 border-slate-300 px-4 rounded w-full mt-1 ${
+                            selectedTime === timeSlot ? 'bg-gray-300' : ''
+                          }`}
+                          onClick={() => setSelectedTime(timeSlot)}
+                        >
+                          {timeSlot}
+                        </button>
+                      ))
+                    ) : (
+                      <p>No available times for {selectedDay}</p>
+                    )}
+                  </div>
+                )}
               </div>
               <div className="w-full lg:w-1/3 lg:ml-8 mt-8 lg:mt-0">
                 <div className="border rounded-lg p-4">
@@ -327,8 +428,8 @@ const BookingSteps: React.FC<BookingStepsProps> = ({
                   </div>
                   <button
                     className="w-full py-2.5 font-semibold bg-black text-white rounded-lg"
-                    disabled={selectedServices.length === 0 || !time}
-                    onClick={() => setCurrentStep(3)}
+                    disabled={selectedServices.length === 0 || !selectedTime}
+                    onClick={handleContinue}
                   >
                     Continue
                   </button>
@@ -372,7 +473,7 @@ const BookingSteps: React.FC<BookingStepsProps> = ({
                       id: service.id,
                       price: service.price,
                     }))}
-                    time={time}
+                    time={selectedTime!} // Ensure selectedTime is not null
                   />
                 </Elements>
                 <div className="flex justify-start items-center gap-2 mt-5 mb">

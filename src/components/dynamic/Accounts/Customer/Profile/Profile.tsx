@@ -312,7 +312,7 @@ import { toast, ToastContainer } from "react-toastify";
 import Swal from "sweetalert2";
 import "react-toastify/dist/ReactToastify.css";
 import { Gruppo } from "next/font/google";
-import { UserData } from "@/types/UserData"; // Update the path accordingly
+import { DataUser } from "@/types/UserData"; // Update the path accordingly
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 
@@ -327,7 +327,7 @@ const CustomerProfile = () => {
     null
   );
   const router = useRouter();
-  const [userData, setUserData] = useState<UserData | null>(null);
+  const [userData, setUserData] = useState<DataUser | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [homeAddressModal, setHomeAddressModal] = useState(false);
   const [workAddressModal, setWorkAddressModal] = useState(false);
@@ -338,7 +338,7 @@ const CustomerProfile = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
-  const handleUserDataFetched = (data: UserData | null) => {
+  const handleUserDataFetched = (data: DataUser | null) => {
     setUserData(data);
   };
 
@@ -346,7 +346,12 @@ const CustomerProfile = () => {
     const getMe = async () => {
       try {
         const response = await api.get("/users/me");
-        setUserData(response.data.data);
+        const data = response.data.data;
+        // Convert birthday string to Date object
+        if (data.birthday) {
+          data.birthday = new Date(data.birthday);
+        }
+        setUserData(data);
       } catch (error) {
         console.error("Error fetching user data:", error);
         router.push("/login");
@@ -398,7 +403,7 @@ const CustomerProfile = () => {
             ({
               ...prevData,
               avatar: imageId,
-            } as UserData)
+            } as DataUser)
         );
 
         // Show success message
@@ -540,7 +545,7 @@ const CustomerProfile = () => {
                         <div className="mb-2">
                           <span className="font-semibold">Date of birth</span>
                           <p className="text-gray-500">
-                            {userData.birthday || "-"}
+                            {userData.birthday ? userData.birthday.toLocaleDateString() : "-"}
                           </p>
                         </div>
                         <div className="mb-2">
