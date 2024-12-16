@@ -37,21 +37,21 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ calculateTotal, articleId, se
   const [cardHolderName, setCardHolderName] = useState("");
   const [currentUser, setCurrentUser] = useState<UserData | null>(null);
 
-  useEffect(() => {
-    // Fetch payment intent from your backend
-    fetch("/api/create-payment-intent", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ amount: calculateTotal() * 100, currency: "AED" }),
-    })
-      .then((res) => res.json())
-      .then((data) => setPaymentIntent(data));
+  // useEffect(() => {
+  //   // Fetch payment intent from your backend
+  //   fetch("/api/create-payment-intent", {
+  //     method: "POST",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //     body: JSON.stringify({ amount: calculateTotal() * 100, currency: "AED" }),
+  //   })
+  //     .then((res) => res.json())
+  //     .then((data) => setPaymentIntent(data));
 
-    // Fetch current logged-in user data
-    fetchCurrentUser().then((user) => setCurrentUser(user));
-  }, [calculateTotal]);
+  //   // Fetch current logged-in user data
+  //   fetchCurrentUser().then((user) => setCurrentUser(user));
+  // }, [calculateTotal]);
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();

@@ -389,8 +389,14 @@ export default function BookForm() {
                 <div
                   ref={timePopupRef}
                   className="mt-4 bg-white rounded-lg shadow-md p-4 absolute w-auto"
+                  style={{
+                    width: "100%",
+                    maxWidth: "300px",
+                    left: "50%",
+                    transform: "translateX(-50%)",
+                  }}
                 >
-                  <div className="flex space-x-2 mb-4">
+                  <div className="flex flex-wrap gap-2 mb-4">
                     <button
                       className={`px-4 py-2 rounded-full ${
                         selectedTime === "Anytime"
@@ -432,7 +438,7 @@ export default function BookForm() {
                       Evening
                     </button>
                   </div>
-                  <div className="flex space-x-2">
+                  <div className="flex flex-wrap gap-2">
                     <div className="relative w-1/2">
                       <select
                         className="block appearance-none w-full bg-white border border-gray-300 text-gray-700 py-2 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
