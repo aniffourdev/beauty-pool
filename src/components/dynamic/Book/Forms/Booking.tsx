@@ -986,21 +986,21 @@ export default function BookingForm() {
               {showFilter && (
                 <div
                   ref={timePopupRef}
-                  className="mt-4 bg-white rounded-lg shadow-md p-4 absolute w-full md:w-auto"
+                  className="mt-4 bg-white rounded-lg shadow-md p-4 absolute left-0 w-auto"
                 >
                   <div className="flex space-x-2 mb-4">
                     <button
-                      className={`px-4 py-2 rounded-full ${
+                      className={`px-4 py-2 rounded-full text-sm md:text-md ${
                         selectedTime === "Anytime"
                           ? "bg-[#eca4977c] text-slate-900"
                           : "border border-gray-300 text-gray-700"
                       }`}
                       onClick={() => handleTimeSelection("Anytime")}
                     >
-                      Any time
+                      Any <span className="hidden md:block">time</span>
                     </button>
                     <button
-                      className={`px-4 py-2 rounded-full ${
+                      className={`px-4 py-2 rounded-full text-sm md:text-md ${
                         selectedTime === "Morning"
                           ? "bg-[#eca4977c] text-slate-900"
                           : "border border-gray-300 text-gray-700"
@@ -1010,7 +1010,7 @@ export default function BookingForm() {
                       Morning
                     </button>
                     <button
-                      className={`px-4 py-2 rounded-full ${
+                      className={`px-4 py-2 rounded-full text-sm md:text-md ${
                         selectedTime === "Afternoon"
                           ? "bg-[#eca4977c] text-slate-900"
                           : "border border-gray-300 text-gray-700"
@@ -1020,7 +1020,7 @@ export default function BookingForm() {
                       Afternoon
                     </button>
                     <button
-                      className={`px-4 py-2 rounded-full ${
+                      className={`px-4 py-2 rounded-full text-sm md:text-md ${
                         selectedTime === "Evening"
                           ? "bg-[#eca4977c] text-slate-900"
                           : "border border-gray-300 text-gray-700"
