@@ -44,14 +44,14 @@ export default function Footer() {
           <Link href="/">
             {/* Responsive Logo */}
             <Image
-              src="/assets/logo.webp"
+              src="/assets/logo-2.png"
               alt="logo"
               width={120}
               height={40}
               className="object-contain sm:w-[90px] md:w-[120px] lg:w-[140px]"
             />
           </Link>
-          <div className="flex gap-4 text-[#ee8b7a] mt-2">
+          <div className="flex gap-4 text-[#f4b8ae] mt-2">
             {/* Social Media Icons */}
             <FaFacebookF
               className="text-xl cursor-pointer hover:text-[#de7664] transition-all duration-200"
