@@ -358,7 +358,6 @@ body {
 
 
 
-
 @keyframes moveCircle {
   0% {
     transform: translate(0, 0);
@@ -415,4 +414,15 @@ body {
 
 .animation-delay-8 {
   animation-delay: 8s;
+}
+
+@media (max-width: 768px) {
+  .animate-circle {
+    animation: moveCircle 15s infinite;
+  }
+
+  .gradients-container div {
+    width: 20% !important;
+    height: 20% !important;
+  }
 }
