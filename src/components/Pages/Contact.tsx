@@ -1,8 +1,10 @@
 import React from 'react'
+import { BsArrow90DegLeft, BsArrowLeft } from 'react-icons/bs'
 
 const Contact = () => {
   return (
-  <>
+   <div className='flex justify-center items-center min-h-screen flex-col '> 
+ 
   <div className="mt-6 max-w-6xl max-lg:max-w-3xl mx-auto bg-gray-900 rounded-lg">
   <div className="grid lg:grid-cols-2 items-center gap-14 sm:p-8 p-4 font-[sans-serif]">
     <div>
@@ -186,9 +188,7 @@ const Contact = () => {
     </div>
   </div>
 </div>
-
-  
-  </>
+</div>
   )
 }
 

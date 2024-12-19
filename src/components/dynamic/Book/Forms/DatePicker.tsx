@@ -19,28 +19,31 @@ const DatePicker: React.FC<DatePickerProps> = ({ id, value, onChange }) => {
       onChange: (selectedDates: Date[]) => {
         onChange(selectedDates[0]);
       },
+      clickOpens: true, // Ensure the picker opens on click
+      touchUi: true, // Enable touch UI for mobile devices
     };
-  
+
     const picker = flatpickr(inputRef.current as HTMLInputElement, options);
     const flatpickrInput = document.querySelector('.flatpickr-input');
     if (flatpickrInput) {
-    flatpickrInput.classList.add(
-      'outline-none',
-      'border-none',
-      'focus:outline-none',
-      'focus:ring-0',
-      'focus:outline-none',
-      'focus:shadow-none',
-      'hover:shadow-none',
-      'active:shadow-none'
-    );
-  }
-  
+      flatpickrInput.classList.add(
+        'outline-none',
+        'border-none',
+        'focus:outline-none',
+        'focus:ring-0',
+        'focus:shadow-none',
+        'hover:shadow-none',
+        'active:shadow-none'
+      );
+    }
+
+    // Debugging statement
+    console.log('Flatpickr initialized:', picker);
+
     return () => {
       picker.destroy();
     };
   }, [id, value, onChange]);
-  
 
   return (
     <input
