@@ -102,7 +102,7 @@ export const BackgroundGradientAnimation = ({
             style={{
               top: `${Math.random() * 100}%`,
               left: `${Math.random() * 100}%`,
-              animationDuration: `${Math.random() * 5 + 5}s`,
+              animationDuration: `${Math.random() * 10 + 15}s`,
               animationDelay: `${index * 0.5}s`,
             }}
           ></div>
