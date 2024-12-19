@@ -9,7 +9,7 @@ const gruppo = Gruppo({
 
 export default function Achievement() {
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-[#f4b9ae1a] text-center px-3 md:px-2 lg:px-2 xl:px-2 shadow-lg">
+    <div className="py-20 flex flex-col items-center justify-center sm:justify-center bg-[#f4b9ae1a] text-center px-3 md:px-2 lg:px-2 xl:px-2 shadow-lg">
       <h1
         className={`${gruppo.className} text-2xl sm:text-3xl md:text-4xl lg:text-7xl font-bold text-gray-950 mb-4 max-w-[1000px] mx-auto`}
       >
@@ -45,7 +45,7 @@ export default function Achievement() {
           </p>
         </div>
         <div className="text-center">
-          <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 ">
+          <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800">
             1000+
           </div>
           <p className="text-sm sm:text-base md:text-lg text-gray-500">
