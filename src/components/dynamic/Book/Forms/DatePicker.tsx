@@ -46,14 +46,14 @@ const DatePicker: React.FC<DatePickerProps> = ({ id, value, onChange }) => {
   }, [id, value, onChange]);
 
   return (
-    <div className='flex justify-center items-center'>
-      <CiCalendarDate className='text-gray-800' />
+    <div className='flex justify-center items-center relative'>
+      <CiCalendarDate className='text-gray-800 absolute left-2' />
       <input
         ref={inputRef}
-        placeholder='DD/MM/YYYY'
+        placeholder='Set Date'
         id={id}
         type="text"
-        className="outline-none border-none focus:outline-none focus:ring-0 focus:shadow-none hover:shadow-none active:shadow-none cursor-pointer h-10 px-2 box-border"
+        className="outline-none border-none focus:outline-none focus:ring-0 focus:shadow-none hover:shadow-none active:shadow-none cursor-pointer h-10 px-8 box-border placeholder-gray-600 placeholder:text-[16px]  placeholder:pl-6 placeholder:opacity-80"
         style={{ height: '40px', padding: '8px' }} // Ensure consistent height and padding
       />
     </div>

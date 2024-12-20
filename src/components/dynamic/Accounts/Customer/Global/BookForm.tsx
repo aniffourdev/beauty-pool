@@ -376,121 +376,121 @@ export default function BookForm() {
 
           {/* Time Input */}
           <div className="lg:w-2/12">
-            <div className="flex items-center space-x-2">
-            
-              <input
-                type="text"
-                placeholder="Any time"
-                className="outline-none border-none focus:outline-none bg-transparent focus:ring-0 focus:shadow-none hover:shadow-none active:shadow-none"
-                onClick={() => setShowFilter(!showFilter)}
-                value={selectedTime}
-                onChange={(e) => setSelectedTime(e.target.value)}
-              />
-              {showFilter && (
-                <div
-                  ref={timePopupRef}
-                  className="mt-4 bg-white rounded-lg shadow-md p-4 absolute w-auto"
-                  style={{
-                    width: "100%",
-                    maxWidth: "300px",
-                    left: "50%",
-                    transform: "translateX(-50%)",
-                  }}
-                >
-                  <div className="flex flex-wrap gap-2 mb-4">
-                    <button
-                      className={`px-4 py-2 rounded-full ${
-                        selectedTime === "Anytime"
-                          ? "bg-[#eca4977c] text-slate-900"
-                          : "border border-gray-300 text-gray-700"
-                      }`}
-                      onClick={() => handleTimeSelection("Anytime")}
-                    >
-                      Any time
-                    </button>
-                    <button
-                      className={`px-4 py-2 rounded-full ${
-                        selectedTime === "Morning"
-                          ? "bg-[#eca4977c] text-slate-900"
-                          : "border border-gray-300 text-gray-700"
-                      }`}
-                      onClick={() => handleTimeSelection("Morning")}
-                    >
-                      Morning
-                    </button>
-                    <button
-                      className={`px-4 py-2 rounded-full ${
-                        selectedTime === "Afternoon"
-                          ? "bg-[#eca4977c] text-slate-900"
-                          : "border border-gray-300 text-gray-700"
-                      }`}
-                      onClick={() => handleTimeSelection("Afternoon")}
-                    >
-                      Afternoon
-                    </button>
-                    <button
-                      className={`px-4 py-2 rounded-full ${
-                        selectedTime === "Evening"
-                          ? "bg-[#eca4977c] text-slate-900"
-                          : "border border-gray-300 text-gray-700"
-                      }`}
-                      onClick={() => handleTimeSelection("Evening")}
-                    >
-                      Evening
-                    </button>
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    <div className="relative w-1/2">
-                      <select
-                        className="block appearance-none w-full bg-white border border-gray-300 text-gray-700 py-2 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                        value={fromTime}
-                        onChange={(e) => setFromTime(e.target.value)}
-                      >
-                        <option>From</option>
-                        {Array.from({ length: 24 }, (_, i) => (
-                          <option key={i}>
-                            {i.toString().padStart(2, "0")}:00
-                          </option>
-                        ))}
-                      </select>
-                      <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                        <svg
-                          className="fill-current h-4 w-4"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                        >
-                          <path d="M7 10l5 5 5-5H7z" />
-                        </svg>
-                      </div>
-                    </div>
-                    <div className="relative w-1/2">
-                      <select
-                        className="block appearance-none w-full bg-white border border-gray-300 text-gray-700 py-2 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                        value={toTime}
-                        onChange={(e) => setToTime(e.target.value)}
-                      >
-                        <option>To</option>
-                        {Array.from({ length: 23 }, (_, i) => (
-                          <option key={i}>
-                            {(i + 1).toString().padStart(2, "0")}:00
-                          </option>
-                        ))}
-                      </select>
-                      <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                        <svg
-                          className="fill-current h-4 w-4"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                        >
-                          <path d="M7 10l5 5 5-5H7z" />
-                        </svg>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
+  <div className="flex items-center space-x-2">
+    <input
+      type="text"
+      placeholder="Set Time"
+      className="outline-none border-none focus:outline-none bg-transparent focus:ring-0 focus:shadow-none hover:shadow-none active:shadow-none placeholder-gray-400"
+      onClick={() => setShowFilter(!showFilter)}
+      value={selectedTime}
+      onChange={(e) => setSelectedTime(e.target.value)}
+    />
+    {showFilter && (
+      <div
+        ref={timePopupRef}
+        className="mt-4 bg-white rounded-lg shadow-md p-4 absolute w-auto"
+        style={{
+          width: "100%",
+          maxWidth: "300px",
+          left: "50%",
+          transform: "translateX(-50%)",
+        }}
+      >
+        <div className="flex flex-wrap gap-2 mb-4">
+          <button
+            className={`px-4 py-2 rounded-full ${
+              selectedTime === "Anytime"
+                ? "bg-[#eca4977c] text-slate-900"
+                : "border border-gray-300 text-gray-700"
+            }`}
+            onClick={() => handleTimeSelection("Anytime")}
+          >
+            Any time
+          </button>
+          <button
+            className={`px-4 py-2 rounded-full ${
+              selectedTime === "Morning"
+                ? "bg-[#eca4977c] text-slate-900"
+                : "border border-gray-300 text-gray-700"
+            }`}
+            onClick={() => handleTimeSelection("Morning")}
+          >
+            Morning
+          </button>
+          <button
+            className={`px-4 py-2 rounded-full ${
+              selectedTime === "Afternoon"
+                ? "bg-[#eca4977c] text-slate-900"
+                : "border border-gray-300 text-gray-700"
+            }`}
+            onClick={() => handleTimeSelection("Afternoon")}
+          >
+            Afternoon
+          </button>
+          <button
+            className={`px-4 py-2 rounded-full ${
+              selectedTime === "Evening"
+                ? "bg-[#eca4977c] text-slate-900"
+                : "border border-gray-300 text-gray-700"
+            }`}
+            onClick={() => handleTimeSelection("Evening")}
+          >
+            Evening
+          </button>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          <div className="relative w-1/2">
+            <select
+              className="block appearance-none w-full bg-white border border-gray-300 text-gray-700 py-2 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+              value={fromTime}
+              onChange={(e) => setFromTime(e.target.value)}
+            >
+              <option>From</option>
+              {Array.from({ length: 24 }, (_, i) => (
+                <option key={i}>
+                  {i.toString().padStart(2, "0")}:00
+                </option>
+              ))}
+            </select>
+            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+              <svg
+                className="fill-current h-4 w-4"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 20 20"
+              >
+                <path d="M7 10l5 5 5-5H7z" />
+              </svg>
             </div>
           </div>
+          <div className="relative w-1/2">
+            <select
+              className="block appearance-none w-full bg-white border border-gray-300 text-gray-700 py-2 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+              value={toTime}
+              onChange={(e) => setToTime(e.target.value)}
+            >
+              <option>To</option>
+              {Array.from({ length: 23 }, (_, i) => (
+                <option key={i}>
+                  {(i + 1).toString().padStart(2, "0")}:00
+                </option>
+              ))}
+            </select>
+            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+              <svg
+                className="fill-current h-4 w-4"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 20 20"
+              >
+                <path d="M7 10l5 5 5-5H7z" />
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+    )}
+  </div>
+</div>
+
 
           {/* Search Button */}
           {/* <div className="lg:w-2/12">
