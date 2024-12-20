@@ -65,7 +65,7 @@ interface Service {
 }
 
 interface BookingStepsProps {
-  article: Article | null;
+  article: Article;
   services: Service[];
   onClose: () => void;
 }
@@ -86,7 +86,7 @@ const BookingSteps: React.FC<BookingStepsProps> = ({
   const [selectedDay, setSelectedDay] = useState<string | null>(null);
   const [availableTimes, setAvailableTimes] = useState<string[]>([]);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
-  const [selectedDate, setSelectedDate] = useState<string | null>(null); // Add selectedDate state
+  const [selectedDate, setSelectedDate] = useState<string | null>(null); // Add state for selected date
 
   useEffect(() => {
     gsap.fromTo(
@@ -112,8 +112,6 @@ const BookingSteps: React.FC<BookingStepsProps> = ({
   }, [selectedDay, selectedServices]);
 
   const fetchAvailableTimes = async (day: string) => {
-    if (!article) return;
-
     const openTimeKey = `${day.toLowerCase()}_open` as keyof Article;
     const closeTimeKey = `${day.toLowerCase()}_close` as keyof Article;
 
@@ -122,7 +120,10 @@ const BookingSteps: React.FC<BookingStepsProps> = ({
 
     // Check if both open and close times exist and are not null
     if (openTime && closeTime) {
-      const timeSlots = generateTimeSlots(openTime as string, closeTime as string);
+      const timeSlots = generateTimeSlots(
+        openTime as string,
+        closeTime as string
+      );
       setAvailableTimes(timeSlots);
     } else {
       console.log(`No open or close time for ${day}`);
@@ -132,11 +133,11 @@ const BookingSteps: React.FC<BookingStepsProps> = ({
 
   useEffect(() => {
     // Set Monday as the default selected day when component mounts
-    setSelectedDay('Monday');
+    setSelectedDay("Monday");
 
     // Fetch available times for Monday automatically
     if (article) {
-      fetchAvailableTimes('Monday');
+      fetchAvailableTimes("Monday");
     }
   }, [article]);
 
@@ -163,8 +164,10 @@ const BookingSteps: React.FC<BookingStepsProps> = ({
   };
 
   const handleServiceClick = (subService: SubService) => {
-    if (selectedServices.some((s) => s.id === subService.id)) {
-      setSelectedServices(selectedServices.filter((s) => s.id !== subService.id));
+    if (selectedServices.some((s) => s.name === subService.name)) {
+      setSelectedServices(
+        selectedServices.filter((s) => s.name !== subService.name)
+      );
     } else {
       setSelectedServices([...selectedServices, subService]);
     }
@@ -178,12 +181,12 @@ const BookingSteps: React.FC<BookingStepsProps> = ({
   };
 
   const renderServices = () => {
-    return services.map((service) => (
-      <div key={service.id} className="mb-4">
+    return services.map((service, index) => (
+      <div key={index} className="mb-4">
         <h3 className="font-bold mb-2">{service.parent_service.name}</h3>
-        {service.parent_service.sub_services.map((subService) => (
+        {service.parent_service.sub_services.map((subService, index) => (
           <div
-            key={subService.id}
+            key={index} // Ensure this is unique
             className="service-card p-4 border rounded-lg flex justify-between items-center mb-2"
           >
             <div className="flex justify-start items-center gap-5">
@@ -208,7 +211,7 @@ const BookingSteps: React.FC<BookingStepsProps> = ({
               className="text-2xl text-gray-500"
               onClick={() => handleServiceClick(subService)}
             >
-              {selectedServices.some((s) => s.id === subService.id) ? (
+              {selectedServices.some((s) => s.name === subService.name) ? (
                 <BsCheck className="text-green-500 size-8" />
               ) : (
                 <BsPlus className="text-slate-600 size-8" />
@@ -221,8 +224,8 @@ const BookingSteps: React.FC<BookingStepsProps> = ({
   };
 
   const renderSelectedServices = () => {
-    return selectedServices.map((subService) => (
-      <div key={subService.id} className="pb-4 border-b mb-4">
+    return selectedServices.map((subService, index) => (
+      <div key={index} className="pb-4 border-b mb-4">
         <h3 className="font-bold">{subService.name}</h3>
         <p className="text-sm text-gray-500">{subService.duration}</p>
         {subService.description && (
@@ -276,15 +279,13 @@ const BookingSteps: React.FC<BookingStepsProps> = ({
             <div className="w-full lg:w-1/3 lg:ml-8 mt-8 lg:mt-0">
               <div className="border rounded-lg p-4">
                 <div className="flex items-center mb-4">
-                  {article && (
-                    <img
-                      src={`https://maoulaty.shop/assets/${article.featured_image}`}
-                      alt={article.label}
-                      className="w-12 h-12 rounded-full mr-4"
-                    />
-                  )}
+                  <img
+                    src={`https://maoulaty.shop/assets/${article.featured_image}`}
+                    alt={article.label}
+                    className="w-12 h-12 rounded-full mr-4"
+                  />
                   <div>
-                    <h3 className="font-bold">{article?.label}</h3>
+                    <h3 className="font-bold">{article.label}</h3>
                     <div className="flex items-center text-sm text-gray-500">
                       <span className="mr-1">4.9</span>
                       <div className="flex ml-2 text-yellow-500">
@@ -296,7 +297,7 @@ const BookingSteps: React.FC<BookingStepsProps> = ({
                       </div>
                       <span className="ml-1">(4,749)</span>
                     </div>
-                    <p className="text-sm text-gray-500">{article?.location}</p>
+                    <p className="text-sm text-gray-500">{article.location}</p>
                   </div>
                 </div>
                 {selectedServices.length > 0 ? (
@@ -347,22 +348,30 @@ const BookingSteps: React.FC<BookingStepsProps> = ({
                 </div>
                 <h1 className="text-3xl font-bold mb-7 mt-20">Select Time</h1>
                 <div className="flex flex-wrap mb-4">
-                  {["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"].map(
-                    (day) => (
-                      <div
-                        key={day}
-                        className={`cursor-pointer py-1.5 px-3.5 m-1 rounded-full font-semibold ${
-                          selectedDay === day ? "bg-[#ffe1dc] text-[#f47c66]" : "bg-gray-100"
-                        }`}
-                        onClick={() => {
-                          setSelectedDay(day);
-                          fetchAvailableTimes(day);
-                        }}
-                      >
-                        {day}
-                      </div>
-                    )
-                  )}
+                  {[
+                    "Monday",
+                    "Tuesday",
+                    "Wednesday",
+                    "Thursday",
+                    "Friday",
+                    "Saturday",
+                    "Sunday",
+                  ].map((day, index) => (
+                    <div
+                      key={index}
+                      className={`cursor-pointer py-1.5 px-3.5 m-1 rounded-full font-semibold ${
+                        selectedDay === day
+                          ? "bg-[#ffe1dc] text-[#f47c66]"
+                          : "bg-gray-100"
+                      }`}
+                      onClick={() => {
+                        setSelectedDay(day);
+                        fetchAvailableTimes(day);
+                      }}
+                    >
+                      {day}
+                    </div>
+                  ))}
                 </div>
                 {selectedDay && (
                   <div className="grid grid-cols-2 lg:grid-cols-2 gap-2">
@@ -371,11 +380,15 @@ const BookingSteps: React.FC<BookingStepsProps> = ({
                         <button
                           key={index}
                           className={`py-4 border-2 border-slate-200 px-4 rounded w-full ${
-                            selectedTime === timeSlot ? 'bg-slate-50 border-[#fe9f8e] text-lg font-semibold' : ''
+                            selectedTime === timeSlot
+                              ? "bg-slate-50 border-[#fe9f8e] text-lg font-semibold"
+                              : ""
                           }`}
                           onClick={() => {
                             setSelectedTime(timeSlot);
-                            setSelectedDate(new Date().toISOString().split('T')[0]); // Set the selected date
+                            setSelectedDate(
+                              new Date().toISOString().split("T")[0]
+                            ); // Set the selected date
                           }}
                         >
                           {timeSlot}
@@ -390,15 +403,13 @@ const BookingSteps: React.FC<BookingStepsProps> = ({
               <div className="w-full lg:w-1/3 lg:ml-8 mt-8 lg:mt-0">
                 <div className="border rounded-lg p-4">
                   <div className="flex items-center mb-4">
-                    {article && (
-                      <img
-                        src={`https://maoulaty.shop/assets/${article.featured_image}`}
-                        alt={article.label}
-                        className="w-12 h-12 rounded-full mr-4"
-                      />
-                    )}
+                    <img
+                      src={`https://maoulaty.shop/assets/${article.featured_image}`}
+                      alt={article.label}
+                      className="w-12 h-12 rounded-full mr-4"
+                    />
                     <div>
-                      <h3 className="font-bold">{article?.label}</h3>
+                      <h3 className="font-bold">{article.label}</h3>
                       <div className="flex items-center text-sm text-gray-500">
                         <span className="mr-1">4.9</span>
                         <div className="flex ml-2 text-yellow-500">
@@ -411,13 +422,13 @@ const BookingSteps: React.FC<BookingStepsProps> = ({
                         <span className="ml-1">(4,749)</span>
                       </div>
                       <p className="text-sm text-gray-500">
-                        {article?.location}
+                        {article.location}
                       </p>
                     </div>
                   </div>
-                  {savedServices.map((subService) => (
+                  {savedServices.map((subService, index) => (
                     <div
-                      key={subService.id}
+                      key={index}
                       className="flex justify-between items-center space-y-2"
                     >
                       <p>{subService.name}</p>{" "}
@@ -476,8 +487,8 @@ const BookingSteps: React.FC<BookingStepsProps> = ({
                 <Elements stripe={stripePromise}>
                   <PaymentForm
                     calculateTotal={calculateDiscountedTotal}
-                    articleId={article?.id ?? ''}
-                    selectedServices={selectedServices.map(service => ({
+                    articleId={article.id}
+                    selectedServices={selectedServices.map((service) => ({
                       id: service.id,
                       price: service.price,
                     }))}
@@ -519,6 +530,17 @@ const BookingSteps: React.FC<BookingStepsProps> = ({
                 </div>
                 <div className="mb-8 mt-10">
                   <h4 className="text-lg text-black font-semibold mb-1">
+                    Cancellation Policy:
+                  </h4>
+                  <p className="text-slate-700 font-medium text-sm max-w-[700px]">
+                    Cancel for free up to 24 hours before your appointment.
+                    Cancellations made less than 24 hours in advance will incur
+                    a fee of 30% of the service price. No-shows will be charged
+                    50% of the service price.
+                  </p>
+                </div>
+                <div className="mb-8">
+                  <h4 className="text-lg text-black font-semibold mb-1">
                     Important Information
                   </h4>
                   <p className="text-slate-700 font-medium text-sm max-w-[700px]">
@@ -547,15 +569,13 @@ const BookingSteps: React.FC<BookingStepsProps> = ({
             <div className="w-full lg:w-1/3 lg:ml-8 mt-8 lg:mt-0">
               <div className="border rounded-lg p-4 sticky top-0">
                 <div className="flex items-center mb-4">
-                  {article && (
-                    <img
-                      src={`https://maoulaty.shop/assets/${article.featured_image}`}
-                      alt={article.label}
-                      className="w-12 h-12 rounded-full mr-4"
-                    />
-                  )}
+                  <img
+                    src={`https://maoulaty.shop/assets/${article.featured_image}`}
+                    alt={article.label}
+                    className="w-12 h-12 rounded-full mr-4"
+                  />
                   <div>
-                    <h3 className="font-bold">{article?.label}</h3>
+                    <h3 className="font-bold">{article.label}</h3>
                     <div className="flex items-center text-sm text-gray-500">
                       <span className="mr-1">4.9</span>
                       <div className="flex ml-2 text-yellow-500">
@@ -567,12 +587,12 @@ const BookingSteps: React.FC<BookingStepsProps> = ({
                       </div>
                       <span className="ml-1">(4,749)</span>
                     </div>
-                    <p className="text-sm text-gray-500">{article?.location}</p>
+                    <p className="text-sm text-gray-500">{article.location}</p>
                   </div>
                 </div>
-                {savedServices.map((subService) => (
+                {savedServices.map((subService, index) => (
                   <div
-                    key={subService.id}
+                    key={index}
                     className="flex justify-between items-center space-y-2"
                   >
                     <p>{subService.name}</p>{" "}
@@ -617,17 +637,19 @@ const BookingSteps: React.FC<BookingStepsProps> = ({
                 </h3>
               </div>
               <p className="text-md text-slate-700 font-normal mb-3">
-                To secure your appointment, we require a 20% deposit of the total
-                service cost at the time of booking. This deposit is
-                non-refundable and ensures that your appointment is reserved just
-                for you.
+                To secure your appointment, we require a 20% deposit of the
+                total service cost at the time of booking. This deposit is
+                non-refundable and ensures that your appointment is reserved
+                just for you.
               </p>
               <p className="text-md text-slate-700 font-normal mb-5">
                 The remaining 80% of the payment will be due at the time of your
-                visit to the salon. This allows us to provide you with a seamless
-                and convenient booking experience.
+                visit to the salon. This allows us to provide you with a
+                seamless and convenient booking experience.
               </p>
-              <p className="text-slate-900 text-sm font-semibold">Thank you for your trust in BEAUTYPOOL.</p>
+              <p className="text-slate-900 text-sm font-semibold">
+                Thank you for your trust in BEAUTYPOOL.
+              </p>
               <div className="flex justify-center items-center mt-10">
                 <button
                   className="py-1.5 px-3 bg-black text-white rounded font-semibold text-sm"

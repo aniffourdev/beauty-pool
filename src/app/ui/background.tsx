@@ -57,6 +57,20 @@ export const BackgroundGradientAnimation = ({
     setIsSafari(/^((?!chrome|android).)*safari/i.test(navigator.userAgent));
   }, []);
 
+  const [gradientStyles, setGradientStyles] = useState<
+    { top: string; left: string; animationDuration: string; animationDelay: string }[]
+  >([]);
+
+  useEffect(() => {
+    const styles = [...Array(9)].map((_, index) => ({
+      top: `${Math.random() * 100}%`,
+      left: `${Math.random() * 100}%`,
+      animationDuration: `${Math.random() * 10 + 15}s`,
+      animationDelay: `${index * 0.5}s`,
+    }));
+    setGradientStyles(styles);
+  }, []);
+
   return (
     <div
       className={cn(
@@ -89,7 +103,7 @@ export const BackgroundGradientAnimation = ({
           isSafari ? "blur-2xl" : "[filter:url(#blurMe)_blur(90px)]"
         )}
       >
-        {[...Array(9)].map((_, index) => (
+        {gradientStyles.map((style, index) => (
           <div
             key={index}
             className={cn(
@@ -99,12 +113,7 @@ export const BackgroundGradientAnimation = ({
               `opacity-100`,
               `animation-delay-${index}`
             )}
-            style={{
-              top: `${Math.random() * 100}%`,
-              left: `${Math.random() * 100}%`,
-              animationDuration: `${Math.random() * 10 + 15}s`,
-              animationDelay: `${index * 0.5}s`,
-            }}
+            style={style}
           ></div>
         ))}
       </div>

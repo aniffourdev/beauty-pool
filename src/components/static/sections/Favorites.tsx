@@ -1,14 +1,16 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import Sidebar from "@/components/dynamic/Accounts/Customer/Global/Sidebar";
-import Header from "@/components/dynamic/Accounts/Customer/Global/Header";
-import Image from "next/image";
-import Link from "next/link";
-import { Gruppo } from "next/font/google";
 import api from "@/services/auth";
-import { GoHeartFill } from "react-icons/go";
+import Link from "next/link";
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/css";
+import "swiper/css/navigation";
+import { Navigation } from "swiper/modules";
+import { Gruppo } from "next/font/google";
 import { TiLocationOutline } from "react-icons/ti";
+import { GoHeartFill } from "react-icons/go";
 import { OrbitProgress } from "react-loading-indicators";
+import Image from "next/image";
 
 const gruppo = Gruppo({
   subsets: ["latin"],
@@ -35,7 +37,7 @@ interface Favorite {
   article: Article;
 }
 
-const Favorites = () => {
+export default function Favorites() {
   const [userData, setUserData] = useState<UserData | null>(null);
   const [favorites, setFavorites] = useState<Favorite[]>([]);
   const [loading, setLoading] = useState(true);
@@ -44,10 +46,6 @@ const Favorites = () => {
   const [removingFavoriteId, setRemovingFavoriteId] = useState<string | null>(
     null
   );
-
-  const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);
-  };
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -102,63 +100,74 @@ const Favorites = () => {
     }
   };
 
-  if (error) {
-    return (
-      <div className="flex justify-center items-center mx-auto">
-        <div className="flex justify-center items-center">
-          <>{error}</>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className="">
-      <Header toggleSidebar={toggleSidebar} />
-      <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
-      <div
-        className={`p-4 transition-transform ${
-          isSidebarOpen ? "sm:ml-64" : "sm:ml-64"
-        }`}
-      >
-        <div className="p-4 mt-20">
-          <div className="max-w-6xl mx-auto">
-            <div className="flex justify-between items-center mb-5">
-              <div>
-                <h2
-                  className={`${gruppo.className} text-4xl text-black font-bold`}
-                >
-                  Favorites
-                </h2>
-              </div>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-              {loading
-                ? Array.from({ length: 6 }).map((_, index) => (
-                    <div
-                      key={index}
-                      className="bg-white rounded-lg shadow-md overflow-hidden animate-pulse"
-                    >
-                      <div className="relative">
-                        <div className="w-full h-48 bg-gray-300"></div>
-                        <div className="absolute top-2 right-2">
-                          <div className="bg-white rounded-full p-2 shadow-md">
-                            <div className="w-5 h-5 bg-gray-300"></div>
-                          </div>
+    <div className="py-10 px-6 pb-10">
+      {favorites.length > 0 && (
+        <div className="max-w-6xl mx-auto">
+          {/* Section Title */}
+          <h2
+            className={`${gruppo.className} text-3xl sm:text-3xl lg:text-4xl font-bold text-gray-800 mb-3`}
+          >
+            Favorites
+          </h2>
+
+          <Swiper
+            slidesPerView={3}
+            breakpoints={{
+              // Mobile (default): 1 slide
+              320: {
+                slidesPerView: 1,
+                spaceBetween: 10,
+              },
+              // Tablet/iPad: 2 slides
+              768: {
+                slidesPerView: 2,
+                spaceBetween: 20,
+              },
+              // Desktop: 3 slides
+              1024: {
+                slidesPerView: 3,
+                spaceBetween: 30,
+              },
+            }}
+            spaceBetween={30}
+            navigation={{
+              nextEl: ".swiper-button-next",
+              prevEl: ".swiper-button-prev",
+            }}
+            modules={[Navigation]}
+            className="mySwiper relative !pb-5"
+          >
+            {loading
+              ? Array.from({ length: 3 }).map((_, index) => (
+                  <SwiperSlide
+                    key={index}
+                    className="bg-white rounded-lg shadow-md overflow-hidden animate-pulse"
+                  >
+                    <div className="relative">
+                      <div className="w-full h-48 bg-gray-300"></div>
+                      <div className="absolute top-2 right-2">
+                        <div className="bg-white rounded-full p-2 shadow-md">
+                          <div className="w-5 h-5 bg-gray-300"></div>
                         </div>
                       </div>
-                      <div className="p-4">
-                        <div className="h-6 bg-gray-300 rounded w-3/4 mb-2"></div>
-                        <div className="h-4 bg-gray-300 rounded w-1/2 mb-2"></div>
-                        <div className="h-4 bg-gray-300 rounded w-1/4 mb-2"></div>
-                        <div className="h-4 bg-gray-300 rounded w-1/3 mt-4"></div>
-                      </div>
                     </div>
-                  ))
-                : favorites.map((favorite) => (
+                    <div className="p-4">
+                      <div className="h-6 bg-gray-300 rounded w-3/4 mb-2"></div>
+                      <div className="h-4 bg-gray-300 rounded w-1/2 mb-2"></div>
+                      <div className="h-4 bg-gray-300 rounded w-1/4 mb-2"></div>
+                      <div className="h-4 bg-gray-300 rounded w-1/3 mt-4"></div>
+                    </div>
+                  </SwiperSlide>
+                ))
+              : favorites.map((favorite) => (
+                  <SwiperSlide key={favorite.article?.id ?? "unknown"}>
                     <Link
-                      href={favorite.article?.slug ? `/a/${favorite.article.slug}` : "#"}
-                      key={favorite.article?.id ?? "unknown"}
+                      href={
+                        favorite.article?.slug
+                          ? `/a/${favorite.article.slug}`
+                          : "#"
+                      }
                     >
                       <div className="bg-white rounded-lg shadow-md overflow-hidden">
                         <div className="relative">
@@ -172,7 +181,9 @@ const Favorites = () => {
                           <div className="absolute top-2 right-2">
                             <button
                               className="bg-white rounded-full p-2 shadow-md"
-                              onClick={(e) => handleRemoveFavorite(e, favorite.id)}
+                              onClick={(e) =>
+                                handleRemoveFavorite(e, favorite.id)
+                              }
                               disabled={removingFavoriteId === favorite.id}
                             >
                               {removingFavoriteId === favorite.id ? (
@@ -210,13 +221,15 @@ const Favorites = () => {
                         </div>
                       </div>
                     </Link>
-                  ))}
-            </div>
-          </div>
+                  </SwiperSlide>
+                ))}
+
+            {/* Custom Navigation Buttons */}
+            <div className="swiper-button-next"></div>
+            <div className="swiper-button-prev"></div>
+          </Swiper>
         </div>
-      </div>
+      )}
     </div>
   );
-};
-
-export default Favorites;
+}

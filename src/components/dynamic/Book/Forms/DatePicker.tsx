@@ -48,7 +48,7 @@ const DatePicker: React.FC<DatePickerProps> = ({ id, value, onChange }) => {
 
   return (
    <div className='flex justify-center items-center'>
-     <CiCalendarDate className='text-gray-800' />
+     <CiCalendarDate className='text-slate-800 size-5' />
       <input
       ref={inputRef}
       placeholder='DD/MM/YYYY'

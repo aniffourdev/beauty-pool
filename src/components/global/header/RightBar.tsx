@@ -71,7 +71,7 @@ const RightBar = () => {
   };
 
   if (isLoading) {
-    return <div className="animate-pulse">Loading...</div>;
+    return <div className="skeleton h-10 w-40 rounded-full"></div>;
   }
 
   return (
