@@ -313,6 +313,11 @@ const RegisterCustomer = () => {
                             },
                           })}
                         />
+                        {errors.email && (
+                          <span className="text-red-600 text-sm font-semibold -mt-3">
+                            {errors.email.message}
+                          </span>
+                        )}
                         {emailError && (
                           <span className="text-red-600 text-sm font-semibold -mt-3">
                             {emailError}
@@ -429,8 +434,12 @@ const RegisterCustomer = () => {
                     {...register("password", {
                       required: "Password is required",
                       minLength: {
-                        value: 5,
-                        message: "Password must be at least 5 characters",
+                        value: 4,
+                        message: "Password must be at least 4 characters",
+                      },
+                      validate: (value) => {
+                        const isWeak = /^(?=.*[a-zA-Z])(?=.*\d).+$/.test(value);
+                        return isWeak || "Password is too weak";
                       },
                     })}
                   />
@@ -445,6 +454,9 @@ const RegisterCustomer = () => {
                     )}
                   </div>
                 </div>
+                {errors.password && (
+                  <span className="text-red-500">{errors.password.message}</span>
+                )}
 
                 <div className="relative mb-4">
                   <label

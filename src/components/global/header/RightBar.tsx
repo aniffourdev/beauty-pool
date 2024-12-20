@@ -5,7 +5,6 @@ import { HiMiniUserPlus } from "react-icons/hi2";
 import { IoLogInSharp, IoLogOutOutline } from "react-icons/io5";
 import Cookies from "js-cookie";
 import api from "@/services/auth";
-import Image from "next/image";
 import { FiUser } from "react-icons/fi";
 import { LuSettings } from "react-icons/lu";
 import { useRouter } from "next/navigation";
@@ -19,29 +18,43 @@ interface UserData {
 const RightBar = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userData, setUserData] = useState<UserData | null>(null);
-  const [, setLoading] = useState(true);
+  const [isLoading, setLoading] = useState(true);
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const router = useRouter();
 
+  // Check authentication status first
+  useEffect(() => {
+    const token = Cookies.get("access_token");
+    setIsAuthenticated(!!token);
+    setLoading(false);
+  }, []);
+
+  // Only fetch user data if authenticated
   useEffect(() => {
     const getMe = async () => {
+      if (!isAuthenticated) {
+        setLoading(false);
+        return;
+      }
+
       try {
         const response = await api.get("/users/me");
         setUserData(response.data.data);
       } catch (error) {
         console.error("Error fetching user data:", error);
+        // If we get a 401 error, the token might be invalid
+        if ((error as any)?.response?.status === 401) {
+          handleLogout();
+        }
       } finally {
         setLoading(false);
       }
     };
-    getMe();
-  }, []);
 
-  useEffect(() => {
-    // Check if access_token exists in cookies
-    const token = Cookies.get("access_token");
-    setIsAuthenticated(!!token);
-  }, []);
+    if (isAuthenticated) {
+      getMe();
+    }
+  }, [isAuthenticated]);
 
   const toggleDropdown = () => {
     setDropdownVisible(!dropdownVisible);
@@ -51,9 +64,15 @@ const RightBar = () => {
     Cookies.remove("access_token");
     Cookies.remove("directus_session_token");
     Cookies.remove("refresh_token");
+    setIsAuthenticated(false);
+    setUserData(null);
     router.push("/");
     setDropdownVisible(false);
   };
+
+  if (isLoading) {
+    return <div className="animate-pulse">Loading...</div>;
+  }
 
   return (
     <>
@@ -84,11 +103,10 @@ const RightBar = () => {
                 </span>
               </>
             ) : (
-              "Loading..."
+              <div className="animate-pulse">Loading...</div>
             )}
           </button>
 
-          {/* Dropdown Menu */}
           {dropdownVisible && (
             <div className="absolute right-0 mt-2 w-48 bg-white shadow-md rounded-lg py-1 text-gray-900">
               <Link
@@ -117,14 +135,12 @@ const RightBar = () => {
         </div>
       ) : (
         <div className="flex flex-wrap gap-1.5 justify-center items-center pr-5 lg:pr-0">
-          {/* Sign Up Button */}
           <Link href="/signup">
             <button className="py-1.5 px-4 text-md rounded-full bg-gray-900 border-[1px] border-black text-white font-semibold hover:bg-black/80 transition-all">
               Sign Up{" "}
               <HiMiniUserPlus className="inline-block size-4.5 relative -top-[1px] ml-1" />
             </button>
           </Link>
-          {/* Sign In Button */}
           <Link href="/login">
             <button className="py-1.5 px-4 text-md rounded-full bg-white border-[1px] border-gray-800 border-opacity-30 text-gray-900 font-semibold hover:bg-slate-100 transition-all">
               Sign In{" "}

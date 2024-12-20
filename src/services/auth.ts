@@ -1,7 +1,14 @@
 import axios from "axios";
 import Cookies from "js-cookie";
 
-const API_URL = "https://maoulaty.shop"; // Your Directus instance URL
+const API_URL = "https://maoulaty.shop";
+
+// Define public routes that don't need authentication
+const PUBLIC_ROUTES = [
+  '/products',
+  '/categories',
+  // Add other public routes here
+];
 
 // Token management with cookies
 const getAccessToken = () => Cookies.get("access_token");
@@ -33,9 +40,19 @@ const subscribeTokenRefresh = (callback: (token: string) => void) => {
   refreshSubscribers.push(callback);
 };
 
-// Request interceptor: Add the access token to each request
+// Helper to check if a route is public
+const isPublicRoute = (url: string): boolean => {
+  return PUBLIC_ROUTES.some(route => url.startsWith(route));
+};
+
+// Request interceptor: Add the access token only for protected routes
 api.interceptors.request.use(
   (config) => {
+    // Skip token for public routes
+    if (config.url && isPublicRoute(config.url)) {
+      return config;
+    }
+
     const token = getAccessToken();
     if (token) {
       config.headers["Authorization"] = `Bearer ${token}`;
@@ -45,28 +62,16 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// ./src/services/auth.ts
-
-export const fetchUserRole = async (accessToken: string) => {
-  try {
-    const response = await api.get("/users/me", {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
-    return response.data.role;
-  } catch (error) {
-    console.error("Error fetching user role:", error);
-    return null;
-  }
-};
-
-
 // Response interceptor: Handle token expiration (401 Unauthorized)
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
+
+    // Skip refresh token logic for public routes
+    if (originalRequest?.url && isPublicRoute(originalRequest.url)) {
+      return Promise.reject(error);
+    }
 
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
@@ -107,7 +112,6 @@ api.interceptors.response.use(
       } catch (refreshError) {
         isRefreshing = false;
         removeTokens();
-        // window.location.href = "/";
         return Promise.reject(refreshError);
       }
     }
@@ -115,5 +119,19 @@ api.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+
+export const fetchUserRole = async (accessToken: string) => {
+  try {
+    const response = await api.get("/users/me", {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    return response.data.role;
+  } catch (error) {
+    console.error("Error fetching user role:", error);
+    return null;
+  }
+};
 
 export default api;

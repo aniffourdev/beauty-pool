@@ -91,7 +91,7 @@ const Services: React.FC<NavTabsProps> = ({ services }) => {
                   tab-button py-1.5 pt-[5px] px-3 text-sm md:text-base md:px-3 text-black
                   hover:text-gray-800 font-semibold whitespace-nowrap
                   ${activeTab === service.id
-                    ? 'bg-[#ffddd6] text-black rounded-full'
+                    ? 'bg-[#ffe8e3] text-black rounded-full'
                     : ''
                   }
                 `}
@@ -119,7 +119,7 @@ const Services: React.FC<NavTabsProps> = ({ services }) => {
                 <div>
                   <h2 className="text-lg font-semibold">{subService.name}</h2>
                   <p className="text-gray-500 text-sm mt-0.5">{subService.description}</p>
-                  <p className="text-lg font-semibold mt-3 text-[#dd0067dc]">
+                  <p className="text-lg font-semibold mt-3 text-[#f47c66]">
                     {subService.price} AED
                   </p>
                   <p className="text-gray-500 text-sm mt-0.5">{subService.duration} minutes</p>
