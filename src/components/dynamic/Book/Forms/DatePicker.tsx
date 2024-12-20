@@ -20,8 +20,8 @@ const DatePicker: React.FC<DatePickerProps> = ({ id, value, onChange }) => {
       onChange: (selectedDates: Date[]) => {
         onChange(selectedDates[0]);
       },
-      clickOpens: true, 
-      touchUi: true, 
+      clickOpens: true,
+      touchUi: true,
     };
 
     const picker = flatpickr(inputRef.current as HTMLInputElement, options);
@@ -38,7 +38,6 @@ const DatePicker: React.FC<DatePickerProps> = ({ id, value, onChange }) => {
       );
     }
 
-    
     console.log('Flatpickr initialized:', picker);
 
     return () => {
@@ -47,17 +46,17 @@ const DatePicker: React.FC<DatePickerProps> = ({ id, value, onChange }) => {
   }, [id, value, onChange]);
 
   return (
-   <div className='flex justify-center items-center'>
-     <CiCalendarDate className='text-gray-800' />
+    <div className='flex justify-center items-center'>
+      <CiCalendarDate className='text-gray-800' />
       <input
-      ref={inputRef}
-      placeholder='DD/MM/YYYY'
-      id={id}
-      type="text"
-      className="outline-none border-none focus:outline-none focus:ring-0 focus:shadow-none hover:shadow-none active:shadow-none cursor-pointer"
-    />
-
-   </div>
+        ref={inputRef}
+        placeholder='DD/MM/YYYY'
+        id={id}
+        type="text"
+        className="outline-none border-none focus:outline-none focus:ring-0 focus:shadow-none hover:shadow-none active:shadow-none cursor-pointer h-10 px-2 box-border"
+        style={{ height: '40px', padding: '8px' }} // Ensure consistent height and padding
+      />
+    </div>
   );
 };
 
