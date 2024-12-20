@@ -34,9 +34,42 @@ interface Article {
   user_created: string;
 }
 
+interface Client {
+  user_created: {
+    first_name: string;
+    last_name: string;
+    phone: string;
+    dialcode: string;
+    avatar: string;
+    reviews?: number[]; // Make reviews optional
+  };
+  date_created: string;
+  time: string; // Add the time field
+  sales: number; // Use 'sales' instead of 'price'
+  article: Article;
+}
+
+interface AggregatedClient {
+  user_created: {
+    first_name: string;
+    last_name: string;
+    phone: string;
+    dialcode: string;
+    avatar: string;
+    reviews?: number[]; // Make reviews optional
+  };
+  date_created: string;
+  time: string;
+  sales: number;
+  article: Article;
+  total_reviews: number;
+  total_sales: number;
+}
+
 const Clients = () => {
   const [userData, setUserData] = useState<UserData | null>(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [clients, setClients] = useState<AggregatedClient[]>([]);
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -45,6 +78,61 @@ const Clients = () => {
   const handleUserDataFetched = (data: UserData | null) => {
     setUserData(data);
   };
+
+  const fetchAppointments = async () => {
+    try {
+      const response = await api.get("/items/clients", {
+        params: {
+          fields: [
+            "user_created.first_name",
+            "user_created.last_name",
+            "user_created.avatar",
+            "user_created.phone",
+            "user_created.dialcode",
+            "user_created.reviews",
+            "date_created",
+            "article.label",
+            "article.featured_image",
+            "sales", // Include sales in the fields
+          ].join(","),
+        },
+      });
+
+      console.log("API Response:", response.data.data);
+      const aggregatedClients = aggregateClients(response.data.data);
+      setClients(aggregatedClients);
+    } catch (error) {
+      console.error("Error fetching appointments:", error);
+    }
+  };
+
+  const aggregateClients = (clients: Client[]): AggregatedClient[] => {
+    const clientMap: { [key: string]: AggregatedClient } = {};
+  
+    clients.forEach((client) => {
+      const userId = `${client.user_created.first_name}-${client.user_created.last_name}-${client.user_created.phone}`;
+      
+      // Convert sales to number if it's not already
+      const salesAmount = typeof client.sales === 'string' ? parseFloat(client.sales) : Number(client.sales) || 0;
+      
+      if (!clientMap[userId]) {
+        clientMap[userId] = {
+          ...client,
+          total_reviews: client.user_created.reviews ? client.user_created.reviews.length : 0,
+          total_sales: salesAmount,
+        };
+      } else {
+        clientMap[userId].total_reviews += client.user_created.reviews ? client.user_created.reviews.length : 0;
+        clientMap[userId].total_sales += salesAmount;
+      }
+    });
+  
+    return Object.values(clientMap);
+  };
+
+  useEffect(() => {
+    fetchAppointments();
+  }, []);
 
   return (
     <div className="">
@@ -61,7 +149,7 @@ const Clients = () => {
             <span
               className={`${inter.className} font-bold text-black text-3xl`}
             >
-              (12)
+              ({clients.length})
             </span>
           </h2>
           <div className="mt-10">
@@ -75,67 +163,6 @@ const Clients = () => {
                 <i className="fas fa-search absolute top-3 left-3 text-gray-400"></i>
               </div>
             </div>
-            {/* <table className="w-full text-left">
-              <thead>
-                <tr className="border-b">
-                  <th className="py-2">
-                    <input type="checkbox" />
-                  </th>
-                  <th className="py-2">
-                    Client name <i className="fas fa-sort"></i>
-                  </th>
-                  <th className="py-2">Mobile number</th>
-                  <th className="py-2">
-                    Reviews <i className="fas fa-sort"></i>
-                  </th>
-                  <th className="py-2">
-                    Sales <i className="fas fa-sort"></i>
-                  </th>
-                  <th className="py-2">
-                    Created at <i className="fas fa-sort"></i>
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr className="border-b">
-                  <td className="py-4">
-                    <input type="checkbox" />
-                  </td>
-                  <td className="py-4 flex items-center space-x-2">
-                    <div className="w-10 h-10 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center">
-                      J
-                    </div>
-                    <div>
-                      <p className="font-semibold">Jane Doe</p>
-                      <p className="text-gray-500">jane@example.com</p>
-                    </div>
-                  </td>
-                  <td className="py-4">-</td>
-                  <td className="py-4">-</td>
-                  <td className="py-4">-</td>
-                  <td className="py-4">27 Nov 2024</td>
-                </tr>
-                <tr>
-                  <td className="py-4">
-                    <input type="checkbox" />
-                  </td>
-                  <td className="py-4 flex items-center space-x-2">
-                    <div className="w-10 h-10 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center">
-                      J
-                    </div>
-                    <div>
-                      <p className="font-semibold">John Doe</p>
-                      <p className="text-gray-500">john@example.com</p>
-                    </div>
-                  </td>
-                  <td className="py-4">-</td>
-                  <td className="py-4">-</td>
-                  <td className="py-4">-</td>
-                  <td className="py-4">27 Nov 2024</td>
-                </tr>
-              </tbody>
-            </table>
-            <div className="mt-4 text-gray-500">1 of 1</div> */}
             <div className="flex flex-col">
               <div className="-m-1.5 overflow-x-auto">
                 <div className="p-1.5 min-w-full inline-block align-middle">
@@ -197,51 +224,55 @@ const Clients = () => {
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-gray-200">
-                        <tr>
-                          <td className="py-3 ps-4">
-                            <div className="flex items-center h-5">
-                              <input
-                                id="hs-table-checkbox-1"
-                                type="checkbox"
-                                className="border-gray-200 rounded text-blue-600 focus:ring-blue-500"
-                              />
-                              <label
-                                htmlFor="hs-table-checkbox-1"
-                                className="sr-only"
+                        {clients.map((client, index) => (
+                          <tr key={index}>
+                            <td className="py-3 ps-4">
+                              <div className="flex items-center h-5">
+                                <input
+                                  id="hs-table-checkbox-1"
+                                  type="checkbox"
+                                  className="border-gray-200 rounded text-blue-600 focus:ring-blue-500"
+                                />
+                                <label
+                                  htmlFor="hs-table-checkbox-1"
+                                  className="sr-only"
+                                >
+                                  Checkbox
+                                </label>
+                              </div>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap flex justify-start items-center gap-1 text-sm font-medium text-gray-800">
+                              <div className="mask mask-hexagon h-9 w-9 bg-orange-100 text-orange-500 text-lg flex items-center justify-center bg-cover bg-center" style={{ backgroundImage: `url(https://maoulaty.shop/assets/${client.user_created.avatar})` }}></div>
+                              <span className="whitespace-nowrap text-sm text-gray-800">
+                                {client.user_created.first_name}{" "}
+                                {client.user_created.last_name}
+                              </span>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
+                              {client.user_created.dialcode}{" "}
+                              {client.user_created.phone}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
+                              {client.total_reviews}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
+                              ${client.total_sales.toFixed(2)}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
+                              {new Date(
+                                client.date_created
+                              ).toLocaleDateString()}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-end text-sm font-medium">
+                              <button
+                                type="button"
+                                className="inline-flex items-center gap-x-2 text-sm font-semibold border border-transparent text-white bg-red-700 hover:bg-red-600 px-2 py-1 rounded hover:text-red-100 focus:outline-none disabled:opacity-50 disabled:pointer-events-none"
                               >
-                                Checkbox
-                              </label>
-                            </div>
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap flex justify-start items-center gap-1 text-sm font-medium text-gray-800">
-                            <div className="mask mask-hexagon h-9 w-9 bg-orange-100 text-orange-500 text-lg flex items-center justify-center">
-                              H
-                            </div>
-                            <span className="whitespace-nowrap text-sm text-gray-800">
-                              Hamza Aniffour
-                            </span>
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
-                            +212 70719990097
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
-                            16
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
-                            $482
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
-                            27 Nov 2024
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-end text-sm font-medium">
-                            <button
-                              type="button"
-                              className="inline-flex items-center gap-x-2 text-sm font-semibold border border-transparent text-white bg-red-700 hover:bg-red-600 px-2 py-1 rounded hover:text-red-100 focus:outline-none disabled:opacity-50 disabled:pointer-events-none"
-                            >
-                              Delete
-                            </button>
-                          </td>
-                        </tr>
+                                Delete
+                              </button>
+                            </td>
+                          </tr>
+                        ))}
                       </tbody>
                     </table>
                   </div>

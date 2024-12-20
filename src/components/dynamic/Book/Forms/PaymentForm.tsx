@@ -144,16 +144,26 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ calculateTotal, articleId, se
             },
             time: time,
             date: date,
-            price: remainingPrice,
+            sales: remainingPrice, // Use 'sales' instead of 'price'
             user_created: currentUser?.id,
           };
 
           const response = await api.post("/items/appointments", appointmentData);
           console.log("Appointment created:", response.data);
-          
+
+          // Create the client entry
+          const clientData = {
+            ...appointmentData,
+            card_type: paymentMethod.card?.brand,
+            sales: totalPrice, // Include the total price in the client data
+          };
+
+          await api.post("/items/clients", clientData);
+          console.log("Client entry created");
+
           // Show success alert
           setShowSuccessAlert(true);
-          
+
           // Optionally hide the alert after some time
           setTimeout(() => {
             setShowSuccessAlert(false);
@@ -176,7 +186,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ calculateTotal, articleId, se
           </AlertDescription>
         </Alert>
       )}
-      
+
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
