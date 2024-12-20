@@ -46,7 +46,7 @@ const reverseGeocode = async (
 
     const data = await response.json();
 
-    // Check if data is available
+    
     if (data.features && data.features.length > 0) {
       const feature = data.features[0];
       return feature.place_name;
@@ -377,6 +377,7 @@ export default function BookForm() {
           {/* Time Input */}
           <div className="lg:w-2/12">
             <div className="flex items-center space-x-2">
+            
               <input
                 type="text"
                 placeholder="Any time"
