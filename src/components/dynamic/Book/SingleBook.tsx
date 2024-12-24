@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState, useRef } from "react";
-import { IoStar } from "react-icons/io5";
+import { IoCheckmarkDoneOutline, IoChevronDownSharp, IoChevronUpSharp, IoStar } from "react-icons/io5";
 import { IoClose } from "react-icons/io5";
 import { IoChevronBack, IoChevronForward } from "react-icons/io5";
 import api from "@/services/auth";
@@ -17,10 +17,11 @@ import BookingSteps from "@/components/dynamic/Book/Steps/BookingSteps";
 import BookingHeader from "@/components/global/booking-header/BookingHeader";
 import { CiClock1, CiLocationOn } from "react-icons/ci";
 import Link from "next/link";
-import { FaArrowDown } from "react-icons/fa";
+import { FaArrowDown, FaArrowUp, FaCcVisa } from "react-icons/fa";
 import Cookies from "js-cookie";
 import { OrbitProgress } from "react-loading-indicators";
 import { GoHeart, GoHeartFill, GoShareAndroid } from "react-icons/go";
+import Footer from "@/components/global/footer/Footer";
 
 interface UserData {
   id: string;
@@ -32,13 +33,12 @@ interface UserData {
 }
 
 interface Review {
-  user_created: UserData;
+  id: number;
+  comment: string;
   date_created: string;
   rating: number;
-  comment: string;
-  article: number;
+  user_created: UserData;
 }
-
 interface Gallery {
   directus_files_id: {
     id: string;
@@ -140,7 +140,25 @@ const getCurrentOpeningTime = (article: ArticleData): string => {
     (currentHour < closeHour ||
       (currentHour === closeHour && currentMinute < closeMinute));
 
-  return isOpen ? formatTime(today.close) : "Closed";
+  if (isOpen) {
+    return `Open from ${formatTime(today.open)} to ${formatTime(today.close)}`;
+  } else {
+    const nextOpenDay = days.findIndex(
+      (day, index) =>
+        index > dayOfWeek && day.open && day.close && day.open !== "Closed"
+    );
+    const nextOpenDayName = [
+      "Sunday",
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday",
+    ][nextOpenDay];
+    const nextOpenTime = days[nextOpenDay].open;
+    return `Closed opens on ${nextOpenDayName} at ${formatTime(nextOpenTime)}`;
+  }
 };
 
 const ImageModal = ({
@@ -237,7 +255,10 @@ const SingleBook: React.FC<SingleBookProps> = ({ slug }) => {
   const [isFavorited, setIsFavorited] = useState(false);
   const [favoriteLoading, setFavoriteLoading] = useState(false);
   const [favoriteId, setFavoriteId] = useState<string | null>(null);
-  const [mapCoordinates, setMapCoordinates] = useState<{ latitude: number; longitude: number } | null>(null);
+  const [mapCoordinates, setMapCoordinates] = useState<{
+    latitude: number;
+    longitude: number;
+  } | null>(null);
 
   useEffect(() => {
     const handleResize = () => {
@@ -255,33 +276,39 @@ const SingleBook: React.FC<SingleBookProps> = ({ slug }) => {
         const { data: slugResponse } = await api.get("/items/articles", {
           params: {
             "filter[slug][_eq]": slug,
-            fields:
-              "*,galleries.directus_files_id.*,reviews.*,reviews.user_created.first_name,reviews.user_created.last_name,monday_open,monday_close,tuesday_open,tuesday_close,wednesday_open,wednesday_close,thursday_open,thursday_close,friday_open,friday_close,saturday_open,saturday_close,sunday_open,sunday_close",
+            fields: [
+              "*",
+              "galleries.directus_files_id.*",
+              "reviews.*", // Fetch all review fields
+            ],
           },
         });
-
+  
         if (slugResponse.data && slugResponse.data.length > 0) {
           const articleId = slugResponse.data[0].id;
-
+  
           const { data: articleResponse } = await api.get(
             `/items/articles/${articleId}`,
             {
               params: {
-                fields:
-                  "*,galleries.directus_files_id.*,reviews.*,reviews.user_created.first_name,reviews.user_created.last_name,monday_open,monday_close,tuesday_open,tuesday_close,wednesday_open,wednesday_close,thursday_open,thursday_close,friday_open,friday_close,saturday_open,saturday_close,sunday_open,sunday_close",
+                fields: [
+                  "*",
+                  "galleries.directus_files_id.*",
+                  "reviews.*", // Fetch all review fields
+                ],
               },
             }
           );
-
+  
           if (articleResponse.data) {
             setArticle(articleResponse.data);
-
+  
             // Fetch services data
             const servicesResponse = await api.get(
               `https://maoulaty.shop/items/articles/${articleId}?fields=service.Services_id.name,service.Services_id.sub_services.sub_services_id.name,service.Services_id.sub_services.sub_services_id.price,service.Services_id.sub_services.sub_services_id.duration,service.Services_id.sub_services.sub_services_id.description`
             );
             const servicesData = servicesResponse.data.data.service;
-
+  
             const parentServices: { [key: string]: ParentService } = {};
             servicesData.forEach(
               (service: {
@@ -307,18 +334,20 @@ const SingleBook: React.FC<SingleBookProps> = ({ slug }) => {
                 });
               }
             );
-
+  
             const formattedServices = Object.keys(parentServices).map(
               (key, index) => ({
                 id: String(index + 1),
                 parent_service: parentServices[key],
               })
             );
-
+  
             setServices(formattedServices);
-
+  
             // Geocode the address
-            const coordinates = await geocodeAddress(articleResponse.data.Address);
+            const coordinates = await geocodeAddress(
+              articleResponse.data.Address
+            );
             setMapCoordinates(coordinates);
           } else {
             setError("Article details not found");
@@ -333,9 +362,11 @@ const SingleBook: React.FC<SingleBookProps> = ({ slug }) => {
         setLoading(false);
       }
     };
-
+  
     fetchArticle();
   }, [slug]);
+  
+  
 
   useEffect(() => {
     const fetchCurrentUser = async () => {
@@ -376,8 +407,11 @@ const SingleBook: React.FC<SingleBookProps> = ({ slug }) => {
     checkIfFavorited();
   }, [article, currentUser]);
 
-  const geocodeAddress = async (address: string): Promise<{ latitude: number; longitude: number } | null> => {
-    const accessToken = "pk.eyJ1IjoiYW5pZmZvdXJkZXYiLCJhIjoiY2xvc28zMXJjMDM4dTJycXc0aHBkN2pmcyJ9.IEOWZZQT6rlwKckMaoTh8g"; // Replace with your Mapbox API key
+  const geocodeAddress = async (
+    address: string
+  ): Promise<{ latitude: number; longitude: number } | null> => {
+    const accessToken =
+      "pk.eyJ1IjoiYW5pZmZvdXJkZXYiLCJhIjoiY2xvc28zMXJjMDM4dTJycXc0aHBkN2pmcyJ9.IEOWZZQT6rlwKckMaoTh8g"; // Replace with your Mapbox API key
     try {
       const response = await fetch(
         `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
@@ -410,6 +444,7 @@ const SingleBook: React.FC<SingleBookProps> = ({ slug }) => {
 
   if (loading)
     return (
+  <>
       <div className="px-3 lg:px-8">
         <div className="lg:flex gap-8">
           <div className="lg:w-8/12">
@@ -448,6 +483,7 @@ const SingleBook: React.FC<SingleBookProps> = ({ slug }) => {
           </div>
         </div>
       </div>
+      </>
     );
   if (error) return <div>{error}</div>;
 
@@ -579,6 +615,7 @@ const SingleBook: React.FC<SingleBookProps> = ({ slug }) => {
   };
 
   return (
+    <>
     <div className="px-3 lg:px-8">
       <div className="lg:flex gap-8">
         <div className="lg:w-8/12">
@@ -598,8 +635,14 @@ const SingleBook: React.FC<SingleBookProps> = ({ slug }) => {
                 <span className="text-slate-800 text-sm font-semibold mx-2">
                   •
                 </span>
-                <span className="text-slate-800 text-sm font-semibold">
-                  Open until {getCurrentOpeningTime(article!)}
+                <span
+                  className={`text-slate-800 text-sm font-semibold ${
+                    getCurrentOpeningTime(article!).includes("Open")
+                      ? "text-green-400"
+                      : "text-amber-500"
+                  }`}
+                >
+                  {getCurrentOpeningTime(article!)}
                 </span>
                 <span className="text-slate-800 text-sm font-semibold mx-2">
                   •
@@ -705,8 +748,8 @@ const SingleBook: React.FC<SingleBookProps> = ({ slug }) => {
             )}
           </div>
         </div>
-        <div className="lg:w-4/12">
-          <div className="bg-white shadow-xl rounded-lg p-4 flex flex-col sticky">
+        <div className="lg:w-4/12 sticky top-[80]">
+          <div className="bg-white shadow-xl rounded-lg p-4 flex flex-col">
             <h1 className="text-4xl font-bold">{article?.label}</h1>
             <div className="flex items-center mt-2">
               <span className="text-lg font-bold">5.0</span>
@@ -732,16 +775,18 @@ const SingleBook: React.FC<SingleBookProps> = ({ slug }) => {
             </button>
             <div className="mt-6">
               <div
-                className="flex items-center text-green-500 cursor-pointer"
+                className="flex items-center text-slate-600 cursor-pointer"
                 onClick={() => setIsOpen(!isOpen)}
               >
                 <CiClock1 className="size-7 text-slate-600 -mr-0.5" />
                 <span className="ml-2">
-                  Open until {getCurrentOpeningTime(article!)}
+                  {getCurrentOpeningTime(article!)}
                 </span>
-                <FaArrowDown
-                  className={`fas fa-chevron-${isOpen ? "up" : "down"} ml-2`}
-                ></FaArrowDown>
+                {isOpen ? (
+                  <IoChevronUpSharp className="ml-2" />
+                ) : (
+                  <IoChevronDownSharp className="ml-2" />
+                )}
               </div>
               {isOpen && (
                 <div className="mt-4">
@@ -749,19 +794,19 @@ const SingleBook: React.FC<SingleBookProps> = ({ slug }) => {
                     <div key={index} className="flex items-center mt-2">
                       <span
                         className={`w-2.5 h-2.5 rounded-full ${
-                          item.open ? "bg-green-500" : "bg-gray-400"
+                          item.open ? "bg-green-400" : "bg-gray-400"
                         }`}
                       ></span>
                       <span
                         className={`ml-2 ${
-                          item.currentDay ? "font-bold text-green-700" : ""
+                          item.currentDay ? "font-bold text-green-400" : ""
                         }`}
                       >
                         {item.day}
                       </span>
                       <span
                         className={`ml-auto ${
-                          item.currentDay ? "font-bold text-green-700" : ""
+                          item.currentDay ? "font-bold text-green-400" : ""
                         }`}
                       >
                         {item.time}
@@ -803,43 +848,53 @@ const SingleBook: React.FC<SingleBookProps> = ({ slug }) => {
                   <div className="lg:w-12/12">
                     <h3 className="text-3xl font-bold mb-4">Reviews</h3>
                     <div className="relative">
-                      <div className="">
-                      {article?.reviews && article.reviews.length > 0 ? (
-  <>
-    <div className="mt-4">
-      {article.reviews.map((review) => (
-        <div
-          key={review.user_created.id} // Use a unique identifier here
-          className="max-w-md mx-auto space-y-4 mt-5"
-        >
-          <div className="flex items-center space-x-4">
-            <div className="flex-shrink-0">
-              <div className="h-12 w-12 rounded-full bg-purple-500 flex items-center justify-center text-white text-xl font-bold">
-                D
-              </div>
-            </div>
-            <div>
-              <div className="text-lg font-medium text-black">
-                {review.user_created.first_name} {review.user_created.last_name}
-              </div>
-              <div className="text-gray-500">{review.date_created}</div>
-            </div>
-          </div>
-          <div className="flex items-center">
-            <div className="flex space-x-1">
-              {Array.from({ length: review.rating }).map((_, i) => (
-                <IoStar key={i} className="fas fa-star text-black" />
-              ))}
-            </div>
-          </div>
-          <div className="text-gray-700">{review.comment}</div>
-        </div>
-      ))}
-    </div>
-  </>
-) : (
-  <p>No reviews available</p>
-)}
+                      <div>
+                        {article?.reviews && article.reviews.length > 0 ? (
+                          <div className="mt-4">
+                            {article.reviews.map((review) => (
+                              <div
+                                key={review.id}
+                                className="max-w-md mx-auto space-y-4 mt-5"
+                              >
+                                <div className="flex items-center space-x-4">
+                                  <div className="flex-shrink-0">
+                                    <div className="h-12 w-12 rounded-full bg-purple-500 flex items-center justify-center text-white text-xl font-bold">
+                                      {review.user_created.first_name.charAt(0)}
+                                    </div>
+                                  </div>
+                                  <div>
+                                    <div className="text-lg font-medium text-black">
+                                      {review.user_created.first_name}{" "}
+                                      {review.user_created.last_name}
+                                    </div>
+                                    <div className="text-gray-500">
+                                      {new Date(
+                                        review.date_created
+                                      ).toLocaleDateString()}
+                                    </div>
+                                  </div>
+                                </div>
+                                <div className="flex items-center">
+                                  <div className="flex space-x-1">
+                                    {Array.from({ length: review.rating }).map(
+                                      (_, i) => (
+                                        <IoStar
+                                          key={i}
+                                          className="text-black"
+                                        />
+                                      )
+                                    )}
+                                  </div>
+                                </div>
+                                <div className="text-gray-700">
+                                  {review.comment}
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        ) : (
+                          <p>No reviews available</p>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -868,10 +923,19 @@ const SingleBook: React.FC<SingleBookProps> = ({ slug }) => {
                       latitude={mapCoordinates.latitude}
                       anchor="bottom"
                     >
-                      <div className="h-11 w-11 bg-cover bg-center" style={{ backgroundImage: `url(https://maoulaty.shop/assets/12247141-da04-4eb2-bff5-205417bc924b?cache-buster=2024-12-07T13:14:36.000Z&key=system-large-contain)` }}>
+                      <div
+                        className="h-11 w-11 bg-cover bg-center"
+                        style={{
+                          backgroundImage: `url(https://maoulaty.shop/assets/12247141-da04-4eb2-bff5-205417bc924b?cache-buster=2024-12-07T13:14:36.000Z&key=system-large-contain)`,
+                        }}
+                      >
                         <div className="flex justify-center text-center items-center flex-col bg-[#dd0067dc] h-5 w-5 rounded-full absolute left-[12px] top-[7px]">
-                          <span className="text-xs font-bold text-white -mb-0.5">5.0</span>
-                          <span><IoStar className="size-3 text-amber-200" /></span>
+                          <span className="text-xs font-bold text-white -mb-0.5">
+                            5.0
+                          </span>
+                          <span>
+                            <IoStar className="size-3 text-amber-200" />
+                          </span>
                         </div>
                       </div>
                     </Marker>
@@ -893,14 +957,14 @@ const SingleBook: React.FC<SingleBookProps> = ({ slug }) => {
                           ></span>
                           <span
                             className={`ml-2 ${
-                              item.currentDay ? "font-bold text-green-700" : ""
+                              item.currentDay ? "font-bold text-green-400" : ""
                             }`}
                           >
                             {item.day}
                           </span>
                           <span
                             className={`ml-auto ${
-                              item.currentDay ? "font-bold text-green-700" : ""
+                              item.currentDay ? "font-bold text-green-400" : ""
                             }`}
                           >
                             {item.time}
@@ -911,6 +975,20 @@ const SingleBook: React.FC<SingleBookProps> = ({ slug }) => {
                   </div>
                   <div className="lg:w-6/12">
                     <h3 className="text-2xl font-bold mb-4">Informations</h3>
+                    <ul className="lg:flex gap-2">
+                      <li className="lg:w-6/12 flex justify-start items-center gap-1.5 mb-2.5 bg-slate-100 rounded py-5 px-3">
+                        <FaCcVisa className="text-blue-600 inline size-5" />
+                        <span className="font-medium text-slate-700 text-sm">
+                          Payment via App
+                        </span>
+                      </li>
+                      <li className="lg:w-6/12 flex justify-start items-center gap-1.5 mb-2.5 bg-slate-100 rounded py-5 px-3">
+                        <IoCheckmarkDoneOutline className="text-green-600 inline size-6" />
+                        <span className="font-medium text-slate-700 text-sm">
+                          Immediate Confirmation
+                        </span>
+                      </li>
+                    </ul>
                   </div>
                 </div>
               </div>
@@ -952,7 +1030,12 @@ const SingleBook: React.FC<SingleBookProps> = ({ slug }) => {
         images={allImages}
         modalRef={modalRef}
       />
+
     </div>
+    <div className="bg-slate-100 py-4 mt-10">
+        <Footer />
+      </div>
+    </>
   );
 };
 

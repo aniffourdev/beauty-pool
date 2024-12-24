@@ -5,8 +5,8 @@ const API_URL = "https://maoulaty.shop";
 
 // Define public routes that don't need authentication
 const PUBLIC_ROUTES = [
-  '/products',
-  '/categories',
+  "/products",
+  "/categories",
   // Add other public routes here
 ];
 
@@ -42,7 +42,7 @@ const subscribeTokenRefresh = (callback: (token: string) => void) => {
 
 // Helper to check if a route is public
 const isPublicRoute = (url: string): boolean => {
-  return PUBLIC_ROUTES.some(route => url.startsWith(route));
+  return PUBLIC_ROUTES.some((route) => url.startsWith(route));
 };
 
 // Request interceptor: Add the access token only for protected routes
@@ -90,7 +90,7 @@ api.interceptors.response.use(
       try {
         const refreshToken = getRefreshToken();
         if (!refreshToken) {
-          throw new Error("No refresh token available");
+          // throw new Error("No refresh token available");
         }
 
         delete originalRequest.headers["Authorization"];

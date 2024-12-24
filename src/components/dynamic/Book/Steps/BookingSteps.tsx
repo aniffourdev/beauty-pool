@@ -87,6 +87,13 @@ const BookingSteps: React.FC<BookingStepsProps> = ({
   const [availableTimes, setAvailableTimes] = useState<string[]>([]);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [selectedDate, setSelectedDate] = useState<string | null>(null); // Add state for selected date
+  const [paymentSuccess, setPaymentSuccess] = useState(false); // Add state for payment success
+
+  useEffect(() => {
+    if (paymentSuccess) {
+      setCurrentStep(4);
+    }
+  }, [paymentSuccess]);
 
   useEffect(() => {
     gsap.fromTo(
@@ -249,6 +256,37 @@ const BookingSteps: React.FC<BookingStepsProps> = ({
     return total * 0.2;
   };
 
+  const calculateSelectedDate = (day: string, time: string) => {
+    const today = new Date();
+    const daysOfWeek = [
+      "Sunday",
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday",
+    ];
+    const selectedDayIndex = daysOfWeek.indexOf(day);
+    const currentDayIndex = today.getDay();
+
+    let daysDifference = selectedDayIndex - currentDayIndex;
+    if (daysDifference <= 0) {
+      daysDifference += 7;
+    }
+
+    const selectedDate = new Date(today);
+    selectedDate.setDate(today.getDate() + daysDifference);
+    selectedDate.setHours(
+      parseInt(time.split(":")[0]),
+      parseInt(time.split(":")[1]),
+      0,
+      0
+    );
+
+    return selectedDate.toISOString().split("T")[0];
+  };
+
   // Render different steps
   const renderStep = () => {
     switch (currentStep) {
@@ -272,6 +310,8 @@ const BookingSteps: React.FC<BookingStepsProps> = ({
                 <span className="ml-1.5 text-sm text-gray-500 mb-2">
                   Payments
                 </span>
+                <GoChevronRight className="inline" />
+                <span className="ml-1.5 mr-1.5">Confirmation</span>
               </div>
               <h1 className="text-3xl font-bold mb-7 mt-4">Select services</h1>
               <div className="space-y-4">{renderServices()}</div>
@@ -345,6 +385,8 @@ const BookingSteps: React.FC<BookingStepsProps> = ({
                   <span className="ml-1.5 text-sm text-gray-500 mb-2">
                     Payments
                   </span>
+                  <GoChevronRight className="inline" />
+                  <span className="ml-1.5 mr-1.5">Confirmation</span>
                 </div>
                 <h1 className="text-3xl font-bold mb-7 mt-20">Select Time</h1>
                 <div className="flex flex-wrap mb-4">
@@ -387,7 +429,7 @@ const BookingSteps: React.FC<BookingStepsProps> = ({
                           onClick={() => {
                             setSelectedTime(timeSlot);
                             setSelectedDate(
-                              new Date().toISOString().split("T")[0]
+                              calculateSelectedDate(selectedDay!, timeSlot)
                             ); // Set the selected date
                           }}
                         >
@@ -475,6 +517,8 @@ const BookingSteps: React.FC<BookingStepsProps> = ({
                 <span className="font-semibold text-black ml-1.5">
                   Payments
                 </span>
+                <GoChevronRight className="inline" />
+                <span className="ml-1.5 mr-1.5">Confirmation</span>
               </div>
               <h2 className="text-3xl text-black mb-1 mt-8 font-bold">
                 Payment method
@@ -492,8 +536,9 @@ const BookingSteps: React.FC<BookingStepsProps> = ({
                       id: service.id,
                       price: service.price,
                     }))}
-                    time={selectedTime!} // Ensure selectedTime is not null
-                    date={selectedDate!} // Pass the selected date
+                    time={selectedTime!}
+                    date={selectedDate!}
+                    setPaymentSuccess={setPaymentSuccess}
                   />
                 </Elements>
                 <div className="flex justify-start items-center gap-2 mt-5 mb">
@@ -614,6 +659,64 @@ const BookingSteps: React.FC<BookingStepsProps> = ({
                     </div>
                   </div>
                 </div>
+              </div>
+            </div>
+          </div>
+        );
+      case 4:
+        return (
+          <div className="flex flex-col lg:flex-row p-4 lg:p-8 pt-10 max-w-7xl mx-auto">
+            <div className="flex-1">
+              <div className="text-sm text-gray-500 mb-2">
+                <span className="mr-1.5">Services</span>
+                <GoChevronRight className="inline" />
+                <span className="ml-1.5 mr-1.5">Time</span>
+                <GoChevronRight className="inline" />
+                <span className="ml-1.5">Payment</span>
+                <GoChevronRight className="inline" />
+                <span className="ml-1.5 font-semibold text-black">
+                  Confirmation
+                </span>
+              </div>
+              <div className="mt-8 text-center">
+                <div className="mb-4">
+                  <BsCheck className="mx-auto text-green-500 size-16" />
+                </div>
+                <h2 className="text-3xl text-black mb-4 font-bold">
+                  Booking Confirmed!
+                </h2>
+                <p className="text-gray-600 mb-6">
+                  Thank you for your booking. We've sent a confirmation email
+                  with all the details.
+                </p>
+                <div className="border rounded-lg p-6 max-w-md mx-auto text-left">
+                  <h3 className="font-bold mb-4">Booking Details</h3>
+                  <p className="mb-2">
+                    <span className="font-semibold">Date:</span> {selectedDate}
+                  </p>
+                  <p className="mb-2">
+                    <span className="font-semibold">Time:</span> {selectedTime}
+                  </p>
+                  <p className="mb-4">
+                    <span className="font-semibold">Location:</span>{" "}
+                    {article.location}
+                  </p>
+                  <div className="border-t pt-4">
+                    <p className="font-semibold">Services:</p>
+                    {savedServices.map((service, index) => (
+                      <div key={index} className="flex justify-between mt-2">
+                        <span>{service.name}</span>
+                        <span>€{service.price}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <button
+                  onClick={onClose}
+                  className="mt-8 py-2.5 px-6 bg-black text-white rounded-lg font-semibold"
+                >
+                  Done
+                </button>
               </div>
             </div>
           </div>

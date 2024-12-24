@@ -10,6 +10,7 @@ interface PaymentFormProps {
   selectedServices: { id: string; price: string }[];
   time: string;
   date: string;
+  setPaymentSuccess: (success: boolean) => void; // Add setPaymentSuccess prop
 }
 
 interface PaymentIntent {
@@ -32,13 +33,14 @@ const fetchCurrentUser = async (): Promise<UserData> => {
   }
 };
 
-const PaymentForm: React.FC<PaymentFormProps> = ({ calculateTotal, articleId, selectedServices, time, date }) => {
+const PaymentForm: React.FC<PaymentFormProps> = ({ calculateTotal, articleId, selectedServices, time, date, setPaymentSuccess }) => {
   const stripe = useStripe();
   const elements = useElements();
   const [paymentIntent, setPaymentIntent] = useState<PaymentIntent | null>(null);
   const [cardHolderName, setCardHolderName] = useState("");
   const [currentUser, setCurrentUser] = useState<UserData | null>(null);
   const [showSuccessAlert, setShowSuccessAlert] = useState(false);
+  const [isLoading, setIsLoading] = useState(false); // Add loading state
 
   useEffect(() => {
     // Fetch payment intent from your backend
@@ -79,10 +81,13 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ calculateTotal, articleId, se
       return;
     }
 
+    setIsLoading(true); // Set loading state to true
+
     const cardElement = elements.getElement(CardElement);
 
     if (!cardElement) {
       console.error("Card element not found");
+      setIsLoading(false); // Set loading state to false
       return;
     }
 
@@ -96,6 +101,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ calculateTotal, articleId, se
 
     if (error) {
       console.error(error);
+      setIsLoading(false); // Set loading state to false
     } else {
       const { error: confirmationError, paymentIntent: confirmedPaymentIntent } = await stripe.confirmCardPayment(
         paymentIntent.client_secret,
@@ -106,6 +112,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ calculateTotal, articleId, se
 
       if (confirmationError) {
         console.error(confirmationError);
+        setIsLoading(false); // Set loading state to false
       } else {
         console.log("Payment successful!");
 
@@ -144,22 +151,12 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ calculateTotal, articleId, se
             },
             time: time,
             date: date,
-            sales: remainingPrice, // Use 'sales' instead of 'price'
+            price: remainingPrice,
             user_created: currentUser?.id,
           };
 
           const response = await api.post("/items/appointments", appointmentData);
           console.log("Appointment created:", response.data);
-
-          // Create the client entry
-          const clientData = {
-            ...appointmentData,
-            card_type: paymentMethod.card?.brand,
-            sales: totalPrice, // Include the total price in the client data
-          };
-
-          await api.post("/items/clients", clientData);
-          console.log("Client entry created");
 
           // Show success alert
           setShowSuccessAlert(true);
@@ -169,8 +166,14 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ calculateTotal, articleId, se
             setShowSuccessAlert(false);
           }, 5000);
 
+          // Set payment success to true
+          setPaymentSuccess(true);
+
+          setIsLoading(false); // Set loading state to false
+
         } catch (error) {
           console.error("Error in payment process:", error);
+          setIsLoading(false); // Set loading state to false
         }
       }
     }
@@ -238,10 +241,10 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ calculateTotal, articleId, se
         </div>
         <button
           type="submit"
-          disabled={!stripe}
+          disabled={!stripe || isLoading}
           className="w-full py-3 font-semibold bg-black text-white rounded-lg"
         >
-          Pay now
+          {isLoading ? "Processing..." : `Pay €${calculateTotal()}`}
         </button>
       </form>
     </div>

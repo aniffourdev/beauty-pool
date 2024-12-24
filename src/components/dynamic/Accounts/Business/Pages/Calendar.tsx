@@ -33,6 +33,7 @@ interface Appointment {
     last_name: string;
   };
   date_created: string;
+  date: string;
   time: string; // Add the time field
   services?: SubService[]; // Make services optional
   price: string | number;
@@ -61,6 +62,7 @@ const CalendarComponent = () => {
             "user_created.last_name",
             "date_created",
             "time", // Include the time field
+            "date",
             "services.sub_services_id.name",
             "price",
             "article.label",
@@ -92,6 +94,16 @@ const CalendarComponent = () => {
     // Split the time string by the colon and take the first two parts
     const [hours, minutes] = time.split(":");
     return `${hours}:${minutes}`;
+  };
+
+  const formatDate = (date: string): string => {
+    const options: Intl.DateTimeFormatOptions = {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    };
+    return new Date(date).toLocaleDateString(undefined, options);
   };
 
   return (
@@ -157,9 +169,7 @@ const CalendarComponent = () => {
                             {appointment.article.label}
                           </td>
                           <td className="px-6 py-4 font-bold whitespace-nowrap text-sm text-gray-800 dark:text-neutral-200">
-                            {new Date(
-                              appointment.date_created
-                            ).toLocaleDateString()} <span className="font-medium">at{"" }</span> {formatTime(appointment.time)}
+                            {formatDate(appointment.date)} <span className="font-medium">at{"" }</span> {formatTime(appointment.time)}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-neutral-200">
                             {appointment.user_created.first_name}{" "}

@@ -2,12 +2,13 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { HiMiniUserPlus } from "react-icons/hi2";
-import { IoLogInSharp, IoLogOutOutline } from "react-icons/io5";
+import { IoBookmarkOutline, IoLogInSharp, IoLogOutOutline } from "react-icons/io5";
 import Cookies from "js-cookie";
 import api from "@/services/auth";
 import { FiUser } from "react-icons/fi";
-import { LuSettings } from "react-icons/lu";
+import { LuHeart, LuSettings } from "react-icons/lu";
 import { useRouter } from "next/navigation";
+import { TiHeartOutline } from "react-icons/ti";
 
 interface UserData {
   avatar?: string;
@@ -111,23 +112,37 @@ const RightBar = () => {
             <div className="absolute right-0 mt-2 w-48 bg-white shadow-md rounded-lg py-1 text-gray-900">
               <Link
                 href="/profile"
-                className="px-3 py-1 text-xs sm:text-sm md:text-base hover:bg-gray-100 font-semibold flex justify-start items-center gap-1"
+                className="px-3 py-1.5 text-xs sm:text-sm md:text-base hover:bg-gray-100 font-semibold flex justify-start items-center gap-1.5"
               >
-                <FiUser className="size-3 relative -top-[1px]" />
+                <FiUser className="size-5 relative -top-[1px]" />
                 <span>Profile</span>
               </Link>
               <Link
                 href="/settings"
-                className="px-3 py-1 text-xs sm:text-sm md:text-base hover:bg-gray-100 font-semibold flex justify-start items-center gap-1"
+                className="px-3 py-1.5 text-xs sm:text-sm md:text-base hover:bg-gray-100 font-semibold flex justify-start items-center gap-1.5"
               >
-                <LuSettings className="size-3 relative -top-[1px]" />
+                <LuSettings className="size-5 relative -top-[1px]" />
                 <span>Settings</span>
+              </Link>
+              <Link
+                href="/appointments"
+                className="px-3 py-1.5 text-xs sm:text-sm md:text-base hover:bg-gray-100 font-semibold flex justify-start items-center gap-1.5"
+              >
+                <IoBookmarkOutline className="size-5 relative -top-[1px]" />
+                <span>Appointments</span>
+              </Link>
+              <Link
+                href="/favorites"
+                className="px-3 py-1.5 text-xs sm:text-sm md:text-base hover:bg-gray-100 font-semibold flex justify-start items-center gap-1.5"
+              >
+                <LuHeart className="size-5 relative -top-[1px]" />
+                <span>Favorites</span>
               </Link>
               <button
                 onClick={handleLogout}
-                className="w-full px-3 py-1 text-xs sm:text-sm md:text-base hover:bg-gray-100 font-semibold flex justify-start items-center gap-1"
+                className="w-full px-3 py-1.5 text-xs sm:text-sm md:text-base hover:bg-gray-100 font-semibold flex justify-start items-center gap-1.5"
               >
-                <IoLogOutOutline className="size-[16px] relative -top-[0.5px]" />
+                <IoLogOutOutline className="size-5 relative -top-[0.5px]" />
                 <span>Logout</span>
               </button>
             </div>
