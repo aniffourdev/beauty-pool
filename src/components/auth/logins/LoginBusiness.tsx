@@ -130,7 +130,7 @@ const LoginBusiness = () => {
                 </button> */}
                 <div className="flex items-center justify-center my-4">
                   <div className="w-full border-t border-gray-300"></div>
-                  <span className="px-2 text-sm text-gray-500">OR</span>
+                  {/* <span className="px-2 text-sm text-gray-500">OR</span> */}
                   <div className="w-full border-t border-gray-300"></div>
                 </div>
                 <form onSubmit={handleLogin}>
