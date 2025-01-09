@@ -845,7 +845,7 @@ export default function BookingForm() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto bg-white rounded-xl p-1 bg-gradient-to-b from-[#f4b9aed6] to-[#f4b9ae85]">
+    <div className="max-w-4xl mx-auto rounded-xl p-1  blurred-border">
       <form
         onSubmit={handleSubmit}
         className="space-y-0 rounded-lg bg-white p-4"
@@ -977,8 +977,8 @@ export default function BookingForm() {
               <AiOutlineClockCircle className="text-gray-500" />
               <input
                 type="text"
-                placeholder="Any time"
-                className="outline-none border-none focus:outline-none focus:ring-0 focus:shadow-none hover:shadow-none active:shadow-none"
+                placeholder="Set Time"
+                className="outline-none border-none focus:outline-none focus:ring-0 focus:shadow-none hover:shadow-none active:shadow-none placeholder:text-gray-600 placeholder:opacity-80"
                 onClick={() => setShowFilter(!showFilter)}
                 value={selectedTime}
                 onChange={(e) => setSelectedTime(e.target.value)}

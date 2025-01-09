@@ -425,3 +425,20 @@ body {
     height: 20% !important;
   }
 }
+
+
+.placeholder-visible::placeholder {
+  opacity: 0.8;
+}
+
+.placeholder-visible:not(:placeholder-shown) {
+  opacity: 1;
+}
+
+.blurred-border {
+  border: 8px solid rgba(255, 255, 255, 0.5); /* Adjust the color and opacity as needed */
+  backdrop-filter: blur(10px); /* Adjust the blur intensity as needed */
+  background-color: rgba(255, 255, 255, 0.1); /* Adjust the background color and opacity as needed */
+}
+
+

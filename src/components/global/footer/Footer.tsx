@@ -37,7 +37,7 @@ export default function Footer() {
   }, []);
 
   return (
-    <footer className="bg-gray-50 py-4 px-4 sm:py-6 md:py-8">
+    <footer className="bg-red-200 py-4 px-4 sm:py-6 md:py-8">
       <div className="max-w-5xl mx-auto">
         {/* Brand and App Links */}
         <div className="flex flex-col items-center justify-center mb-4">
