@@ -81,7 +81,7 @@ const LoginCustomer = () => {
                   <MdFacebook className="text-blue-600 mr-2 size-6" />
                   Continue with Facebook
                 </button> */}
-                <button className="flex items-center justify-center w-full px-4 py-2 mb-4 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50">
+                {/* <button className="flex items-center justify-center w-full px-4 py-2 mb-4 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50">
                   <svg
                     viewBox="0 0 32 32"
                     className="size-6 mr-2"
@@ -128,7 +128,7 @@ const LoginCustomer = () => {
                     </g>
                   </svg>
                   Continue with Google
-                </button>
+                </button> */}
                 <div className="flex items-center justify-center my-4">
                   <div className="w-full border-t border-gray-300"></div>
                   <span className="px-2 text-sm text-gray-500">OR</span>
