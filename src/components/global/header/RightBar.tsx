@@ -8,7 +8,6 @@ import api from "@/services/auth";
 import { FiUser } from "react-icons/fi";
 import { LuHeart, LuSettings } from "react-icons/lu";
 import { useRouter } from "next/navigation";
-import { TiHeartOutline } from "react-icons/ti";
 
 interface UserData {
   avatar?: string;
@@ -114,35 +113,35 @@ const RightBar = () => {
                 href="/profile"
                 className="px-3 py-1.5 text-xs sm:text-sm md:text-base hover:bg-gray-100 font-semibold flex justify-start items-center gap-1.5"
               >
-                <FiUser className="size-5 relative -top-[1px]" />
+                <FiUser className="size-5 relative -top-[1px] text-black" />
                 <span>Profile</span>
               </Link>
               <Link
                 href="/settings"
                 className="px-3 py-1.5 text-xs sm:text-sm md:text-base hover:bg-gray-100 font-semibold flex justify-start items-center gap-1.5"
               >
-                <LuSettings className="size-5 relative -top-[1px]" />
+                <LuSettings className="size-5 relative -top-[1px] text-black" />
                 <span>Settings</span>
               </Link>
               <Link
                 href="/appointments"
                 className="px-3 py-1.5 text-xs sm:text-sm md:text-base hover:bg-gray-100 font-semibold flex justify-start items-center gap-1.5"
               >
-                <IoBookmarkOutline className="size-5 relative -top-[1px]" />
+                <IoBookmarkOutline className="size-5 relative -top-[1px] text-black" />
                 <span>Appointments</span>
               </Link>
               <Link
-                href="/favorites"
+                href="/favourites"
                 className="px-3 py-1.5 text-xs sm:text-sm md:text-base hover:bg-gray-100 font-semibold flex justify-start items-center gap-1.5"
               >
-                <LuHeart className="size-5 relative -top-[1px]" />
+                <LuHeart className="size-5 relative -top-[1px] text-black" />
                 <span>Favorites</span>
               </Link>
               <button
                 onClick={handleLogout}
                 className="w-full px-3 py-1.5 text-xs sm:text-sm md:text-base hover:bg-gray-100 font-semibold flex justify-start items-center gap-1.5"
               >
-                <IoLogOutOutline className="size-5 relative -top-[0.5px]" />
+                <IoLogOutOutline className="size-[23px] relative -top-[0.5px] text-black" />
                 <span>Logout</span>
               </button>
             </div>

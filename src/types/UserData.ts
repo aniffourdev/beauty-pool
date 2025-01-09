@@ -1,5 +1,6 @@
 // UserData.ts
 export interface UserData {
+  role: any;
   id: string;
   first_name: string;
   last_name: string;
@@ -11,7 +12,7 @@ export interface UserData {
   avatar?: string;
   home_address?: string;
   work_address?: string;
-  category?: number[]; // Add this if it's part of the user data
+  category?: number[];
 }
 
 export interface DataUser {

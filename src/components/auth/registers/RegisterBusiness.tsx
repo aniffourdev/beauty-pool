@@ -251,10 +251,6 @@ const RegisterBusiness = () => {
               <div className="max-w-[500px] mx-auto">
                 <div className="flex flex-col items-center justify-center">
                   <div className="w-full">
-                    <button className="flex items-center justify-center w-full px-4 py-2 mb-4 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50">
-                      <MdFacebook className="text-blue-600 mr-2 size-6" />
-                      Continue with Facebook
-                    </button>
                     <button
                       className="flex items-center justify-center w-full px-4 py-2 mb-4 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50"
                       onClick={() => signIn('google')}

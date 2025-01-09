@@ -119,90 +119,95 @@ export default function Footer() {
     //     </div>
     //   </div>
     // </footer>
-    <div className="flex flex-col items-center justify-center">
-      <div className="w-full max-w-6xl px-4 py-8">
-        <div className="mb-8">
-          <h1 className="text-2xl font-semibold">
-            Please feel free to get in touch with us
-          </h1>
-        </div>
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
-          <div className="flex items-start mb-4 md:mb-0">
-            <i className="fas fa-map-marker-alt text-blue-500 text-2xl mr-4"></i>
-            <div>
-              <h2 className="font-semibold mb-1.5 text-lg">Our Location</h2>
-              <p>
-                <HiOutlineLocationMarker className="inline size-5 text-[#f47c66] relative -top-[1px]" />{" "}
-                401 Broadway, 24th Floor, Orchard Cloud View, London
-              </p>
+    <div className="bg-slate-50 py-10">
+      <div className="flex flex-col items-center justify-center">
+        <div className="w-full max-w-6xl px-4 py-8">
+          <div className="mb-8">
+            <h1 className="text-2xl font-semibold">
+              Please feel free to get in touch with us
+            </h1>
+          </div>
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
+            <div className="flex items-start mb-4 md:mb-0">
+              <i className="fas fa-map-marker-alt text-blue-500 text-2xl mr-4"></i>
+              <div>
+                <h2 className="font-semibold mb-1.5 text-lg">Our Location</h2>
+                <p>
+                  <HiOutlineLocationMarker className="inline size-5 text-[#f47c66] relative -top-[1px]" />{" "}
+                  401 Broadway, 24th Floor, Orchard Cloud View, London
+                </p>
+              </div>
+            </div>
+            <div className="flex items-start">
+              <div>
+                <h2 className="font-semibold mb-1.5 text-lg">
+                  How Can We Help?
+                </h2>
+                <p>
+                  <TbMailOpened className="inline size-5 relative text-[#f47c66] -top-[1px]" />{" "}
+                  support@beautypool.ae
+                </p>
+                <p>
+                  <BiPhoneCall className="inline size-5 relative text-[#f47c66] -top-[1px]" />{" "}
+                  +971 589 40 76 74
+                </p>
+              </div>
+            </div>
+            <div className="flex items-start">
+              <div>
+                <h2 className="font-semibold mb-1.5 text-lg">Legal</h2>
+                {articles.length > 0 ? (
+                  articles.map((article) => (
+                    <li key={article.id} className="list-none">
+                      <Link
+                        href={`/page/${article.slug}`}
+                        className="hover:text-[#f47c66]"
+                      >
+                        <BsChevronRight className="inline size-4 -mr-0.5 relative text-[#f47c66] -top-[1px]" />{" "}
+                        {article.title}
+                      </Link>
+                    </li>
+                  ))
+                ) : (
+                  <>No Pages Found!</>
+                )}
+              </div>
             </div>
           </div>
-          <div className="flex items-start">
-            <div>
-              <h2 className="font-semibold mb-1.5 text-lg">How Can We Help?</h2>
-              <p>
-                <TbMailOpened className="inline size-5 relative text-[#f47c66] -top-[1px]" />{" "}
-                support@beautypool.ae
-              </p>
-              <p>
-                <BiPhoneCall className="inline size-5 relative text-[#f47c66] -top-[1px]" />{" "}
-                +971 589 40 76 74
-              </p>
+          <div className="border-t border-gray-200 pt-4 flex flex-col md:flex-row justify-between items-center">
+            <div className="flex items-center mb-4 md:mb-0">
+              <Link href="/" className="flex justify-center items-center">
+                <Image
+                  src={Logo}
+                  alt="logo"
+                  width={0}
+                  height={0}
+                  className="-mr-4 w-16"
+                />
+                <span
+                  className={`${gruppo.className} text-3xl hidden md:block text-[#f4b8ae] font-bold`}
+                >
+                  eautypool
+                </span>
+              </Link>
             </div>
-          </div>
-          <div className="flex items-start">
-            <div>
-              <h2 className="font-semibold mb-1.5 text-lg">Legal</h2>
-              {articles.length > 0 ? (
-                articles.map((article) => (
-                  <li key={article.id} className="list-none">
-                    <Link
-                      href={`/page/${article.slug}`}
-                      className="hover:text-[#f47c66]"
-                    >
-                      <BsChevronRight className="inline size-4 -mr-0.5 relative text-[#f47c66] -top-[1px]" /> {article.title}
-                    </Link>
-                  </li>
-                ))
-              ) : (
-                <>No Pages Found!</>
-              )}
+            <div className="text-gray-500 text-sm">
+              © 2024 Beautypool | All Rights Reserved
             </div>
-          </div>
-        </div>
-        <div className="border-t border-gray-200 pt-4 flex flex-col md:flex-row justify-between items-center">
-          <div className="flex items-center mb-4 md:mb-0">
-            <Link href="/" className="flex justify-center items-center">
-              <Image
-                src={Logo}
-                alt="logo"
-                width={0}
-                height={0}
-                className="-mr-4 w-16"
-              />
-              <span
-                className={`${gruppo.className} text-3xl hidden md:block text-[#f4b8ae] font-bold`}
-              >
-                eautypool
-              </span>
-            </Link>
-          </div>
-          <div className="text-gray-500 text-sm">
-            © 2024 Beautypool | All Rights Reserved
-          </div>
-          <div className="flex space-x-4 mt-4 md:mt-0">
-            <a href="#" className="text-gray-500 hover:text-gray-700">
-              <i className="fab fa-facebook-f"></i>
-            </a>
-            <a href="#" className="text-gray-500 hover:text-gray-700">
-              <i className="fab fa-twitter"></i>
-            </a>
-            <a href="#" className="text-gray-500 hover:text-gray-700">
-              <i className="fab fa-instagram"></i>
-            </a>
-            <a href="#" className="text-gray-500 hover:text-gray-700">
-              <i className="fab fa-linkedin-in"></i>
-            </a>
+            <div className="flex space-x-4 mt-4 md:mt-0">
+              <a href="#" className="text-gray-500 hover:text-gray-700">
+                <i className="fab fa-facebook-f"></i>
+              </a>
+              <a href="#" className="text-gray-500 hover:text-gray-700">
+                <i className="fab fa-twitter"></i>
+              </a>
+              <a href="#" className="text-gray-500 hover:text-gray-700">
+                <i className="fab fa-instagram"></i>
+              </a>
+              <a href="#" className="text-gray-500 hover:text-gray-700">
+                <i className="fab fa-linkedin-in"></i>
+              </a>
+            </div>
           </div>
         </div>
       </div>

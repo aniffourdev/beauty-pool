@@ -1,15 +1,11 @@
 "use client";
 import React, { useEffect, useState } from "react";
+import { Calendar, momentLocalizer } from "react-big-calendar";
+import moment from "moment";
+import "react-big-calendar/lib/css/react-big-calendar.css";
 import Sidebar from "@/components/dynamic/Accounts/Business/Global/Sidebar";
 import Header from "@/components/dynamic/Accounts/Business/Global/Header";
 import api from "@/services/auth";
-import { Gruppo } from "next/font/google";
-
-const gruppo = Gruppo({
-  subsets: ["latin"],
-  variable: "--font-geist-mono",
-  weight: "400",
-});
 
 interface UserData {
   id: string;
@@ -34,16 +30,65 @@ interface Appointment {
   };
   date_created: string;
   date: string;
-  time: string; // Add the time field
-  services?: SubService[]; // Make services optional
+  time: string;
+  services?: SubService[];
   price: string | number;
   article: Article;
 }
 
+interface CalendarEvent {
+  title: string;
+  start: Date;
+  end: Date;
+  article: string;
+  price: string | number;
+  services: string;
+  rawAppointment: Appointment;
+}
+
+const localizer = momentLocalizer(moment);
+
+const CustomEvent = ({ event }: { event: CalendarEvent }) => {
+  return (
+    <div className="p-2 h-full w-full cursor-pointer">
+      <div className="bg-blue-600 text-white p-2 rounded-md h-full">
+        <div className="font-bold mb-1">{event.title}</div>
+        <div className="text-sm">
+          <div>{event.article}</div>
+          <div>Price: {event.price} AED</div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Simple Modal Component
+const Modal = ({ isOpen, onClose, children }: { isOpen: boolean; onClose: () => void; children: React.ReactNode }) => {
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4 relative">
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
+        >
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+        {children}
+      </div>
+    </div>
+  );
+};
+
 const CalendarComponent = () => {
   const [userData, setUserData] = useState<UserData | null>(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [appointments, setAppointments] = useState<Appointment[]>([]);
+  const [appointments, setAppointments] = useState<CalendarEvent[]>([]);
+  const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -61,26 +106,54 @@ const CalendarComponent = () => {
             "user_created.first_name",
             "user_created.last_name",
             "date_created",
-            "time", // Include the time field
+            "time",
             "date",
             "services.sub_services_id.name",
             "price",
             "article.label",
             "article.featured_image",
           ].join(","),
-          // Try setting `deep` to ensure relationships are included
           deep: {
             services: {
               sub_services_id: {
-                fields: ["name"], // Explicitly request the `name` field from `sub_services_id`
+                fields: ["name"],
               },
             },
           },
         },
       });
 
-      console.log("API Response:", response.data.data);
-      setAppointments(response.data.data);
+      const events: CalendarEvent[] = response.data.data.map((appointment: Appointment) => {
+        // Parse the date and time correctly
+        const [year, month, day] = appointment.date.split('-');
+        const [hours, minutes] = appointment.time.split(':');
+        
+        // Create start date by combining date and time
+        const startDate = new Date(
+          parseInt(year),
+          parseInt(month) - 1, // Month is 0-based in JavaScript
+          parseInt(day),
+          parseInt(hours),
+          parseInt(minutes)
+        );
+        
+        // End date is 1 hour after start
+        const endDate = new Date(startDate.getTime() + 60 * 60 * 1000);
+        
+        return {
+          title: `${appointment.user_created.first_name} ${appointment.user_created.last_name}`,
+          start: startDate,
+          end: endDate,
+          article: appointment.article.label,
+          price: appointment.price,
+          services: appointment.services
+            ?.map(service => service.sub_services_id?.name || "Unnamed Service")
+            .join(", ") || "No services",
+          rawAppointment: appointment,
+        };
+      });
+      
+      setAppointments(events);
     } catch (error) {
       console.error("Error fetching appointments:", error);
     }
@@ -90,20 +163,9 @@ const CalendarComponent = () => {
     fetchAppointments();
   }, []);
 
-  const formatTime = (time: string): string => {
-    // Split the time string by the colon and take the first two parts
-    const [hours, minutes] = time.split(":");
-    return `${hours}:${minutes}`;
-  };
-
-  const formatDate = (date: string): string => {
-    const options: Intl.DateTimeFormatOptions = {
-      weekday: "long",
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    };
-    return new Date(date).toLocaleDateString(undefined, options);
+  const handleEventClick = (event: CalendarEvent) => {
+    setSelectedEvent(event);
+    setIsModalOpen(true);
   };
 
   return (
@@ -120,99 +182,62 @@ const CalendarComponent = () => {
             <div className="-m-1.5 overflow-x-auto">
               <div className="p-1.5 min-w-full inline-block align-middle">
                 <div className="overflow-hidden">
-                  <table className="min-w-full divide-y divide-gray-200 dark:divide-neutral-700">
-                    <thead>
-                      <tr>
-                        <th
-                          scope="col"
-                          className="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase dark:text-neutral-500"
-                        >
-                          Article
-                        </th>
-                        <th
-                          scope="col"
-                          className="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase dark:text-neutral-500"
-                        >
-                          Date
-                        </th>
-                        <th
-                          scope="col"
-                          className="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase dark:text-neutral-500"
-                        >
-                          Customer
-                        </th>
-                        <th
-                          scope="col"
-                          className="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase dark:text-neutral-500"
-                        >
-                          Price
-                        </th>
-                        <th
-                          scope="col"
-                          className="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase dark:text-neutral-500"
-                        >
-                          Services
-                        </th>
-                        <th
-                          scope="col"
-                          className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase dark:text-neutral-500"
-                        >
-                          Details
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-gray-200 dark:divide-neutral-700">
-                      {appointments.map((appointment, index) => (
-                        <tr key={index}>
-                          <td className="px-6 py-4 flex justify-start items-center gap-2 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-neutral-800">
-                            <div className="w-9 h-9 bg-gray-200 rounded-full bg-cover bg-center" style={{ backgroundImage: `url(https://maoulaty.shop/assets/${appointment.article.featured_image})` }}></div>
-                            {appointment.article.label}
-                          </td>
-                          <td className="px-6 py-4 font-bold whitespace-nowrap text-sm text-gray-800 dark:text-neutral-200">
-                            {formatDate(appointment.date)} <span className="font-medium">at{"" }</span> {formatTime(appointment.time)}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-neutral-200">
-                            {appointment.user_created.first_name}{" "}
-                            {appointment.user_created.last_name}
-                          </td>
-                          <td className="px-6 py-4 font-bold whitespace-nowrap text-sm text-emerald-800 dark:text-neutral-200">
-                            <span className="px-1.5 rounded py-0.5 bg-emerald-100">
-                              {appointment.price} AED
-                            </span>
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-neutral-200">
-                            {appointment.services &&
-                            appointment.services.length > 0
-                              ? appointment.services.map(
-                                  (service, serviceIndex) => (
-                                    <div key={serviceIndex}>
-                                      {/* Ensure that sub_services_id and name are correctly accessed */}
-                                      {service.sub_services_id?.name ||
-                                        "Unnamed Service"}
-                                    </div>
-                                  )
-                                )
-                              : "No Services"}
-                          </td>
-
-                          <td className="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
-                            <button
-                              type="button"
-                              className="inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent text-blue-600 hover:text-blue-800 focus:outline-none focus:text-blue-800 disabled:opacity-50 disabled:pointer-events-none dark:text-blue-500 dark:hover:text-blue-400 dark:focus:text-blue-400"
-                            >
-                              View Details
-                            </button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                  <Calendar
+                    localizer={localizer}
+                    events={appointments}
+                    startAccessor="start"
+                    endAccessor="end"
+                    style={{ height: 500 }}
+                    components={{
+                      event: CustomEvent,
+                    }}
+                    onSelectEvent={handleEventClick}
+                    defaultView="week"
+                  />
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
+
+      {/* Custom Modal for Appointment Details */}
+      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+        <div className="mb-6">
+          <h2 className="text-2xl font-bold mb-4">Appointment Details</h2>
+          {selectedEvent && (
+            <div className="space-y-4">
+              <div>
+                <h4 className="text-sm font-semibold text-gray-500">Client</h4>
+                <p className="text-lg">{selectedEvent.title}</p>
+              </div>
+              
+              <div>
+                <h4 className="text-sm font-semibold text-gray-500">Service</h4>
+                <p className="text-lg">{selectedEvent.article}</p>
+              </div>
+              
+              <div>
+                <h4 className="text-sm font-semibold text-gray-500">Date & Time</h4>
+                <p className="text-lg">
+                  {moment(selectedEvent.start).format('MMMM D, YYYY')} at{' '}
+                  {moment(selectedEvent.start).format('h:mm A')}
+                </p>
+              </div>
+              
+              <div>
+                <h4 className="text-sm font-semibold text-gray-500">Price</h4>
+                <p className="text-lg">{selectedEvent.price} AED</p>
+              </div>
+              
+              <div>
+                <h4 className="text-sm font-semibold text-gray-500">Services</h4>
+                <p className="text-lg">{selectedEvent.services}</p>
+              </div>
+            </div>
+          )}
+        </div>
+      </Modal>
     </div>
   );
 };

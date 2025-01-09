@@ -1,8 +1,13 @@
 "use client";
 import React, { useEffect, useState, useRef } from "react";
-import { IoCheckmarkDoneOutline, IoChevronDownSharp, IoChevronUpSharp, IoStar } from "react-icons/io5";
+import {
+  IoCheckmarkDoneOutline,
+  IoChevronDownSharp,
+  IoChevronUpSharp,
+  IoStar,
+} from "react-icons/io5";
 import { IoClose } from "react-icons/io5";
-import { IoChevronBack, IoChevronForward } from "react-icons/io5";
+import Image from "next/image";
 import api from "@/services/auth";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination } from "swiper/modules";
@@ -22,6 +27,7 @@ import Cookies from "js-cookie";
 import { OrbitProgress } from "react-loading-indicators";
 import { GoHeart, GoHeartFill, GoShareAndroid } from "react-icons/go";
 import Footer from "@/components/global/footer/Footer";
+import Requirments from "./Forms/Requirements";
 
 interface UserData {
   id: string;
@@ -283,10 +289,10 @@ const SingleBook: React.FC<SingleBookProps> = ({ slug }) => {
             ],
           },
         });
-  
+
         if (slugResponse.data && slugResponse.data.length > 0) {
           const articleId = slugResponse.data[0].id;
-  
+
           const { data: articleResponse } = await api.get(
             `/items/articles/${articleId}`,
             {
@@ -299,16 +305,16 @@ const SingleBook: React.FC<SingleBookProps> = ({ slug }) => {
               },
             }
           );
-  
+
           if (articleResponse.data) {
             setArticle(articleResponse.data);
-  
+
             // Fetch services data
             const servicesResponse = await api.get(
               `https://maoulaty.shop/items/articles/${articleId}?fields=service.Services_id.name,service.Services_id.sub_services.sub_services_id.name,service.Services_id.sub_services.sub_services_id.price,service.Services_id.sub_services.sub_services_id.duration,service.Services_id.sub_services.sub_services_id.description`
             );
             const servicesData = servicesResponse.data.data.service;
-  
+
             const parentServices: { [key: string]: ParentService } = {};
             servicesData.forEach(
               (service: {
@@ -334,16 +340,16 @@ const SingleBook: React.FC<SingleBookProps> = ({ slug }) => {
                 });
               }
             );
-  
+
             const formattedServices = Object.keys(parentServices).map(
               (key, index) => ({
                 id: String(index + 1),
                 parent_service: parentServices[key],
               })
             );
-  
+
             setServices(formattedServices);
-  
+
             // Geocode the address
             const coordinates = await geocodeAddress(
               articleResponse.data.Address
@@ -362,11 +368,9 @@ const SingleBook: React.FC<SingleBookProps> = ({ slug }) => {
         setLoading(false);
       }
     };
-  
+
     fetchArticle();
   }, [slug]);
-  
-  
 
   useEffect(() => {
     const fetchCurrentUser = async () => {
@@ -444,45 +448,45 @@ const SingleBook: React.FC<SingleBookProps> = ({ slug }) => {
 
   if (loading)
     return (
-  <>
-      <div className="px-3 lg:px-8">
-        <div className="lg:flex gap-8">
-          <div className="lg:w-8/12">
-            <div className="p-4">
-              <div className="skeleton h-8 mb-4 w-full rounded"></div>
-              <div className="lg:flex justify-between items-center gap-4">
-                <div className="skeleton h-4 mb-4 w-full rounded"></div>
-                <div className="skeleton h-4 mb-4 w-full rounded"></div>
+      <>
+        <div className="px-3 lg:px-8">
+          <div className="lg:flex gap-8">
+            <div className="lg:w-8/12">
+              <div className="p-4">
+                <div className="skeleton h-8 mb-4 w-full rounded"></div>
+                <div className="lg:flex justify-between items-center gap-4">
+                  <div className="skeleton h-4 mb-4 w-full rounded"></div>
+                  <div className="skeleton h-4 mb-4 w-full rounded"></div>
+                  <div className="flex justify-center items-center gap-2">
+                    <div className="skeleton h-11 w-11 mb-4 rounded-full"></div>
+                    <div className="skeleton h-11 w-11 mb-4 rounded-full"></div>
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4 mb-6">
+                  <div className="col-span-2">
+                    <div className="skeleton h-80 w-full rounded"></div>
+                  </div>
+                  <div className="grid grid-cols-1 gap-4">
+                    <div className="skeleton h-40 w-full rounded"></div>
+                    <div className="skeleton h-40 w-full rounded"></div>
+                  </div>
+                </div>
+                <div className="skeleton h-10 w-32 rounded mb-3"></div>
                 <div className="flex justify-center items-center gap-2">
-                  <div className="skeleton h-11 w-11 mb-4 rounded-full"></div>
-                  <div className="skeleton h-11 w-11 mb-4 rounded-full"></div>
+                  <div className="skeleton h-10 w-full rounded-full"></div>
+                  <div className="skeleton h-10 w-full rounded-full"></div>
+                  <div className="skeleton h-10 w-full rounded-full"></div>
+                  <div className="skeleton h-10 w-full rounded-full"></div>
                 </div>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4 mb-6">
-                <div className="col-span-2">
-                  <div className="skeleton h-80 w-full rounded"></div>
-                </div>
-                <div className="grid grid-cols-1 gap-4">
-                  <div className="skeleton h-40 w-full rounded"></div>
-                  <div className="skeleton h-40 w-full rounded"></div>
-                </div>
-              </div>
-              <div className="skeleton h-10 w-32 rounded mb-3"></div>
-              <div className="flex justify-center items-center gap-2">
-                <div className="skeleton h-10 w-full rounded-full"></div>
-                <div className="skeleton h-10 w-full rounded-full"></div>
-                <div className="skeleton h-10 w-full rounded-full"></div>
-                <div className="skeleton h-10 w-full rounded-full"></div>
               </div>
             </div>
-          </div>
-          <div className="lg:w-4/12">
-            <div className="p-4">
-              <div className="skeleton h-96 w-full rounded"></div>
+            <div className="lg:w-4/12">
+              <div className="p-4">
+                <div className="skeleton h-96 w-full rounded"></div>
+              </div>
             </div>
           </div>
         </div>
-      </div>
       </>
     );
   if (error) return <div>{error}</div>;
@@ -616,423 +620,427 @@ const SingleBook: React.FC<SingleBookProps> = ({ slug }) => {
 
   return (
     <>
-    <div className="px-3 lg:px-8">
-      <div className="lg:flex gap-8">
-        <div className="lg:w-8/12">
-          <div className="p-4">
-            <h1 className="text-3xl font-bold">{article?.label}</h1>
-            <div className="lg:flex justify-between items-center">
-              <div className="flex items-center mt-2">
-                <span className="text-lg font-bold">5.0</span>
-                <span className="text-slate-700 ml-1 relative -top-[1px] flex justify-center items-center">
-                  <IoStar className="text-slate-700" />
-                  <IoStar className="text-slate-700" />
-                  <IoStar className="text-slate-700" />
-                  <IoStar className="text-slate-700" />
-                  <IoStar className="text-slate-700" />
-                </span>
-                <span className="text-[#f47c66] font-bold ml-1">(1,458)</span>
-                <span className="text-slate-800 text-sm font-semibold mx-2">
-                  •
-                </span>
-                <span
-                  className={`text-slate-800 text-sm font-semibold ${
-                    getCurrentOpeningTime(article!).includes("Open")
-                      ? "text-green-400"
-                      : "text-amber-500"
-                  }`}
-                >
-                  {getCurrentOpeningTime(article!)}
-                </span>
-                <span className="text-slate-800 text-sm font-semibold mx-2">
-                  •
-                </span>
-                <span className="text-slate-800 text-sm font-semibold">
-                  {article?.Address}
-                </span>
-                <a
-                  href={`https://www.google.com/maps?q=${article?.Address}`}
-                  target="_blank"
-                  className="text-[#f47c66] font-semibold ml-2"
-                >
-                  Get directions
-                </a>
+      <div className="px-3 lg:px-8">
+        <div className="lg:flex gap-8">
+          <div className="lg:w-8/12">
+            <div className="p-4">
+              <h1 className="text-3xl font-bold">{article?.label}</h1>
+              <div className="lg:flex justify-between items-center">
+                <div className="flex items-center mt-2">
+                  <span className="text-lg font-bold">5.0</span>
+                  <span className="text-slate-700 ml-1 relative -top-[1px] flex justify-center items-center">
+                    <IoStar className="text-slate-700" />
+                    <IoStar className="text-slate-700" />
+                    <IoStar className="text-slate-700" />
+                    <IoStar className="text-slate-700" />
+                    <IoStar className="text-slate-700" />
+                  </span>
+                  <span className="text-[#f47c66] font-bold ml-1">(1,458)</span>
+                  <span className="text-slate-800 text-sm font-semibold mx-2">
+                    •
+                  </span>
+                  <span
+                    className={`text-slate-800 text-sm font-semibold ${
+                      getCurrentOpeningTime(article!).includes("Open")
+                        ? "text-green-400"
+                        : "text-amber-500"
+                    }`}
+                  >
+                    {getCurrentOpeningTime(article!)}
+                  </span>
+                  <span className="text-slate-800 text-sm font-semibold mx-2">
+                    •
+                  </span>
+                  <span className="text-slate-800 text-sm font-semibold">
+                    {article?.Address}
+                  </span>
+                  <a
+                    href={`https://www.google.com/maps?q=${article?.Address}`}
+                    target="_blank"
+                    className="text-[#f47c66] font-semibold ml-2"
+                  >
+                    Get directions
+                  </a>
+                </div>
+                <div className="flex items-center space-x-2 mt-4 md:mt-0">
+                  <button
+                    onClick={() => handleFavorite(article!)}
+                    className="text-gray-800 border border-slate-200 h-12 w-12 flex justify-center items-center rounded-full"
+                    disabled={favoriteLoading}
+                  >
+                    {favoriteLoading ? (
+                      <OrbitProgress
+                        variant="disc"
+                        color="#d3d3d3"
+                        size="small"
+                        text=""
+                        textColor=""
+                      />
+                    ) : isFavorited ? (
+                      <GoHeartFill className="size-6 text-red-500" />
+                    ) : (
+                      <GoHeart className="size-6" />
+                    )}
+                  </button>
+                  <button className="text-gray-800 border border-slate-200 h-12 w-12 flex justify-center items-center rounded-full">
+                    <GoShareAndroid className="size-6" />
+                  </button>
+                </div>
               </div>
-              <div className="flex items-center space-x-2 mt-4 md:mt-0">
-                <button
-                  onClick={() => handleFavorite(article!)}
-                  className="text-gray-800 border border-slate-200 h-12 w-12 flex justify-center items-center rounded-full"
-                  disabled={favoriteLoading}
-                >
-                  {favoriteLoading ? (
-                    <OrbitProgress
-                      variant="disc"
-                      color="#d3d3d3"
-                      size="small"
-                      text=""
-                      textColor=""
-                    />
-                  ) : isFavorited ? (
-                    <GoHeartFill className="size-6 text-red-500" />
-                  ) : (
-                    <GoHeart className="size-6" />
-                  )}
-                </button>
-                <button className="text-gray-800 border border-slate-200 h-12 w-12 flex justify-center items-center rounded-full">
-                  <GoShareAndroid className="size-6" />
-                </button>
-              </div>
-            </div>
 
-            {isMobile ? (
-              // Mobile view with Swiper
-              <div className="mt-4">
-                <Swiper
-                  modules={[Navigation, Pagination]}
-                  navigation={{
-                    prevEl: ".swiper-button-prev",
-                    nextEl: ".swiper-button-next",
-                  }}
-                  pagination={{ clickable: true }}
-                  loop={true}
-                  className="w-full rounded-lg"
-                >
-                  {allImages.map((image, index) => (
-                    <SwiperSlide key={index}>
-                      <img
-                        src={image}
-                        alt={`Gallery image ${index + 1}`}
-                        className="w-full h-64 object-cover rounded-lg"
-                      />
-                    </SwiperSlide>
-                  ))}
-                </Swiper>
-                <div className="swiper-button-prev !text-white"></div>
-                <div className="swiper-button-next !text-white"></div>
-              </div>
-            ) : (
-              // Desktop view with grid
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
-                <div className="col-span-2">
-                  <img
-                    src={`https://maoulaty.shop/assets/${article?.featured_image}`}
-                    alt={`Featured image of ${article?.label}`}
-                    className="w-full rounded-lg"
-                  />
-                </div>
-                <div className="grid grid-cols-1 gap-4">
-                  {firstTwoImages.map((gallery, index) => (
-                    <div
-                      key={gallery.directus_files_id.id}
-                      className={index === 1 ? "relative" : ""}
-                      onClick={
-                        index === 1 ? () => setIsModalOpen(true) : undefined
-                      }
-                    >
-                      <img
-                        src={`https://maoulaty.shop/assets/${gallery.directus_files_id.id}`}
-                        alt={gallery.directus_files_id.filename_download}
-                        className="w-full rounded-lg"
-                      />
-                      {index === 1 && (
-                        <button className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-40 text-white rounded-lg">
-                          <span className="px-5 py-2 bg-white text-[#f47c66] font-semibold rounded-full">
-                            See all images ({allImages.length})
-                          </span>
-                        </button>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-        <div className="lg:w-4/12 sticky top-[80]">
-          <div className="bg-white shadow-xl rounded-lg p-4 flex flex-col">
-            <h1 className="text-4xl font-bold">{article?.label}</h1>
-            <div className="flex items-center mt-2">
-              <span className="text-lg font-bold">5.0</span>
-              <span className="ml-1 text-slate-700 flex justify-center items-center relative -top-[1px]">
-                <IoStar />
-                <IoStar />
-                <IoStar />
-                <IoStar />
-                <IoStar />
-              </span>
-              <Link
-                href="#reviews"
-                className="ml-2 text-[#f47c66] font-semibold"
-              >
-                (5,113)
-              </Link>
-            </div>
-            <button
-              onClick={handleBooking}
-              className="mt-4 bg-black font-semibold text-white py-3.5 px-4 rounded-lg w-full"
-            >
-              Book now
-            </button>
-            <div className="mt-6">
-              <div
-                className="flex items-center text-slate-600 cursor-pointer"
-                onClick={() => setIsOpen(!isOpen)}
-              >
-                <CiClock1 className="size-7 text-slate-600 -mr-0.5" />
-                <span className="ml-2">
-                  {getCurrentOpeningTime(article!)}
-                </span>
-                {isOpen ? (
-                  <IoChevronUpSharp className="ml-2" />
-                ) : (
-                  <IoChevronDownSharp className="ml-2" />
-                )}
-              </div>
-              {isOpen && (
+              {isMobile ? (
+                // Mobile view with Swiper
                 <div className="mt-4">
-                  {openingTimes.map((item, index) => (
-                    <div key={index} className="flex items-center mt-2">
-                      <span
-                        className={`w-2.5 h-2.5 rounded-full ${
-                          item.open ? "bg-green-400" : "bg-gray-400"
-                        }`}
-                      ></span>
-                      <span
-                        className={`ml-2 ${
-                          item.currentDay ? "font-bold text-green-400" : ""
-                        }`}
+                  <Swiper
+                    modules={[Navigation, Pagination]}
+                    navigation={{
+                      prevEl: ".swiper-button-prev",
+                      nextEl: ".swiper-button-next",
+                    }}
+                    pagination={{ clickable: true }}
+                    loop={true}
+                    className="w-full rounded-lg"
+                  >
+                    {allImages.map((image, index) => (
+                      <SwiperSlide key={index}>
+                        <Image
+                          src={image}
+                          alt={`Gallery image ${index + 1}`}
+                          className="w-full h-64 object-cover rounded-lg"
+                          width={500}
+                          height={250}
+                        />
+                      </SwiperSlide>
+                    ))}
+                  </Swiper>
+                  <div className="swiper-button-prev !text-white"></div>
+                  <div className="swiper-button-next !text-white"></div>
+                </div>
+              ) : (
+                // Desktop view with grid
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+                  <div className="col-span-2">
+                    <Image
+                      src={`https://maoulaty.shop/assets/${article?.featured_image}`}
+                      alt={`Featured image of ${article?.label}`}
+                      className="w-full rounded-lg"
+                      width={600}
+                      height={300}
+                    />
+                  </div>
+                  <div className="grid grid-cols-1 gap-4">
+                    {firstTwoImages.map((gallery, index) => (
+                      <div
+                        key={gallery.directus_files_id.id}
+                        className={index === 1 ? "relative" : ""}
+                        onClick={
+                          index === 1 ? () => setIsModalOpen(true) : undefined
+                        }
                       >
-                        {item.day}
-                      </span>
-                      <span
-                        className={`ml-auto ${
-                          item.currentDay ? "font-bold text-green-400" : ""
-                        }`}
-                      >
-                        {item.time}
-                      </span>
-                    </div>
-                  ))}
+                        <Image
+                          src={`https://maoulaty.shop/assets/${gallery.directus_files_id.id}`}
+                          alt={gallery.directus_files_id.filename_download}
+                          className="w-full rounded-lg"
+                          width={800}
+                          height={400}
+                        />
+                        {index === 1 && (
+                          <button className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-40 text-white rounded-lg">
+                            <span className="px-5 py-2 bg-white text-[#f47c66] font-semibold rounded-full">
+                              See all images ({allImages.length})
+                            </span>
+                          </button>
+                        )}
+                      </div>
+                    ))}
+                  </div>
                 </div>
               )}
             </div>
-            <div className="mt-3.5 flex items-center">
-              <CiLocationOn className="text-gray-600 size-7" />
-              <span className="ml-2 text-gray-600">
-                {article?.Address}
-                <br />
+          </div>
+          <div className="lg:w-4/12 sticky top-[80]">
+            <div className="bg-white shadow-xl rounded-lg p-4 flex flex-col">
+              <h1 className="text-4xl font-bold">{article?.label}</h1>
+              <div className="flex items-center mt-2">
+                <span className="text-lg font-bold">5.0</span>
+                <span className="ml-1 text-slate-700 flex justify-center items-center relative -top-[1px]">
+                  <IoStar />
+                  <IoStar />
+                  <IoStar />
+                  <IoStar />
+                  <IoStar />
+                </span>
                 <Link
-                  href={`https://www.google.com/maps?q=${article?.Address}`}
-                  target="_blank"
-                  className="text-[#f47c66] ml-0 font-semibold"
+                  href="#reviews"
+                  className="ml-2 text-[#f47c66] font-semibold"
                 >
-                  Get directions
+                  (5,113)
                 </Link>
-              </span>
+              </div>
+              <button
+                onClick={handleBooking}
+                className="mt-4 bg-black font-semibold text-white py-3.5 px-4 rounded-lg w-full"
+              >
+                Book now
+              </button>
+              <div className="mt-6">
+                <div
+                  className="flex items-center text-slate-600 cursor-pointer"
+                  onClick={() => setIsOpen(!isOpen)}
+                >
+                  <CiClock1 className="size-7 text-slate-600 -mr-0.5" />
+                  <span className="ml-2">
+                    {getCurrentOpeningTime(article!)}
+                  </span>
+                  {isOpen ? (
+                    <IoChevronUpSharp className="ml-2" />
+                  ) : (
+                    <IoChevronDownSharp className="ml-2" />
+                  )}
+                </div>
+                {isOpen && (
+                  <div className="mt-4">
+                    {openingTimes.map((item, index) => (
+                      <div key={index} className="flex items-center mt-2">
+                        <span
+                          className={`w-2.5 h-2.5 rounded-full ${
+                            item.open ? "bg-green-400" : "bg-gray-400"
+                          }`}
+                        ></span>
+                        <span
+                          className={`ml-2 ${
+                            item.currentDay ? "font-bold text-green-400" : ""
+                          }`}
+                        >
+                          {item.day}
+                        </span>
+                        <span
+                          className={`ml-auto ${
+                            item.currentDay ? "font-bold text-green-400" : ""
+                          }`}
+                        >
+                          {item.time}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+              <div className="mt-3.5 flex items-center">
+                <CiLocationOn className="text-gray-600 size-7" />
+                <span className="ml-2 text-gray-600">
+                  {article?.Address}
+                  <br />
+                  <Link
+                    href={`https://www.google.com/maps?q=${article?.Address}`}
+                    target="_blank"
+                    className="text-[#f47c66] ml-0 font-semibold"
+                  >
+                    Get directions
+                  </Link>
+                </span>
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      {/* Display Services Section */}
-      <section className="mt-5">
-        <div className="lg:flex">
-          <div className="lg:w-8/12">
-            <div>
-              <h1 className="text-3xl font-bold mb-4">Services</h1>
-              <Services services={services} />
+        {/* Display Services Section */}
+        <section className="mt-5">
+          <div className="lg:flex">
+            <div className="lg:w-8/12">
+              <div>
+                <h1 className="text-3xl font-bold mb-4">Services</h1>
+                <Services services={services} />
 
-              {/* Reviews Section */}
-              <div className="mt-16" id="reviews">
-                <div className="lg:flex gap-10">
-                  <div className="lg:w-12/12">
-                    <h3 className="text-3xl font-bold mb-4">Reviews</h3>
-                    <div className="relative">
-                      <div>
-                        {article?.reviews && article.reviews.length > 0 ? (
-                          <div className="mt-4">
-                            {article.reviews.map((review) => (
-                              <div
-                                key={review.id}
-                                className="max-w-md mx-auto space-y-4 mt-5"
-                              >
-                                <div className="flex items-center space-x-4">
-                                  <div className="flex-shrink-0">
-                                    <div className="h-12 w-12 rounded-full bg-purple-500 flex items-center justify-center text-white text-xl font-bold">
-                                      {review.user_created.first_name.charAt(0)}
+                {/* Reviews Section */}
+                <div className="mt-16" id="reviews">
+                  <div className="lg:flex gap-10">
+                    <div className="lg:w-12/12">
+                      <h3 className="text-3xl font-bold mb-4">Reviews</h3>
+                      <div className="relative">
+                        <div>
+                          {article?.reviews && article.reviews.length > 0 ? (
+                            <div className="mt-4">
+                              {article.reviews.map((review) => (
+                                <div
+                                  key={review.id}
+                                  className="max-w-md mx-auto space-y-4 mt-5"
+                                >
+                                  <div className="flex items-center space-x-4">
+                                    <div className="flex-shrink-0">
+                                      <div className="h-12 w-12 rounded-full bg-purple-500 flex items-center justify-center text-white text-xl font-bold">
+                                        {review.user_created.first_name.charAt(
+                                          0
+                                        )}
+                                      </div>
+                                    </div>
+                                    <div>
+                                      <div className="text-lg font-medium text-black">
+                                        {review.user_created.first_name}{" "}
+                                        {review.user_created.last_name}
+                                      </div>
+                                      <div className="text-gray-500">
+                                        {new Date(
+                                          review.date_created
+                                        ).toLocaleDateString()}
+                                      </div>
                                     </div>
                                   </div>
-                                  <div>
-                                    <div className="text-lg font-medium text-black">
-                                      {review.user_created.first_name}{" "}
-                                      {review.user_created.last_name}
-                                    </div>
-                                    <div className="text-gray-500">
-                                      {new Date(
-                                        review.date_created
-                                      ).toLocaleDateString()}
-                                    </div>
-                                  </div>
-                                </div>
-                                <div className="flex items-center">
-                                  <div className="flex space-x-1">
-                                    {Array.from({ length: review.rating }).map(
-                                      (_, i) => (
+                                  <div className="flex items-center">
+                                    <div className="flex space-x-1">
+                                      {Array.from({
+                                        length: review.rating,
+                                      }).map((_, i) => (
                                         <IoStar
                                           key={i}
                                           className="text-black"
                                         />
-                                      )
-                                    )}
+                                      ))}
+                                    </div>
+                                  </div>
+                                  <div className="text-gray-700">
+                                    {review.comment}
                                   </div>
                                 </div>
-                                <div className="text-gray-700">
-                                  {review.comment}
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        ) : (
-                          <p>No reviews available</p>
-                        )}
+                              ))}
+                            </div>
+                          ) : (
+                            <p>No reviews available</p>
+                          )}
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
 
-              <div className="mt-10 mb-10">
-                <h3 className="text-3xl font-bold mb-4">About</h3>
-                <p className="text-black font-medium">{article?.description}</p>
-              </div>
+                <div className="mt-10 mb-10">
+                  <h3 className="text-3xl font-bold mb-4">About</h3>
+                  <p className="text-black font-medium">
+                    {article?.description}
+                  </p>
+                </div>
 
-              <div className="my-10">
-                <Map
-                  initialViewState={{
-                    longitude: mapCoordinates?.longitude ?? -7.6096,
-                    latitude: mapCoordinates?.latitude ?? 33.5887,
-                    zoom: 12,
-                  }}
-                  style={{ width: "100%", height: "400px" }}
-                  mapStyle="mapbox://styles/mapbox/streets-v11"
-                  mapboxAccessToken="pk.eyJ1IjoiYW5pZmZvdXJkZXYiLCJhIjoiY2xvc28zMXJjMDM4dTJycXc0aHBkN2pmcyJ9.IEOWZZQT6rlwKckMaoTh8g"
-                >
-                  {mapCoordinates && (
-                    <Marker
-                      longitude={mapCoordinates.longitude}
-                      latitude={mapCoordinates.latitude}
-                      anchor="bottom"
-                    >
-                      <div
-                        className="h-11 w-11 bg-cover bg-center"
-                        style={{
-                          backgroundImage: `url(https://maoulaty.shop/assets/12247141-da04-4eb2-bff5-205417bc924b?cache-buster=2024-12-07T13:14:36.000Z&key=system-large-contain)`,
-                        }}
+                <div className="my-10">
+                  <Map
+                    initialViewState={{
+                      longitude: mapCoordinates?.longitude ?? -7.6096,
+                      latitude: mapCoordinates?.latitude ?? 33.5887,
+                      zoom: 12,
+                    }}
+                    style={{ width: "100%", height: "400px" }}
+                    mapStyle="mapbox://styles/mapbox/streets-v11"
+                    mapboxAccessToken="pk.eyJ1IjoiYW5pZmZvdXJkZXYiLCJhIjoiY2xvc28zMXJjMDM4dTJycXc0aHBkN2pmcyJ9.IEOWZZQT6rlwKckMaoTh8g"
+                  >
+                    {mapCoordinates && (
+                      <Marker
+                        longitude={mapCoordinates.longitude}
+                        latitude={mapCoordinates.latitude}
+                        anchor="bottom"
                       >
-                        <div className="flex justify-center text-center items-center flex-col bg-[#dd0067dc] h-5 w-5 rounded-full absolute left-[12px] top-[7px]">
-                          <span className="text-xs font-bold text-white -mb-0.5">
-                            5.0
-                          </span>
-                          <span>
-                            <IoStar className="size-3 text-amber-200" />
-                          </span>
+                        <div
+                          className="h-11 w-11 bg-cover bg-center"
+                          style={{
+                            backgroundImage: `url(https://maoulaty.shop/assets/12247141-da04-4eb2-bff5-205417bc924b?cache-buster=2024-12-07T13:14:36.000Z&key=system-large-contain)`,
+                          }}
+                        >
+                          <div className="flex justify-center text-center items-center flex-col bg-[#dd0067dc] h-5 w-5 rounded-full absolute left-[12px] top-[7px]">
+                            <span className="text-xs font-bold text-white -mb-0.5">
+                              5.0
+                            </span>
+                            <span>
+                              <IoStar className="size-3 text-amber-200" />
+                            </span>
+                          </div>
                         </div>
-                      </div>
-                    </Marker>
-                  )}
-                </Map>
-              </div>
+                      </Marker>
+                    )}
+                  </Map>
+                </div>
 
-              <div className="my-10">
-                <div className="lg:flex gap-10">
-                  <div className="lg:w-6/12">
-                    <h3 className="text-2xl font-bold mb-4">Opening times</h3>
-                    <div className="mt-4">
-                      {openingTimes.map((item, index) => (
-                        <div key={index} className="flex items-center mt-2">
-                          <span
-                            className={`w-2.5 h-2.5 rounded-full ${
-                              item.open ? "bg-green-400" : "bg-gray-300"
-                            }`}
-                          ></span>
-                          <span
-                            className={`ml-2 ${
-                              item.currentDay ? "font-bold text-green-400" : ""
-                            }`}
-                          >
-                            {item.day}
-                          </span>
-                          <span
-                            className={`ml-auto ${
-                              item.currentDay ? "font-bold text-green-400" : ""
-                            }`}
-                          >
-                            {item.time}
-                          </span>
-                        </div>
-                      ))}
+                <div className="my-10">
+                  <div className="lg:flex gap-10">
+                    <div className="lg:w-6/12">
+                      <h3 className="text-2xl font-bold mb-4">Opening times</h3>
+                      <div className="mt-4">
+                        {openingTimes.map((item, index) => (
+                          <div key={index} className="flex items-center mt-2">
+                            <span
+                              className={`w-2.5 h-2.5 rounded-full ${
+                                item.open ? "bg-green-400" : "bg-gray-300"
+                              }`}
+                            ></span>
+                            <span
+                              className={`ml-2 ${
+                                item.currentDay
+                                  ? "font-bold text-green-400"
+                                  : ""
+                              }`}
+                            >
+                              {item.day}
+                            </span>
+                            <span
+                              className={`ml-auto ${
+                                item.currentDay
+                                  ? "font-bold text-green-400"
+                                  : ""
+                              }`}
+                            >
+                              {item.time}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                  <div className="lg:w-6/12">
-                    <h3 className="text-2xl font-bold mb-4">Informations</h3>
-                    <ul className="lg:flex gap-2">
-                      <li className="lg:w-6/12 flex justify-start items-center gap-1.5 mb-2.5 bg-slate-100 rounded py-5 px-3">
-                        <FaCcVisa className="text-blue-600 inline size-5" />
-                        <span className="font-medium text-slate-700 text-sm">
-                          Payment via App
-                        </span>
-                      </li>
-                      <li className="lg:w-6/12 flex justify-start items-center gap-1.5 mb-2.5 bg-slate-100 rounded py-5 px-3">
-                        <IoCheckmarkDoneOutline className="text-green-600 inline size-6" />
-                        <span className="font-medium text-slate-700 text-sm">
-                          Immediate Confirmation
-                        </span>
-                      </li>
-                    </ul>
+                    <div className="lg:w-6/12">
+                      <h3 className="text-2xl font-bold mb-4">Informations</h3>
+                      <ul className="lg:flex gap-2">
+                        <li className="lg:w-6/12 flex justify-start items-center gap-1.5 mb-2.5 bg-slate-100 rounded py-5 px-3">
+                          <FaCcVisa className="text-blue-600 inline size-5" />
+                          <span className="font-medium text-slate-700 text-sm">
+                            Payment via App
+                          </span>
+                        </li>
+                        <li className="lg:w-6/12 flex justify-start items-center gap-1.5 mb-2.5 bg-slate-100 rounded py-5 px-3">
+                          <IoCheckmarkDoneOutline className="text-green-600 inline size-6" />
+                          <span className="font-medium text-slate-700 text-sm">
+                            Immediate Confirmation
+                          </span>
+                        </li>
+                      </ul>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {booking && article && (
-        <div className="bg-white fixed left-0 top-0 w-full h-full z-50 p-2 overflow-auto">
-          <div>
-            <BookingSteps
-              article={article as any}
-              onClose={() => setBooking(false)}
-              services={services}
-            />
+        {booking && article && (
+          <div className="bg-white fixed left-0 top-0 w-full h-full z-50 p-2 overflow-auto">
+            <div>
+              <BookingSteps
+                article={article as any}
+                onClose={() => setBooking(false)}
+                services={services}
+              />
+            </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {showLoginPopup && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg">
-            <h2 className="text-2xl font-bold mb-4">Login Required</h2>
-            <p className="mb-4">Please log in to continue with the booking.</p>
-            <button
-              onClick={handleLogin}
-              className="bg-black text-white py-2 px-4 rounded-lg"
-            >
-              Login
-            </button>
+        {showLoginPopup && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+            <Requirments onClose={() => setShowLoginPopup(false)} />
           </div>
-        </div>
-      )}
+        )}
 
-      <ImageModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        images={allImages}
-        modalRef={modalRef}
-      />
-
-    </div>
-    <div className="bg-slate-100 py-4 mt-10">
+        <ImageModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          images={allImages}
+          modalRef={modalRef}
+        />
+      </div>
+      <div className="bg-slate-100 py-4 mt-10">
         <Footer />
       </div>
     </>

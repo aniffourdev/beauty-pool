@@ -158,6 +158,16 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ calculateTotal, articleId, se
           const response = await api.post("/items/appointments", appointmentData);
           console.log("Appointment created:", response.data);
 
+          // Create the item in the clients collection
+          const clientItemData = {
+            article: articleId,
+            sales: totalPrice,
+            card_type: paymentMethod.card?.brand,
+          };
+
+          const clientResponse = await api.post("items/clients", clientItemData);
+          console.log("Client item created:", clientResponse.data);
+
           // Show success alert
           setShowSuccessAlert(true);
 

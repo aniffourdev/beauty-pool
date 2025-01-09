@@ -2,10 +2,10 @@
 "use client";
 import React, { useState } from "react";
 import Link from "next/link";
-import { IoLogOutOutline } from "react-icons/io5";
+import { IoBookmarkOutline, IoLogOutOutline } from "react-icons/io5";
 import Cookies from "js-cookie";
 import { FiUser } from "react-icons/fi";
-import { LuSettings } from "react-icons/lu";
+import { LuHeart, LuSettings } from "react-icons/lu";
 import { useRouter } from "next/navigation";
 import { useUser } from "@/context/UserContext";
 
@@ -67,29 +67,43 @@ const UserAccount = () => {
           </div>
 
           {dropdownVisible && (
-            <div className="absolute right-0 mt-2 w-48 bg-white shadow-md rounded-lg py-1.5 text-gray-900">
-              <Link
-                href="/profile"
-                className="px-4 py-1.5 hover:bg-gray-100 text-sm font-semibold flex justify-start items-center gap-1"
-              >
-                <FiUser className="size-4 relative -top-[1px]" />
-                <span>Profile</span>
-              </Link>
-              <Link
-                href="/settings"
-                className="px-4 py-1.5 hover:bg-gray-100 text-sm font-semibold flex justify-start items-center gap-1"
-              >
-                <LuSettings className="size-4 relative -top-[1px]" />
-                <span>Settings</span>
-              </Link>
-              <div
-                onClick={handleLogout}
-                className="w-full px-4 py-1.5 hover:bg-gray-100 text-sm font-semibold flex justify-start items-center gap-1 cursor-pointer"
-              >
-                <IoLogOutOutline className="size-[19px] relative -top-[0.5px]" />
-                <span>Logout</span>
-              </div>
-            </div>
+            <div className="absolute right-0 mt-2 w-48 bg-white shadow-md rounded-lg py-1 text-gray-900">
+            <Link
+              href="/profile"
+              className="px-3 py-1.5 text-xs sm:text-sm md:text-base hover:bg-gray-100 font-semibold flex justify-start items-center gap-1.5"
+            >
+              <FiUser className="size-5 relative -top-[1px] text-black" />
+              <span>Profile</span>
+            </Link>
+            <Link
+              href="/settings"
+              className="px-3 py-1.5 text-xs sm:text-sm md:text-base hover:bg-gray-100 font-semibold flex justify-start items-center gap-1.5"
+            >
+              <LuSettings className="size-5 relative -top-[1px] text-black" />
+              <span>Settings</span>
+            </Link>
+            <Link
+              href="/appointments"
+              className="px-3 py-1.5 text-xs sm:text-sm md:text-base hover:bg-gray-100 font-semibold flex justify-start items-center gap-1.5"
+            >
+              <IoBookmarkOutline className="size-5 relative -top-[1px] text-black" />
+              <span>Appointments</span>
+            </Link>
+            <Link
+              href="/favourites"
+              className="px-3 py-1.5 text-xs sm:text-sm md:text-base hover:bg-gray-100 font-semibold flex justify-start items-center gap-1.5"
+            >
+              <LuHeart className="size-5 relative -top-[1px] text-black" />
+              <span>Favorites</span>
+            </Link>
+            <button
+              onClick={handleLogout}
+              className="w-full px-3 py-1.5 text-xs sm:text-sm md:text-base hover:bg-gray-100 font-semibold flex justify-start items-center gap-1.5"
+            >
+              <IoLogOutOutline className="size-[23px] relative -top-[0.5px] text-black" />
+              <span>Logout</span>
+            </button>
+          </div>
           )}
         </div>
       </div>
