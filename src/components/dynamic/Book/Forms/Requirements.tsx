@@ -150,7 +150,7 @@ const Requirments: React.FC<RequirmentsProps> = ({ onClose }) => {
                   </button>
                   <p className="text-center text-gray-600">
                     <a href="/forgot-password" className="text-blue-500">
-                      Forgot password?
+                      Forgot password ?
                     </a>
                   </p>
                 </>
