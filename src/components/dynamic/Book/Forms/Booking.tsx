@@ -176,7 +176,7 @@ export default function BookingForm() {
   useEffect(() => {
     const getCategories = async () => {
       try {
-        const response = await api.get("/items/Categorie");
+        const response = await api.get("/items/categories");
         setCategories(response.data.data); // Storing data as an array
         setFilteredCategories(response.data.data); // Initialize filtered categories
       } catch (error) {

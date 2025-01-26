@@ -548,12 +548,12 @@ const CustomerProfile = () => {
                             {userData.birthday ? userData.birthday.toLocaleDateString() : "-"}
                           </p>
                         </div>
-                        <div className="mb-2">
+                        {/* <div className="mb-2">
                           <span className="font-semibold">Gender</span>
                           <p className="text-gray-500">
                             {userData.gender || "-"}
                           </p>
-                        </div>
+                        </div> */}
                       </div>
                     </div>
                   </div>

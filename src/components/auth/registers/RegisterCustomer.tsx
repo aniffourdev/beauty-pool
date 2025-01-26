@@ -50,7 +50,7 @@ const defaultFormData: SignUpFormData = {
   description: "",
   location: "",
   avatar: "b1fcd062-fc30-4c9f-a48f-804b70510da9",
-  role: "fd8c9450-7c5c-432b-963d-d46bf20aef11",
+  role: "aa10e96d-dc9b-40ff-9bc2-443558fd0848",
   device_id: "",
 };
 
@@ -238,7 +238,7 @@ const RegisterCustomer = () => {
               <div className="max-w-[500px] mx-auto">
                 <div className="flex flex-col items-center justify-center">
                   <div className="w-full">
-                    <button
+                    {/* <button
                       className="flex items-center justify-center w-full px-4 py-2 mb-4 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50"
                       onClick={handleGoogleSignUp}
                     >
@@ -288,7 +288,7 @@ const RegisterCustomer = () => {
                         </g>
                       </svg>
                       Continue with Google
-                    </button>
+                    </button> */}
                     <div className="flex items-center justify-center my-4">
                       <div className="w-full border-t border-gray-300"></div>
                       <span className="px-2 text-sm text-gray-500">OR</span>

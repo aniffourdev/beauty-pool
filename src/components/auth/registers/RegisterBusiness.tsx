@@ -14,6 +14,7 @@ import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 import Link from "next/link";
 import { Gruppo } from "next/font/google";
 import { signIn } from "next-auth/react";
+import api from "@/services/auth";
 
 interface SignUpFormData {
   first_name: string;
@@ -21,7 +22,7 @@ interface SignUpFormData {
   email: string;
   password: string;
   confirmPassword: string;
-  birthday: string;
+  birthday: string | null; // Allow null for birthday
   phone: string;
   gender: string;
   isocode: string;
@@ -51,7 +52,7 @@ const defaultFormData: SignUpFormData = {
   email: "",
   password: "",
   confirmPassword: "",
-  birthday: "",
+  birthday: null, // Set default to null
   phone: "",
   gender: "",
   isocode: "",
@@ -60,7 +61,7 @@ const defaultFormData: SignUpFormData = {
   description: "",
   location: "",
   avatar: "b1fcd062-fc30-4c9f-a48f-804b70510da9",
-  role: "d9d87093-97d1-4ed3-ab95-bb1c789ab258",
+  role: "d5ead72e-be83-4c0d-802d-b60ac41770fd",
   device_id: "",
   business_name: "",
   website: "",
@@ -204,7 +205,7 @@ const RegisterBusiness = () => {
         );
 
         // Send the registration data to the API
-        await axios.post("https://maoulaty.shop/users", updatedData);
+        await api.post("/register-user", updatedData);
 
         router.push("/business/onboarding/partner_service_types");
       } catch (error) {
@@ -251,7 +252,7 @@ const RegisterBusiness = () => {
               <div className="max-w-[500px] mx-auto">
                 <div className="flex flex-col items-center justify-center">
                   <div className="w-full">
-                    <button
+                    {/* <button
                       className="flex items-center justify-center w-full px-4 py-2 mb-4 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50"
                       onClick={() => signIn('google')}
                     >
@@ -301,7 +302,7 @@ const RegisterBusiness = () => {
                         </g>
                       </svg>
                       Continue with Google
-                    </button>
+                    </button> */}
                     <div className="flex items-center justify-center my-4">
                       <div className="w-full border-t border-gray-300"></div>
                       <span className="px-2 text-sm text-gray-500">OR</span>
