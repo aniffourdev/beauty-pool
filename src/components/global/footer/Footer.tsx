@@ -208,9 +208,43 @@ export default function Footer() {
                 <i className="fab fa-linkedin-in"></i>
               </a>
             </div>
+      <div className="max-w-5xl mx-auto">
+        {/* Brand and App Links */}
+        <div className="flex flex-col items-center justify-center mb-4">
+          <Link href="/">
+            {/* Responsive Logo */}
+            <Image
+              src="/assets/logo-2.png"
+              alt="logo"
+              width={120}
+              height={40}
+              className="object-contain sm:w-[90px] md:w-[120px] lg:w-[140px]"
+            />
+          </Link>
+          <div className="flex gap-4 text-[#f4b8ae] mt-2">
+            {/* Social Media Icons */}
+            <FaFacebookF
+              className="text-xl cursor-pointer hover:text-[#de7664] transition-all duration-200"
+              aria-label="Facebook"
+            />
+            <FaTwitter
+              className="text-xl cursor-pointer hover:text-[#de7664] transition-all duration-200"
+              aria-label="Twitter"
+            />
+            <FaLinkedinIn
+              className="text-xl cursor-pointer hover:text-[#de7664] transition-all duration-200"
+              aria-label="LinkedIn"
+            />
+            <FaInstagram
+              className="text-xl cursor-pointer hover:text-[#de7664] transition-all duration-200"
+              aria-label="Instagram"
+            />
           </div>
         </div>
       </div>
+    </div>
+    </div>
+    </div>
     </div>
   );
 }

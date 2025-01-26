@@ -14,7 +14,6 @@ import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 import Link from "next/link";
 import { Gruppo } from "next/font/google";
 import { signIn } from "next-auth/react";
-import api from "@/services/auth";
 
 interface SignUpFormData {
   first_name: string;
@@ -22,7 +21,7 @@ interface SignUpFormData {
   email: string;
   password: string;
   confirmPassword: string;
-  birthday: string | null; // Allow null for birthday
+  birthday: string;
   phone: string;
   gender: string;
   isocode: string;
@@ -52,7 +51,7 @@ const defaultFormData: SignUpFormData = {
   email: "",
   password: "",
   confirmPassword: "",
-  birthday: null, // Set default to null
+  birthday: "",
   phone: "",
   gender: "",
   isocode: "",
@@ -127,7 +126,7 @@ const RegisterBusiness = () => {
       const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
       setGeneratedOtp(otpCode);
 
-      await axios.post("https://maoulaty.shop/otp-verification", {
+      await axios.post("https://admin-beautypool.click/otp-verification", {
         email: email,
         code: otpCode,
       });
@@ -205,7 +204,7 @@ const RegisterBusiness = () => {
         );
 
         // Send the registration data to the API
-        await api.post("/register-user", updatedData);
+        await axios.post("https://maoulaty.shop/users", updatedData);
 
         router.push("/business/onboarding/partner_service_types");
       } catch (error) {
@@ -252,7 +251,7 @@ const RegisterBusiness = () => {
               <div className="max-w-[500px] mx-auto">
                 <div className="flex flex-col items-center justify-center">
                   <div className="w-full">
-                    {/* <button
+                    <button
                       className="flex items-center justify-center w-full px-4 py-2 mb-4 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50"
                       onClick={() => signIn('google')}
                     >
@@ -302,7 +301,7 @@ const RegisterBusiness = () => {
                         </g>
                       </svg>
                       Continue with Google
-                    </button> */}
+                    </button>
                     <div className="flex items-center justify-center my-4">
                       <div className="w-full border-t border-gray-300"></div>
                       <span className="px-2 text-sm text-gray-500">OR</span>

@@ -8,7 +8,6 @@ import { FaHandHoldingMedical } from "react-icons/fa";
 
 export default function WhyUs() {
   return (
-    <div className="bg-[#f4b9ae1a] py-12 px-4 md:py-24 md:px-8">
       <div className="flex justify-center">
         <div className="max-w-6xl w-full text-center">
           {/* Features Grid */}
@@ -97,6 +96,5 @@ export default function WhyUs() {
           </div>
         </div>
       </div>
-    </div>
   );
 }
