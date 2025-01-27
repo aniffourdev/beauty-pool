@@ -1,6 +1,6 @@
-import React, { useEffect, useRef } from 'react';
-import flatpickr from 'flatpickr';
-import 'flatpickr/dist/flatpickr.min.css';
+import React, { useEffect, useRef } from "react";
+import flatpickr from "flatpickr";
+import "flatpickr/dist/flatpickr.min.css";
 import { CiCalendarDate } from "react-icons/ci";
 
 interface DatePickerProps {
@@ -14,32 +14,31 @@ const DatePicker: React.FC<DatePickerProps> = ({ id, value, onChange }) => {
 
   useEffect(() => {
     const options: any = {
-      dateFormat: 'd/m/Y',
+      dateFormat: "d/m/Y",
       enableTime: false,
       defaultDate: value ? new Date(value) : null,
       onChange: (selectedDates: Date[]) => {
         onChange(selectedDates[0]);
       },
-      clickOpens: true, 
-      touchUi: true, 
+      clickOpens: true,
+      touchUi: true,
     };
 
     const picker = flatpickr(inputRef.current as HTMLInputElement, options);
-    const flatpickrInput = document.querySelector('.flatpickr-input');
+    const flatpickrInput = document.querySelector(".flatpickr-input");
     if (flatpickrInput) {
       flatpickrInput.classList.add(
-        'outline-none',
-        'border-none',
-        'focus:outline-none',
-        'focus:ring-0',
-        'focus:shadow-none',
-        'hover:shadow-none',
-        'active:shadow-none'
+        "outline-none",
+        "border-none",
+        "focus:outline-none",
+        "focus:ring-0",
+        "focus:shadow-none",
+        "hover:shadow-none",
+        "active:shadow-none"
       );
     }
 
-    
-    console.log('Flatpickr initialized:', picker);
+    console.log("Flatpickr initialized:", picker);
 
     return () => {
       picker.destroy();
@@ -47,17 +46,20 @@ const DatePicker: React.FC<DatePickerProps> = ({ id, value, onChange }) => {
   }, [id, value, onChange]);
 
   return (
-   <div className='flex justify-center items-center'>
-     <CiCalendarDate className='text-slate-800 size-5' />
-      <input
-      ref={inputRef}
-      placeholder='DD/MM/YYYY'
-      id={id}
-      type="text"
-      className="outline-none border-none focus:outline-none focus:ring-0 focus:shadow-none hover:shadow-none active:shadow-none cursor-pointer"
-    />
-
-   </div>
+    <div className="flex justify-center items-center">
+      <CiCalendarDate className="text-slate-800 size-5" />
+      <div className="flex justify-center items-center">
+        <CiCalendarDate className="text-gray-800" />
+        <input
+          ref={inputRef}
+          placeholder="DD/MM/YYYY"
+          id={id}
+          type="text"
+          className="outline-none border-none focus:outline-none focus:ring-0 focus:shadow-none hover:shadow-none active:shadow-none cursor-pointer h-10 px-2 box-border"
+          style={{ height: "40px", padding: "8px" }} // Ensure consistent height and padding
+        />
+      </div>
+    </div>
   );
 };
 
