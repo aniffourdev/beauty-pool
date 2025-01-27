@@ -11,13 +11,18 @@
 
 // export default Page;
 
+
 import React from "react";
-import SingleBook from "@/components/dynamic/Book/SingleBook"; // Import the client-side component
+import { useParams } from "next/navigation";
+import SingleBook from "@/components/dynamic/Book/SingleBook";
 import BookingHeader from "@/components/global/booking-header/BookingHeader";
 
-// Ensure proper usage of dynamic routing parameters
-const ArticlePage = ({ params }: { params: { slug: string } }) => {
-  const { slug } = params; // Extract slug from URL params
+interface ArticlePageProps {
+  params: { slug: string };
+}
+
+const ArticlePage: React.FC<ArticlePageProps> = ({ params }) => {
+  const { slug } = params;
 
   return (
     <>

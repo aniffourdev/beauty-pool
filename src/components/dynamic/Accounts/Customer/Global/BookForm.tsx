@@ -269,18 +269,18 @@ export default function BookForm() {
         {/* Venue and Treatment Selection */}
         <div className="lg:flex gap-2">
           {/* Location Input */}
-          <div className="lg:w-3/12">
+          <div className="lg:w-3/12 relative">
             <div className="flex items-center border-r-2 border-slate-200">
               <input
                 type="text"
                 placeholder="Current location"
                 onChange={handleInputChange}
                 value={location}
-                className="outline-none border-none focus:outline-none !bg-transparent focus:ring-0 focus:shadow-none hover:shadow-none active:shadow-none"
+                className="outline-none border-none focus:outline-none bg-transparent focus:ring-0"
               />
             </div>
             {results.length > 0 && (
-              <div className="mt-2 bg-white border rounded-md shadow-lg max-h-60 overflow-y-auto absolute w-auto">
+              <div className="mt-2 bg-white border rounded-md shadow-lg max-h-60 overflow-y-auto absolute w-full">
                 <ul>
                   {results.map((result, index) => (
                     <li
@@ -299,14 +299,10 @@ export default function BookForm() {
                       <div>
                         <div className="font-semibold">{result.name}</div>
                         {result.adminName1 && (
-                          <div className="text-sm text-gray-500">
-                            {result.adminName1}
-                          </div>
+                          <div className="text-sm text-gray-500">{result.adminName1}</div>
                         )}
                         {result.countryName && (
-                          <div className="text-sm text-gray-500">
-                            {result.countryName}
-                          </div>
+                          <div className="text-sm text-gray-500">{result.countryName}</div>
                         )}
                       </div>
                     </li>
@@ -315,57 +311,55 @@ export default function BookForm() {
               </div>
             )}
           </div>
-
+  
           {/* Treatment Input */}
-          <div className="lg:w-3/12">
-            <div className="relative">
-              <div
-                className="flex items-center bg-white border-r-2 border-slate-200"
-                onClick={() => setDropdownOpen(!dropdownOpen)}
-              >
-                <input
-                  type="text"
-                  placeholder="All treatments and venues"
-                  className="outline-none border-none focus:outline-none focus:ring-0 focus:shadow-none hover:shadow-none active:shadow-none"
-                  value={venueAndTreatment}
-                  onChange={(e) => setVenueAndTreatment(e.target.value)}
-                />
-              </div>
-              {dropdownOpen && (
-                <div className="bg-white p-4 rounded-lg shadow-md absolute w-auto mt-2">
-                  {/* <h2 className="font-normal mb-3 text-sm">Top categories</h2> */}
-                  <div className="space-y-4">
-                    {categories.length > 0 ? (
-                      categories.map((category) => (
-                        <div
-                          key={category.id}
-                          className="flex items-center space-x-2 cursor-pointer"
-                          onClick={() => {
-                            setVenueAndTreatment(category.label);
-                            setSelectedCategoryId(category.id);
-                            setDropdownOpen(false);
-                          }}
-                        >
-                          <div
-                            className="w-7 h-7 bg-cover bg-center"
-                            style={{
-                              backgroundImage: `url(https://maoulaty.shop/assets/${category.icon})`,
-                            }}
-                          ></div>
-                          <span>{category.label}</span>
-                        </div>
-                      ))
-                    ) : (
-                      <option>No categories available</option>
-                    )}
-                  </div>
-                </div>
-              )}
+          <div className="lg:w-3/12 relative">
+            <div
+              className="flex items-center bg-white border-r-2 border-slate-200"
+              onClick={() => setDropdownOpen(!dropdownOpen)}
+            >
+              <input
+                type="text"
+                placeholder="All treatments and venues"
+                className="outline-none border-none focus:outline-none focus:ring-0"
+                value={venueAndTreatment}
+                onChange={(e) => setVenueAndTreatment(e.target.value)}
+              />
             </div>
+            {dropdownOpen && (
+              <div className="bg-white p-4 rounded-lg shadow-md absolute w-full mt-2">
+                <div className="space-y-4">
+                  {categories.length > 0 ? (
+                    categories.map((category) => (
+                      <div
+                        key={category.id}
+                        className="flex items-center space-x-2 cursor-pointer"
+                        onClick={() => {
+                          setVenueAndTreatment(category.label);
+                          setSelectedCategoryId(category.id);
+                          setDropdownOpen(false);
+                        }}
+                      >
+                        <div
+                          className="w-7 h-7 bg-cover bg-center"
+                          style={{
+                            backgroundImage: `url(https://maoulaty.shop/assets/${category.icon})`,
+                          }}
+                        ></div>
+                        <span>{category.label}</span>
+                      </div>
+                    ))
+                  ) : (
+                    <div>No categories available</div>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
-
+  
+          {/* Date Picker */}
           <div className="lg:w-2/12">
-            <div className="flex items-center border rounded-full px-4 py-0.5 space-x-2">
+            <div className="flex items-center border rounded-full px-4 py-0.5">
               <DatePicker
                 id="date-picker"
                 value={date ? date.toISOString().split("T")[0] : ""}
@@ -373,153 +367,69 @@ export default function BookForm() {
               />
             </div>
           </div>
-
+  
           {/* Time Input */}
-          <div className="lg:w-2/12">
-  <div className="flex items-center space-x-2">
-    <input
-      type="text"
-      placeholder="Set Time"
-      className="outline-none border-none focus:outline-none bg-transparent focus:ring-0 focus:shadow-none hover:shadow-none active:shadow-none placeholder-gray-400"
-      onClick={() => setShowFilter(!showFilter)}
-      value={selectedTime}
-      onChange={(e) => setSelectedTime(e.target.value)}
-    />
-    {showFilter && (
-      <div
-        ref={timePopupRef}
-        className="mt-4 bg-white rounded-lg shadow-md p-4 absolute w-auto"
-        style={{
-          width: "100%",
-          maxWidth: "300px",
-          left: "50%",
-          transform: "translateX(-50%)",
-        }}
-      >
-        <div className="flex flex-wrap gap-2 mb-4">
-          <button
-            className={`px-4 py-2 rounded-full ${
-              selectedTime === "Anytime"
-                ? "bg-[#eca4977c] text-slate-900"
-                : "border border-gray-300 text-gray-700"
-            }`}
-            onClick={() => handleTimeSelection("Anytime")}
-          >
-            Any time
-          </button>
-          <button
-            className={`px-4 py-2 rounded-full ${
-              selectedTime === "Morning"
-                ? "bg-[#eca4977c] text-slate-900"
-                : "border border-gray-300 text-gray-700"
-            }`}
-            onClick={() => handleTimeSelection("Morning")}
-          >
-            Morning
-          </button>
-          <button
-            className={`px-4 py-2 rounded-full ${
-              selectedTime === "Afternoon"
-                ? "bg-[#eca4977c] text-slate-900"
-                : "border border-gray-300 text-gray-700"
-            }`}
-            onClick={() => handleTimeSelection("Afternoon")}
-          >
-            Afternoon
-          </button>
-          <button
-            className={`px-4 py-2 rounded-full ${
-              selectedTime === "Evening"
-                ? "bg-[#eca4977c] text-slate-900"
-                : "border border-gray-300 text-gray-700"
-            }`}
-            onClick={() => handleTimeSelection("Evening")}
-          >
-            Evening
-          </button>
-        </div>
-        <div className="flex flex-wrap gap-2">
-          <div className="relative w-1/2">
-            <select
-              className="block appearance-none w-full bg-white border border-gray-300 text-gray-700 py-2 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-              value={fromTime}
-              onChange={(e) => setFromTime(e.target.value)}
-            >
-              <option>From</option>
-              {Array.from({ length: 24 }, (_, i) => (
-                <option key={i}>
-                  {i.toString().padStart(2, "0")}:00
-                </option>
-              ))}
-            </select>
-            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-              <svg
-                className="fill-current h-4 w-4"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 20 20"
-              >
-                <path d="M7 10l5 5 5-5H7z" />
-              </svg>
+          <div className="lg:w-2/12 relative">
+            <div className="flex items-center">
+              <input
+                type="text"
+                placeholder="Set Time"
+                className="outline-none border-none focus:outline-none bg-transparent focus:ring-0 placeholder-gray-400"
+                onClick={() => setShowFilter(!showFilter)}
+                value={selectedTime}
+                onChange={(e) => setSelectedTime(e.target.value)}
+              />
             </div>
-          </div>
-          <div className="relative w-1/2">
-            <select
-              className="block appearance-none w-full bg-white border border-gray-300 text-gray-700 py-2 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-              value={toTime}
-              onChange={(e) => setToTime(e.target.value)}
-            >
-              <option>To</option>
-              {Array.from({ length: 23 }, (_, i) => (
-                <option key={i}>
-                  {(i + 1).toString().padStart(2, "0")}:00
-                </option>
-              ))}
-            </select>
-            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-              <svg
-                className="fill-current h-4 w-4"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 20 20"
+            {showFilter && (
+              <div
+                ref={timePopupRef}
+                className="mt-4 bg-white rounded-lg shadow-md p-4 absolute w-full"
               >
-                <path d="M7 10l5 5 5-5H7z" />
-              </svg>
-            </div>
+                <div className="flex flex-wrap gap-2 mb-4">
+                  {["Anytime", "Morning", "Afternoon", "Evening"].map((time) => (
+                    <button
+                      key={time}
+                      className={`px-4 py-2 rounded-full ${
+                        selectedTime === time
+                          ? "bg-[#eca4977c] text-slate-900"
+                          : "border border-gray-300 text-gray-700"
+                      }`}
+                      onClick={() => handleTimeSelection(time)}
+                    >
+                      {time}
+                    </button>
+                  ))}
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  <div className="relative w-1/2">
+                    <select
+                      className="block w-full bg-white border text-gray-700 py-2 px-4 rounded focus:outline-none"
+                      value={fromTime}
+                      onChange={(e) => setFromTime(e.target.value)}
+                    >
+                      <option>From</option>
+                      {Array.from({ length: 24 }, (_, i) => (
+                        <option key={i}>{i.toString().padStart(2, "0")}:00</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="relative w-1/2">
+                    <select
+                      className="block w-full bg-white border text-gray-700 py-2 px-4 rounded focus:outline-none"
+                      value={toTime}
+                      onChange={(e) => setToTime(e.target.value)}
+                    >
+                      <option>To</option>
+                      {Array.from({ length: 23 }, (_, i) => (
+                        <option key={i}>{(i + 1).toString().padStart(2, "0")}:00</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
-        </div>
-      </div>
-    )}
-  </div>
-</div>
-
-
-          {/* Search Button */}
-          {/* <div className="lg:w-2/12">
-            <button
-              type="submit"
-              disabled={
-                loading ||
-                !venueAndTreatment ||
-                !location ||
-                !date ||
-                !selectedTime ||
-                !selectedCategoryId
-              }
-              className={`w-full px-4 py-2 text-sm rounded-full text-white font-medium ${
-                loading ||
-                !venueAndTreatment ||
-                !location ||
-                !date ||
-                !selectedTime ||
-                !selectedCategoryId
-                  ? "bg-gray-400 cursor-not-allowed"
-                  : "bg-purple-400 hover:bg-purple-500"
-              }`}
-            >
-              {loading ? "Searching..." : "Search"}
-            </button>
-          </div> */}
         </div>
       </form>
     </div>
   );
-}
