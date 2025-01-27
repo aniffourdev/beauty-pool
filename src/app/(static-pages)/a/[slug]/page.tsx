@@ -13,17 +13,21 @@
 
 
 import React from "react";
-import { useParams } from "next/navigation";
 import SingleBook from "@/components/dynamic/Book/SingleBook";
 import BookingHeader from "@/components/global/booking-header/BookingHeader";
 
-interface ArticlePageProps {
-  params: { slug: string };
+// Define the params interface
+interface PageProps {
+  params: {
+    slug: string;
+  };
+  searchParams: { [key: string]: string | string[] | undefined };
 }
 
-const ArticlePage: React.FC<ArticlePageProps> = ({ params }) => {
+// Use the PageProps interface for the component
+const ArticlePage = ({ params }: PageProps) => {
   const { slug } = params;
-
+  
   return (
     <>
       <BookingHeader />
