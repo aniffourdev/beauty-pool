@@ -14,6 +14,7 @@ import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 import Link from "next/link";
 import { Gruppo } from "next/font/google";
 import { signIn } from "next-auth/react";
+import api from "@/services/auth";
 
 interface SignUpFormData {
   first_name: string;
@@ -204,7 +205,7 @@ const RegisterBusiness = () => {
         );
 
         // Send the registration data to the API
-        await axios.post("https://maoulaty.shop/users", updatedData);
+        await api.post("https://maoulaty.shop/register-user", updatedData);
 
         router.push("/business/onboarding/partner_service_types");
       } catch (error) {
