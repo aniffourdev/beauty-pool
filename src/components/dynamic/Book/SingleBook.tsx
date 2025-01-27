@@ -2,7 +2,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { IoStar } from "react-icons/io5";
 import { IoClose } from "react-icons/io5";
-import { IoChevronBack, IoChevronForward } from "react-icons/io5";
 import api from "@/services/auth";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination } from "swiper/modules";
@@ -14,7 +13,6 @@ import Services from "@/components/dynamic/Book/Services"; // Import the Service
 import Map, { Marker } from "react-map-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import BookingSteps from "@/components/dynamic/Book/Steps/BookingSteps";
-import BookingHeader from "@/components/global/booking-header/BookingHeader";
 import { CiClock1, CiLocationOn } from "react-icons/ci";
 import Link from "next/link";
 import { FaArrowDown } from "react-icons/fa";

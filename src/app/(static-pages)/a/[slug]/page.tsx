@@ -11,6 +11,7 @@
 
 // export default Page;
 
+
 import React from "react";
 import SingleBook from "@/components/dynamic/Book/SingleBook"; // Import the client-side component
 import BookingHeader from "@/components/global/booking-header/BookingHeader";
