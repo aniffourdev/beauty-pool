@@ -22,7 +22,7 @@ interface SignUpFormData {
   email: string;
   password: string;
   confirmPassword: string;
-  birthday: string;
+  birthday: string | null; // Allow null for birthday
   phone: string;
   gender: string;
   isocode: string;
@@ -52,7 +52,7 @@ const defaultFormData: SignUpFormData = {
   email: "",
   password: "",
   confirmPassword: "",
-  birthday: "",
+  birthday: null, // Set default to null
   phone: "",
   gender: "",
   isocode: "",
@@ -127,7 +127,7 @@ const RegisterBusiness = () => {
       const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
       setGeneratedOtp(otpCode);
 
-      await axios.post("https://admin-beautypool.click/otp-verification", {
+      await axios.post("https://maoulaty.shop/otp-verification", {
         email: email,
         code: otpCode,
       });
@@ -205,7 +205,7 @@ const RegisterBusiness = () => {
         );
 
         // Send the registration data to the API
-        await api.post("https://maoulaty.shop/register-user", updatedData);
+        await api.post("/register-user", updatedData);
 
         router.push("/business/onboarding/partner_service_types");
       } catch (error) {
