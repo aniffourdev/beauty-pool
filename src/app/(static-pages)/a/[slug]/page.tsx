@@ -15,8 +15,11 @@ import React from "react";
 import SingleBook from "@/components/dynamic/Book/SingleBook"; // Import the client-side component
 import BookingHeader from "@/components/global/booking-header/BookingHeader";
 
-// Ensure proper usage of dynamic routing parameters
-const ArticlePage = ({ params }: { params: { slug: string } }) => {
+interface ArticlePageProps {
+  params: { slug: string }; // Define the expected shape of `params`
+}
+
+const ArticlePage: React.FC<ArticlePageProps> = ({ params }) => {
   const { slug } = params; // Extract slug from URL params
 
   return (
@@ -30,3 +33,4 @@ const ArticlePage = ({ params }: { params: { slug: string } }) => {
 };
 
 export default ArticlePage;
+
