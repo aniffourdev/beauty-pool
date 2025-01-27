@@ -15,12 +15,17 @@
 import SingleBook from "@/components/dynamic/Book/SingleBook";
 import BookingHeader from "@/components/global/booking-header/BookingHeader";
 
-// Define page props without async
-export default function ArticlePage({
-  params,
-}: {
-  params: { slug: string };
-}) {
+interface PageParams {
+  slug: string;
+}
+
+export interface PageProps {
+  params: PageParams;
+  searchParams: { [key: string]: string | string[] | undefined };
+}
+
+// Use the Next.js page component convention
+export default function Page({ params }: PageProps) {
   return (
     <>
       <BookingHeader />
@@ -29,4 +34,11 @@ export default function ArticlePage({
       </div>
     </>
   );
+}
+
+// Define generateMetadata with the correct types
+export async function generateMetadata({ params }: PageProps) {
+  return {
+    title: `Article - ${params.slug}`,
+  };
 }
