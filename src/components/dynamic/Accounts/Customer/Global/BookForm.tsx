@@ -46,7 +46,6 @@ const reverseGeocode = async (
 
     const data = await response.json();
 
-    
     if (data.features && data.features.length > 0) {
       const feature = data.features[0];
       return feature.place_name;
@@ -311,7 +310,7 @@ export default function BookForm() {
               </div>
             )}
           </div>
-  
+
           {/* Treatment Input */}
           <div className="lg:w-3/12 relative">
             <div
@@ -356,7 +355,7 @@ export default function BookForm() {
               </div>
             )}
           </div>
-  
+
           {/* Date Picker */}
           <div className="lg:w-2/12">
             <div className="flex items-center border rounded-full px-4 py-0.5">
@@ -367,7 +366,7 @@ export default function BookForm() {
               />
             </div>
           </div>
-  
+
           {/* Time Input */}
           <div className="lg:w-2/12 relative">
             <div className="flex items-center">
@@ -433,3 +432,4 @@ export default function BookForm() {
       </form>
     </div>
   );
+}
