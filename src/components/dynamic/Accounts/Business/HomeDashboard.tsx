@@ -73,11 +73,14 @@ const HomeDashboard = () => {
     setUserData(data);
   };
 
-  const fetchAndProcessData = async () => {
+  const fetchAndProcessData = async (userId: string) => {
     try {
       const response = await api.get("/items/appointments", {
         params: {
           fields: ["date", "price", "status"].join(","),
+          filter: {
+            user_id: userId,
+          },
         },
       });
 
@@ -149,7 +152,19 @@ const HomeDashboard = () => {
   };
 
   useEffect(() => {
-    fetchAndProcessData();
+    const fetchUserData = async () => {
+      try {
+        const response = await api.get("/users/me");
+        handleUserDataFetched(response.data);
+        if (response.data && response.data.id) {
+          fetchAndProcessData(response.data.id);
+        }
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    };
+
+    fetchUserData();
   }, []);
 
   const revenueChartData = {
