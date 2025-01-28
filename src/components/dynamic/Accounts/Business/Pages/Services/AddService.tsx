@@ -131,7 +131,7 @@ const AddService = () => {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
-
+  
     const payload = {
       sub_services: {
         create: [
@@ -142,15 +142,16 @@ const AddService = () => {
             price: formData.price,
             description: formData.description,
             price_type: formData.price_type,
+            categories: [formData.categories], // Include categories in the payload
           },
         ],
         update: [],
         delete: [],
       },
     };
-
+  
     console.log("Payload:", payload);
-
+  
     try {
       const response = await api.patch(
         `items/Services/${formData.service}`,
@@ -161,9 +162,9 @@ const AddService = () => {
           },
         }
       );
-
+  
       console.log("Response:", response);
-
+  
       if (response.status === 200 || response.status === 201) {
         setFormData({
           name: "",
@@ -189,6 +190,7 @@ const AddService = () => {
       setLoading(false);
     }
   };
+  
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -196,13 +198,18 @@ const AddService = () => {
     >
   ) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: ["duration", "categories", "price", "service"].includes(name)
-        ? Number(value)
-        : value,
-    }));
+    setFormData((prev) => {
+      const newData = {
+        ...prev,
+        [name]: ["duration", "categories", "price", "service"].includes(name)
+          ? Number(value)
+          : value,
+      };
+      console.log("Form Data:", newData); // Debugging statement
+      return newData;
+    });
   };
+  
 
   return (
     <div className="">

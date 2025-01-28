@@ -22,7 +22,6 @@ interface SignUpFormData {
   email: string;
   password: string;
   confirmPassword: string;
-  birthday: string | null; // Allow null for birthday
   phone: string;
   gender: string;
   isocode: string;
@@ -52,7 +51,6 @@ const defaultFormData: SignUpFormData = {
   email: "",
   password: "",
   confirmPassword: "",
-  birthday: null, // Set default to null
   phone: "",
   gender: "",
   isocode: "",
@@ -61,7 +59,7 @@ const defaultFormData: SignUpFormData = {
   description: "",
   location: "",
   avatar: "b1fcd062-fc30-4c9f-a48f-804b70510da9",
-  role: "d5ead72e-be83-4c0d-802d-b60ac41770fd",
+  role: "d9d87093-97d1-4ed3-ab95-bb1c789ab258",
   device_id: "",
   business_name: "",
   website: "",
@@ -81,7 +79,7 @@ const RegisterBusiness = () => {
   const [customer, setCustomer] = useState(false);
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
-  const [, setDeviceId] = useState<string | null>(null);
+  const [deviceId, setDeviceId] = useState<string | null>(null);
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [otpValues, setOtpValues] = useState<string[]>(Array(6).fill(""));
   const [generatedOtp, setGeneratedOtp] = useState("");
@@ -189,7 +187,7 @@ const RegisterBusiness = () => {
         const storedData = JSON.parse(
           localStorage.getItem("signUpData") || "{}"
         );
-        const updatedData = { ...storedData, ...data };
+        const updatedData = { ...storedData, ...data, device_id: deviceId };
         localStorage.setItem("signUpData", JSON.stringify(updatedData));
 
         // Store business-related data in cookies
@@ -203,9 +201,6 @@ const RegisterBusiness = () => {
             noBusinessAddress: data.noBusinessAddress,
           })
         );
-
-        // Send the registration data to the API
-        await api.post("/register-user", updatedData);
 
         router.push("/business/onboarding/partner_service_types");
       } catch (error) {
@@ -252,57 +247,6 @@ const RegisterBusiness = () => {
               <div className="max-w-[500px] mx-auto">
                 <div className="flex flex-col items-center justify-center">
                   <div className="w-full">
-                    <button
-                      className="flex items-center justify-center w-full px-4 py-2 mb-4 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50"
-                      onClick={() => signIn('google')}
-                    >
-                      <svg
-                        viewBox="0 0 32 32"
-                        className="size-6 mr-2"
-                        data-name="Layer 1"
-                        id="Layer_1"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="#000000"
-                      >
-                        <g id="SVGRepo_bgCarrier" strokeWidth={0} />
-                        <g
-                          id="SVGRepo_tracerCarrier"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                        <g id="SVGRepo_iconCarrier">
-                          <path
-                            d="M23.75,16A7.7446,7.7446,0,0,1,8.7177,18.6259L4.2849,22.1721A13.244,13.244,0,0,0,29.25,16"
-                            fill="#00ac47"
-                          />
-                          <path
-                            d="M23.75,16a7.7387,7.7387,0,0,1-3.2516,6.2987l4.3824,3.5059A13.2042,13.2042,0,0,0,29.25,16"
-                            fill="#4285f4"
-                          />
-                          <path
-                            d="M8.25,16a7.698,7.698,0,0,1,.4677-2.6259L4.2849,9.8279a13.177,13.177,0,0,0,0,12.3442l4.4328-3.5462A7.698,7.698,0,0,1,8.25,16Z"
-                            fill="#ffba00"
-                          />
-                          <polygon
-                            fill="#2ab2db"
-                            points="8.718 13.374 8.718 13.374 8.718 13.374 8.718 13.374"
-                          />
-                          <path
-                            d="M16,8.25a7.699,7.699,0,0,1,4.558,1.4958l4.06-3.7893A13.2152,13.2152,0,0,0,4.2849,9.8279l4.4328,3.5462A7.756,7.756,0,0,1,16,8.25Z"
-                            fill="#ea4435"
-                          />
-                          <polygon
-                            fill="#2ab2db"
-                            points="8.718 18.626 8.718 18.626 8.718 18.626 8.718 18.626"
-                          />
-                          <path
-                            d="M29.25,15v1L27,19.5H16.5V14H28.25A1,1,0,0,1,29.25,15Z"
-                            fill="#4285f4"
-                          />
-                        </g>
-                      </svg>
-                      Continue with Google
-                    </button>
                     <div className="flex items-center justify-center my-4">
                       <div className="w-full border-t border-gray-300"></div>
                       <span className="px-2 text-sm text-gray-500">OR</span>

@@ -22,7 +22,6 @@ interface SignUpFormData {
   email: string;
   password: string;
   confirmPassword: string;
-  birthday: string;
   phone: string;
   gender: string;
   isocode: string;
@@ -41,7 +40,6 @@ const defaultFormData: SignUpFormData = {
   email: "",
   password: "",
   confirmPassword: "",
-  birthday: "",
   phone: "",
   gender: "",
   isocode: "",
@@ -50,7 +48,7 @@ const defaultFormData: SignUpFormData = {
   description: "",
   location: "",
   avatar: "b1fcd062-fc30-4c9f-a48f-804b70510da9",
-  role: "aa10e96d-dc9b-40ff-9bc2-443558fd0848",
+  role: "fd8c9450-7c5c-432b-963d-d46bf20aef11",
   device_id: "",
 };
 
@@ -175,6 +173,9 @@ const RegisterCustomer = () => {
           device_id: deviceId,
         };
 
+        // Remove the birthday field from the form data
+        // delete formData.birthday;
+
         const response = await api.post("/register-user", formData, {
           headers: { "Content-Type": "application/json" },
         });
@@ -188,7 +189,7 @@ const RegisterCustomer = () => {
 
         setAccessToken(access_token);
         setRefreshToken(refresh_token);
-        router.push("/");
+        router.push("/login");
       } catch (error) {
         if (axios.isAxiosError(error) && error.response?.data?.errors) {
           const errorMessage = error.response.data.errors[0].message;

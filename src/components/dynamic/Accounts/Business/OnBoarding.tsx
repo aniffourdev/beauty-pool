@@ -112,7 +112,7 @@ const OnBoarding = ({ initialData }: { initialData: SignUpFormData }) => {
     const getCategories = async () => {
       try {
         const response = await axios.get(
-          "http://109.199.103.20:2022/items/Categorie"
+          "https://maoulaty.shop/items/Categorie"
         );
         setCategories(response.data.data); // Storing data as an array
       } catch (error) {
@@ -214,7 +214,7 @@ const OnBoarding = ({ initialData }: { initialData: SignUpFormData }) => {
         setLoading(true); // Set loading state while submitting data
         try {
           const response = await axios.post(
-            "http://109.199.103.20:2022/register-user",
+            "https://maoulaty.shop/register-user",
             finalFormData
           ); // Send post request to register the user
           console.log("User registered successfully:", response.data); // Log success response
@@ -333,7 +333,7 @@ const OnBoarding = ({ initialData }: { initialData: SignUpFormData }) => {
             className="cursor-pointer flex justify-center items-center flex-col space-y-2"
           >
             <img
-              src={`http://109.199.103.20:2022/assets/${icon}`}
+              src={`https://maoulaty.shop/assets/${icon}`}
               alt={label}
               className="w-9 h-9"
             />

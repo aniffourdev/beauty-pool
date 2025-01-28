@@ -30,6 +30,7 @@ interface Category {
 }
 
 interface Service {
+  subService: any;
   id: number;
   name: string;
 }
@@ -39,11 +40,21 @@ interface SubService {
   name: string;
 }
 
+interface SelectedService {
+  id: number;
+  name: string;
+  subService: {
+    id: number;
+    name: string;
+  };
+}
+
 const ProductAdd = () => {
   const [userData, setUserData] = useState<UserData | null>(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [featuredImage, setFeaturedImage] = useState<File | null>(null);
   const [galleryImages, setGalleryImages] = useState<File[]>([]);
+
   const [loading, setLoading] = useState(false);
   const [openTimes, setOpenTimes] = useState({
     monday: false,
@@ -59,9 +70,8 @@ const ProductAdd = () => {
   const [subServices, setSubServices] = useState<SubService[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
   const [selectedService, setSelectedService] = useState<number | null>(null);
-  const [selectedSubService, setSelectedSubService] = useState<number | null>(
-    null
-  );
+  const [selectedSubService, setSelectedSubService] = useState<number | null>(null);
+  const [selectedServices, setSelectedServices] = useState<SelectedService[]>([]);
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -186,16 +196,26 @@ const ProductAdd = () => {
           const response = await api.get("users/me", {
             params: {
               fields: [
+                "category.Categorie_id.*",
                 "category.Categorie_id.services.Services_id.*",
                 "category.Categorie_id.services.Services_id.sub_services.*",
               ],
             },
           });
 
+          console.log("API Response for Sub-Services:", response.data.data.category);
+
+          // Log the IDs of the categories in the API response
+          response.data.data.category.forEach((cat: any) => {
+            console.log("Category ID:", cat.Categorie_id.id);
+          });
+
           // Find the selected category
           const selectedCategoryData = response.data.data.category.find(
             (cat: any) => cat.Categorie_id.id === selectedCategory
           );
+
+          console.log("Selected Category Data:", selectedCategoryData);
 
           // Find sub-services for the selected service within the selected category
           const subServiceData = selectedCategoryData
@@ -211,6 +231,8 @@ const ProductAdd = () => {
                 )
             : [];
 
+          console.log("Sub-Services Data:", subServiceData);
+
           setSubServices(subServiceData);
         } catch (error) {
           console.error("Error fetching sub-services:", error);
@@ -222,80 +244,46 @@ const ProductAdd = () => {
     fetchSubServices();
   }, [selectedCategory, selectedService]);
 
-  useEffect(() => {
-    const fetchSubServices = async () => {
-      if (selectedService) {
-        try {
-          const response = await api.get("users/me", {
-            params: {
-              fields: [
-                "category.Categorie_id.services.Services_id.*",
-                "category.Categorie_id.services.Services_id.sub_services.*",
-              ],
-            },
-          });
+  const addService = () => {
+    if (selectedService && selectedSubService) {
+      console.log("Selected Service ID:", selectedService);
+      console.log("Selected SubService ID:", selectedSubService);
 
-          // Find sub-services for the selected service
-          const subServiceData = response.data.data.category.flatMap(
-            (cat: any) =>
-              cat.Categorie_id.services
-                .filter(
-                  (service: any) => service.Services_id.id === selectedService
-                )
-                .flatMap((service: any) =>
-                  service.Services_id.sub_services.map((subService: any) => ({
-                    id: subService.id,
-                    name: subService.name,
-                  }))
-                )
-          );
+      const selectedServiceObj = services.find(service => service.id === selectedService);
+      const selectedSubServiceObj = subServices.find(subService => subService.id === selectedSubService);
 
-          setSubServices(subServiceData);
-        } catch (error) {
-          console.error("Error fetching sub-services:", error);
-          setSubServices([]);
-        }
+      console.log("Found Service Object:", selectedServiceObj);
+      console.log("Found SubService Object:", selectedSubServiceObj);
+
+      if (selectedServiceObj && selectedSubServiceObj) {
+        const newSelectedService = {
+          id: selectedServiceObj.id,
+          name: selectedServiceObj.name,
+          subService: {
+            id: selectedSubServiceObj.id,
+            name: selectedSubServiceObj.name
+          }
+        };
+
+        console.log("New Selected Service Object:", newSelectedService);
+
+        setSelectedServices(prev => {
+          const updated = [...prev, newSelectedService];
+          console.log("Updated Selected Services:", updated);
+          return updated;
+        });
+
+        setSelectedService(null);
+        setSelectedSubService(null);
       }
-    };
-
-    if (selectedService) {
-      fetchSubServices();
     }
-  }, [selectedService]);
+  };
 
-  useEffect(() => {
-    const fetchSubServices = async () => {
-      if (selectedService) {
-        try {
-          const response = await api.get("users/me", {
-            params: {
-              fields: `category.Categorie_id.services.Services_id.sub_services.*`,
-            },
-          });
-          const subServiceData = response.data.data.category
-            .flatMap((cat: any) =>
-              cat.Categorie_id.services.flatMap((service: any) =>
-                service.Services_id.sub_services.map((subService: any) => ({
-                  id: subService.id,
-                  name: subService.name,
-                }))
-              )
-            )
-            .filter((subService: any) => subService.id === selectedService);
-
-          setSubServices(subServiceData || []);
-        } catch (error) {
-          console.error("Error fetching sub-services:", error);
-        }
-      }
-    };
-
-    fetchSubServices();
-  }, [selectedService]);
+  const removeService = (serviceId: number) => {
+    setSelectedServices(selectedServices.filter(service => service.id !== serviceId));
+  };
 
   const onSubmit = async (data: any) => {
-    console.log("Data Services:", data.services);
-    console.log("Data Sub-Services:", data.sub_services);
     setLoading(true);
     try {
       let featuredImageId = null;
@@ -353,32 +341,20 @@ const ProductAdd = () => {
         },
         category: data.category,
         service: {
-          create: [
-            {
-              articles_id: "+",
-              Services_id: {
-                id:
-                  data.services && data.services.length > 0
-                    ? data.services[0]
-                    : 189,
-              },
-            },
-          ],
+          create: selectedServices.map((service) => ({
+            articles_id: "+",
+            Services_id: { id: service.id },
+            sub_service_name: service.subService.name, // Include sub-service name
+          })),
           update: [],
           delete: [],
         },
         sub_service: {
-          create:
-            data.sub_services && data.sub_services.length > 0
-              ? [
-                  {
-                    articles_id: "+",
-                    sub_services_id: {
-                      id: data.sub_services[0],
-                    },
-                  },
-                ]
-              : [],
+          create: selectedServices.map((service) => ({
+            articles_id: "+",
+            sub_services_id: { id: service.subService.id },
+            sub_service_name: service.subService.name, // Include sub-service name
+          })),
           update: [],
           delete: [],
         },
@@ -398,8 +374,6 @@ const ProductAdd = () => {
         sunday_open: openTimes.sunday ? data.sunday_open : null,
         sunday_close: openTimes.sunday ? data.sunday_close : null,
       };
-
-      console.log("THIS IS PAYLOAD", payload);
 
       // Send the payload to the API
       await api.post("/items/articles", payload);
@@ -537,6 +511,7 @@ const ProductAdd = () => {
                         onChange={(e) => {
                           setSelectedService(Number(e.target.value));
                         }}
+                        value={selectedService || ""} // Ensure the selected service is displayed
                       >
                         <option value="">Select a service</option>
                         {services.map((service) => (
@@ -563,6 +538,7 @@ const ProductAdd = () => {
                         onChange={(e) => {
                           setSelectedSubService(Number(e.target.value));
                         }}
+                        value={selectedSubService || ""} // Ensure the selected sub-service is displayed
                       >
                         <option value="">Select a sub service</option>
                         {subServices.map((subService) => (
@@ -572,6 +548,44 @@ const ProductAdd = () => {
                         ))}
                       </select>
                     </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={addService}
+                    className="mt-4 py-2 px-4 rounded bg-blue-500 text-white font-semibold"
+                  >
+                    Add Service
+                  </button>
+                  <div className="mt-4">
+                    <h4 className="text-lg font-semibold mb-2">Selected Services</h4>
+                    <ul className="space-y-2">
+                      {selectedServices.map((service) => (
+                        <li
+                          key={service.id}
+                          className="flex justify-between items-center p-3 bg-gray-50 rounded-lg"
+                        >
+                          <div className="flex items-center gap-3">
+                            <span className="font-medium text-gray-800">{service.name}</span>
+                            <span className="text-gray-400">→</span>
+                            <span className="text-gray-600">
+                              {service.subService?.name || 'No sub-service'}
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-4">
+                            <span className="text-sm text-gray-500">
+                              ID: {service.subService?.id}
+                            </span>
+                            <button
+                              type="button"
+                              onClick={() => removeService(service.id)}
+                              className="text-red-500 hover:text-red-700 font-medium"
+                            >
+                              Remove
+                            </button>
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
                   </div>
                 </div>
                 <div className="bg-white p-4 rounded-lg border border-slate-200 mb-8">
@@ -653,7 +667,7 @@ const ProductAdd = () => {
                             type="time"
                             {...register(`${day}_open`)}
                             disabled={!openTimes[day as keyof typeof openTimes]}
-                            className={`p-2 border rounded-md transition-all duration-300 
+                            className={`p-2 border rounded-md transition-all duration-300
           ${
             openTimes[day as keyof typeof openTimes]
               ? "bg-white border-gray-300 cursor-default"
@@ -664,7 +678,7 @@ const ProductAdd = () => {
                             type="time"
                             {...register(`${day}_close`)}
                             disabled={!openTimes[day as keyof typeof openTimes]}
-                            className={`p-2 border rounded-md transition-all duration-300 
+                            className={`p-2 border rounded-md transition-all duration-300
           ${
             openTimes[day as keyof typeof openTimes]
               ? "bg-white border-gray-300 cursor-default"
