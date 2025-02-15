@@ -8,6 +8,7 @@ import { FiUser } from "react-icons/fi";
 import { LuHeart, LuSettings } from "react-icons/lu";
 import { useRouter } from "next/navigation";
 import { useUser } from "@/context/UserContext";
+import { LiaCoinsSolid } from "react-icons/lia";
 
 const UserAccount = () => {
   const { userData, loading } = useUser();
@@ -75,6 +76,13 @@ const UserAccount = () => {
               <FiUser className="size-5 relative -top-[1px] text-black" />
               <span>Profile</span>
             </Link>
+            <Link
+                href="/mypoints"
+                className="px-3 py-1.5 text-xs sm:text-sm md:text-base hover:bg-gray-100 font-semibold flex justify-start items-center gap-1"
+              >
+                <LiaCoinsSolid className="size-6 relative -top-[1px] text-black" />
+                <span>My Points</span>
+              </Link>
             <Link
               href="/setting"
               className="px-3 py-1.5 text-xs sm:text-sm md:text-base hover:bg-gray-100 font-semibold flex justify-start items-center gap-1.5"

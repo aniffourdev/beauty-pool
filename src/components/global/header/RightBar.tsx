@@ -8,6 +8,7 @@ import api from "@/services/auth";
 import { FiUser } from "react-icons/fi";
 import { LuHeart, LuSettings } from "react-icons/lu";
 import { useRouter } from "next/navigation";
+import { LiaCoinsSolid } from "react-icons/lia";
 
 interface UserData {
   avatar?: string;
@@ -122,6 +123,13 @@ const RightBar = () => {
               >
                 <LuSettings className="size-5 relative -top-[1px] text-black" />
                 <span>Settings</span>
+              </Link>
+              <Link
+                href="/mypoints"
+                className="px-3 py-1.5 text-xs sm:text-sm md:text-base hover:bg-gray-100 font-semibold flex justify-start items-center gap-1"
+              >
+                <LiaCoinsSolid className="size-6 relative -top-[1px] text-black" />
+                <span>My Points</span>
               </Link>
               <Link
                 href="/appointments"
