@@ -4,10 +4,10 @@ import Sidebar from "@/components/dynamic/Accounts/Customer/Global/Sidebar";
 import Header from "@/components/dynamic/Accounts/Customer/Global/Header";
 import api from "@/services/auth";
 import { Gruppo } from "next/font/google";
-import { CiShop, CiShoppingCart } from "react-icons/ci";
-import Link from "next/link";
-import Appointment from "./Loadings/Appointment";
 import Cookies from "js-cookie";
+import Skeleton from "react-loading-skeleton";
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css";
 
 const gruppo = Gruppo({
   subsets: ["latin"],
@@ -18,6 +18,11 @@ const gruppo = Gruppo({
 interface UserData {
   id: string;
   first_name: string;
+  last_name: string;
+  email: string;
+  phone?: string;
+  dialcode?: string;
+  birthday?: Date | null;
 }
 
 interface SubService {
@@ -51,9 +56,14 @@ const Setting = () => {
   const [userData, setUserData] = useState<UserData | null>(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [appointments, setAppointments] = useState<Appointment[]>([]);
-  const [selectedAppointment, setSelectedAppointment] =
-    useState<Appointment | null>(null);
+  const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null);
   const [loading, setLoading] = useState(true); // Add loading state
+  const [newFirstName, setNewFirstName] = useState("");
+  const [newLastName, setNewLastName] = useState("");
+  const [newEmail, setNewEmail] = useState("");
+  const [newPhoneNumber, setNewPhoneNumber] = useState("");
+  const [newDialCode, setNewDialCode] = useState("");
+  const [newBirthday, setNewBirthday] = useState<Date | null>(null);
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -61,6 +71,14 @@ const Setting = () => {
 
   const handleUserDataFetched = (data: UserData | null) => {
     setUserData(data);
+    if (data) {
+      setNewFirstName(data.first_name);
+      setNewLastName(data.last_name);
+      setNewEmail(data.email);
+      setNewPhoneNumber(data.phone ?? "");
+      setNewDialCode(data.dialcode ?? "");
+      setNewBirthday(data.birthday ? new Date(data.birthday) : null);
+    }
   };
 
   const fetchAppointments = async () => {
@@ -103,6 +121,15 @@ const Setting = () => {
 
   useEffect(() => {
     fetchAppointments();
+    const fetchUserData = async () => {
+      try {
+        const response = await api.get("/users/me");
+        handleUserDataFetched(response.data.data);
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    };
+    fetchUserData();
   }, []);
 
   const formatTime = (time: string): string => {
@@ -150,6 +177,64 @@ const Setting = () => {
 
     // If not today, simply compare the dates
     return appointmentDay > today;
+  };
+
+  const handleUpdateName = async () => {
+    if (!userData) return;
+
+    try {
+      const response = await api.patch("/users/me", {
+        first_name: newFirstName,
+        last_name: newLastName,
+      });
+      console.log("User name updated successfully:", response.data.data);
+      handleUserDataFetched(response.data.data);
+    } catch (error) {
+      console.error("Error updating user name:", error);
+    }
+  };
+
+  const handleUpdateEmail = async () => {
+    if (!userData) return;
+
+    try {
+      const response = await api.patch("/users/me", {
+        email: newEmail,
+      });
+      console.log("User email updated successfully:", response.data.data);
+      handleUserDataFetched(response.data.data);
+    } catch (error) {
+      console.error("Error updating user email:", error);
+    }
+  };
+
+  const handleUpdatePhoneNumber = async () => {
+    if (!userData) return;
+
+    try {
+      const response = await api.patch("/users/me", {
+        phone: newPhoneNumber,
+        dialcode: newDialCode,
+      });
+      console.log("User phone number updated successfully:", response.data.data);
+      handleUserDataFetched(response.data.data);
+    } catch (error) {
+      console.error("Error updating user phone number:", error);
+    }
+  };
+
+  const handleUpdateBirthday = async () => {
+    if (!userData) return;
+
+    try {
+      const response = await api.patch("/users/me", {
+        birthday: newBirthday,
+      });
+      console.log("User birthday updated successfully:", response.data.data);
+      handleUserDataFetched(response.data.data);
+    } catch (error) {
+      console.error("Error updating user birthday:", error);
+    }
   };
 
   const handleDeleteAccount = async () => {
@@ -206,28 +291,144 @@ const Setting = () => {
           isSidebarOpen ? "sm:ml-64" : "sm:ml-64"
         }`}
       >
-        <div className="p-4 mt-20">
-          <h2
-            className={`${gruppo.className} text-4xl text-black font-bold mb-5`}
-          >
-            Setting
-          </h2>
-          <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-md">
-            <h1 className="text-xl font-bold mb-2">Delete account</h1>
-            <p className="text-gray-600 mb-4">
-              Are you sure you want to leave Fresha?
-            </p>
-            <button
-              className="bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700"
-              onClick={() => {
-                console.log("Delete account button clicked");
-                handleDeleteAccount();
-              }}
-            >
-              Delete my account
-            </button>
-          </div>
-          {loading ? <></> : <></>}
+        <div className="p-4 mt-20 max-w-6xl mx-auto">
+          {loading ? (
+            <div>
+              <Skeleton height={30} width={300} />
+              <div className="lg:flex gap-10 mb-10 mt-8">
+                <div className="lg:w-4/12 mb-3">
+                  <Skeleton height={600} />
+                </div>
+                <div className="lg:w-8/12">
+                  <Skeleton height={400} />
+                </div>
+              </div>
+            </div>
+          ) : userData ? (
+            <>
+              <h1 className={`${gruppo.className} text-3xl font-bold mb-8`}>Settings</h1>
+              <div className="space-y-6">
+                {/* Change Full Name */}
+                <div className="bg-white p-4 sm:p-6 rounded-lg shadow-md">
+                  <h2 className="text-xl font-bold mb-4 sm:text-lg">Change Full Name</h2>
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-gray-700 sm:text-sm">First Name</label>
+                      <input
+                        type="text"
+                        value={newFirstName}
+                        onChange={(e) => setNewFirstName(e.target.value)}
+                        className="w-full sm:w-[400px] p-2 border rounded-lg text-sm sm:text-xs border-opacity-20"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-gray-700 sm:text-sm">Last Name</label>
+                      <input
+                        type="text"
+                        value={newLastName}
+                        onChange={(e) => setNewLastName(e.target.value)}
+                        className="w-full sm:w-[400px] p-2 border rounded-lg text-sm sm:text-xs border-opacity-20"
+                      />
+                    </div>
+                    <button
+                      className="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 text-sm sm:text-xs"
+                      onClick={handleUpdateName}
+                    >
+                      Update Name
+                    </button>
+                  </div>
+                </div>
+
+                {/* Change Email */}
+                <div className="bg-white p-4 sm:p-6 rounded-lg shadow-md">
+                  <h2 className="text-xl font-bold mb-4 sm:text-lg">Change Email</h2>
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-gray-700 sm:text-sm">New Email</label>
+                      <input
+                        type="email"
+                        value={newEmail}
+                        onChange={(e) => setNewEmail(e.target.value)}
+                        className="w-full sm:w-[400px] p-2 border rounded-lg text-sm sm:text-xs border-opacity-20"
+                      />
+                    </div>
+                    <button
+                      className="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 text-sm sm:text-xs"
+                      onClick={handleUpdateEmail}
+                    >
+                      Update Email
+                    </button>
+                  </div>
+                </div>
+
+                {/* Change Phone Number */}
+                <div className="bg-white p-4 sm:p-6 rounded-lg shadow-md">
+                  <h2 className="text-xl font-bold mb-4 sm:text-lg">Change Phone Number</h2>
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-gray-700 sm:text-sm">New Phone Number</label>
+                      <PhoneInput
+                        country={"us"}
+                        value={newPhoneNumber}
+                        onChange={(phone, country) => {
+                          setNewPhoneNumber(phone);
+                          // setNewDialCode(country.dialCode);
+                        }}
+                        inputProps={{
+                          name: "phone",
+                          required: true,
+                          autoFocus: true,
+                        }}
+                        // className="w-full sm:w-[400px] p-2 border rounded-lg text-sm sm:text-xs border-opacity-20"
+                      />
+                    </div>
+                    <button
+                      className="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 text-sm sm:text-xs"
+                      onClick={handleUpdatePhoneNumber}
+                    >
+                      Update Phone Number
+                    </button>
+                  </div>
+                </div>
+
+                {/* Change Birthday */}
+                <div className="bg-white p-4 sm:p-6 rounded-lg shadow-md">
+                  <h2 className="text-xl font-bold mb-4 sm:text-lg">Change Birthday</h2>
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-gray-700 sm:text-sm">Birthday</label>
+                      <input
+                        type="date"
+                        value={newBirthday ? newBirthday.toISOString().split('T')[0] : ''}
+                        onChange={(e) => setNewBirthday(e.target.value ? new Date(e.target.value) : null)}
+                        className="w-full sm:w-[400px] p-2 border rounded-lg text-sm sm:text-xs border-opacity-20"
+                      />
+                    </div>
+                    <button
+                      className="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 text-sm sm:text-xs"
+                      onClick={handleUpdateBirthday}
+                    >
+                      Update Birthday
+                    </button>
+                  </div>
+                </div>
+
+                {/* Delete Account */}
+                <div className="bg-white p-4 sm:p-6 rounded-lg shadow-md">
+                  <h2 className="text-xl font-bold mb-4 sm:text-lg">Delete Account</h2>
+                  <p className="text-gray-600 mb-4 sm:text-sm">
+                    Are you sure you want to delete your account? This action cannot be undone.
+                  </p>
+                  <button
+                    className="bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 text-sm sm:text-xs"
+                    onClick={handleDeleteAccount}
+                  >
+                    Delete Account
+                  </button>
+                </div>
+              </div>
+            </>
+          ) : null}
         </div>
       </div>
     </div>
