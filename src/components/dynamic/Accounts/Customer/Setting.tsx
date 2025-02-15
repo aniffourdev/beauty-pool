@@ -8,6 +8,7 @@ import Cookies from "js-cookie";
 import Skeleton from "react-loading-skeleton";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
+import Swal from "sweetalert2";
 
 const gruppo = Gruppo({
   subsets: ["latin"],
@@ -64,6 +65,10 @@ const Setting = () => {
   const [newPhoneNumber, setNewPhoneNumber] = useState("");
   const [newDialCode, setNewDialCode] = useState("");
   const [newBirthday, setNewBirthday] = useState<Date | null>(null);
+  const [updatingName, setUpdatingName] = useState(false); // Add updating state for name
+  const [updatingEmail, setUpdatingEmail] = useState(false); // Add updating state for email
+  const [updatingPhone, setUpdatingPhone] = useState(false); // Add updating state for phone
+  const [updatingBirthday, setUpdatingBirthday] = useState(false); // Add updating state for birthday
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -182,6 +187,7 @@ const Setting = () => {
   const handleUpdateName = async () => {
     if (!userData) return;
 
+    setUpdatingName(true); // Set updating to true for name
     try {
       const response = await api.patch("/users/me", {
         first_name: newFirstName,
@@ -189,28 +195,38 @@ const Setting = () => {
       });
       console.log("User name updated successfully:", response.data.data);
       handleUserDataFetched(response.data.data);
+      Swal.fire("Success", "Data updated successfully", "success");
     } catch (error) {
       console.error("Error updating user name:", error);
+      Swal.fire("Error", "Failed to update data", "error");
+    } finally {
+      setUpdatingName(false); // Set updating to false for name
     }
   };
 
   const handleUpdateEmail = async () => {
     if (!userData) return;
 
+    setUpdatingEmail(true); // Set updating to true for email
     try {
       const response = await api.patch("/users/me", {
         email: newEmail,
       });
       console.log("User email updated successfully:", response.data.data);
       handleUserDataFetched(response.data.data);
+      Swal.fire("Success", "Data updated successfully", "success");
     } catch (error) {
       console.error("Error updating user email:", error);
+      Swal.fire("Error", "Failed to update data", "error");
+    } finally {
+      setUpdatingEmail(false); // Set updating to false for email
     }
   };
 
   const handleUpdatePhoneNumber = async () => {
     if (!userData) return;
 
+    setUpdatingPhone(true); // Set updating to true for phone
     try {
       const response = await api.patch("/users/me", {
         phone: newPhoneNumber,
@@ -218,22 +234,31 @@ const Setting = () => {
       });
       console.log("User phone number updated successfully:", response.data.data);
       handleUserDataFetched(response.data.data);
+      Swal.fire("Success", "Data updated successfully", "success");
     } catch (error) {
       console.error("Error updating user phone number:", error);
+      Swal.fire("Error", "Failed to update data", "error");
+    } finally {
+      setUpdatingPhone(false); // Set updating to false for phone
     }
   };
 
   const handleUpdateBirthday = async () => {
     if (!userData) return;
 
+    setUpdatingBirthday(true); // Set updating to true for birthday
     try {
       const response = await api.patch("/users/me", {
         birthday: newBirthday,
       });
       console.log("User birthday updated successfully:", response.data.data);
       handleUserDataFetched(response.data.data);
+      Swal.fire("Success", "Data updated successfully", "success");
     } catch (error) {
       console.error("Error updating user birthday:", error);
+      Swal.fire("Error", "Failed to update data", "error");
+    } finally {
+      setUpdatingBirthday(false); // Set updating to false for birthday
     }
   };
 
@@ -311,14 +336,14 @@ const Setting = () => {
                 {/* Change Full Name */}
                 <div className="bg-white p-4 sm:p-6 rounded-lg shadow-md">
                   <h2 className="text-xl font-bold mb-4 sm:text-lg">Change Full Name</h2>
-                  <div className="space-y-4">
+                  <div className="grid grid-cols-2 gap-4">
                     <div>
                       <label className="block text-gray-700 sm:text-sm">First Name</label>
                       <input
                         type="text"
                         value={newFirstName}
                         onChange={(e) => setNewFirstName(e.target.value)}
-                        className="w-full sm:w-[400px] p-2 border rounded-lg text-sm sm:text-xs border-opacity-20"
+                        className="w-full shadow appearance-none border border-gray-300 rounded py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                       />
                     </div>
                     <div>
@@ -327,16 +352,17 @@ const Setting = () => {
                         type="text"
                         value={newLastName}
                         onChange={(e) => setNewLastName(e.target.value)}
-                        className="w-full sm:w-[400px] p-2 border rounded-lg text-sm sm:text-xs border-opacity-20"
+                        className="w-full shadow appearance-none border border-gray-300 rounded py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                       />
                     </div>
-                    <button
-                      className="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 text-sm sm:text-xs"
-                      onClick={handleUpdateName}
-                    >
-                      Update Name
-                    </button>
                   </div>
+                  <button
+                      className="py-2 px-6 rounded bg-slate-900 text-white font-semibold text-sm mt-4"
+                      onClick={handleUpdateName}
+                      disabled={updatingName}
+                    >
+                      {updatingName ? "Updating..." : "Update Name"}
+                    </button>
                 </div>
 
                 {/* Change Email */}
@@ -349,14 +375,15 @@ const Setting = () => {
                         type="email"
                         value={newEmail}
                         onChange={(e) => setNewEmail(e.target.value)}
-                        className="w-full sm:w-[400px] p-2 border rounded-lg text-sm sm:text-xs border-opacity-20"
+                        className="w-full sm:w-[400px] shadow appearance-none border-gray-300 border rounded py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                       />
                     </div>
                     <button
-                      className="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 text-sm sm:text-xs"
+                      className="py-2 px-6 rounded bg-slate-900 text-white font-semibold text-sm"
                       onClick={handleUpdateEmail}
+                      disabled={updatingEmail}
                     >
-                      Update Email
+                      {updatingEmail ? "Updating..." : "Update Email"}
                     </button>
                   </div>
                 </div>
@@ -375,18 +402,23 @@ const Setting = () => {
                           // setNewDialCode(country.dialCode);
                         }}
                         inputProps={{
-                          name: "phone",
+                          id: "phone-input",
                           required: true,
-                          autoFocus: true,
+                          autoComplete: "tel",
                         }}
-                        // className="w-full sm:w-[400px] p-2 border rounded-lg text-sm sm:text-xs border-opacity-20"
+                        containerClass="w-full"
+                        inputClass={`
+                          shadow appearance-none border rounded w-full !py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline
+                          pl-16 pr-3
+                        `}
                       />
                     </div>
                     <button
-                      className="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 text-sm sm:text-xs"
+                      className="py-2 px-6 rounded bg-slate-900 text-white font-semibold text-sm"
                       onClick={handleUpdatePhoneNumber}
+                      disabled={updatingPhone}
                     >
-                      Update Phone Number
+                      {updatingPhone ? "Updating..." : "Update Phone Number"}
                     </button>
                   </div>
                 </div>
@@ -401,14 +433,15 @@ const Setting = () => {
                         type="date"
                         value={newBirthday ? newBirthday.toISOString().split('T')[0] : ''}
                         onChange={(e) => setNewBirthday(e.target.value ? new Date(e.target.value) : null)}
-                        className="w-full sm:w-[400px] p-2 border rounded-lg text-sm sm:text-xs border-opacity-20"
+                        className="w-full sm:w-[400px] shadow appearance-none border border-gray-300 rounded py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                       />
                     </div>
                     <button
-                      className="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 text-sm sm:text-xs"
+                      className="py-2 px-6 rounded bg-slate-900 text-white font-semibold text-sm"
                       onClick={handleUpdateBirthday}
+                      disabled={updatingBirthday}
                     >
-                      Update Birthday
+                      {updatingBirthday ? "Updating..." : "Update Birthday"}
                     </button>
                   </div>
                 </div>
@@ -420,7 +453,7 @@ const Setting = () => {
                     Are you sure you want to delete your account? This action cannot be undone.
                   </p>
                   <button
-                    className="bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 text-sm sm:text-xs"
+                    className="py-2 px-6 rounded bg-red-600 text-white font-semibold text-sm"
                     onClick={handleDeleteAccount}
                   >
                     Delete Account

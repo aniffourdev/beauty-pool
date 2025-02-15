@@ -70,8 +70,12 @@ const ProductAdd = () => {
   const [subServices, setSubServices] = useState<SubService[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
   const [selectedService, setSelectedService] = useState<number | null>(null);
-  const [selectedSubService, setSelectedSubService] = useState<number | null>(null);
-  const [selectedServices, setSelectedServices] = useState<SelectedService[]>([]);
+  const [selectedSubService, setSelectedSubService] = useState<number | null>(
+    null
+  );
+  const [selectedServices, setSelectedServices] = useState<SelectedService[]>(
+    []
+  );
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -203,7 +207,10 @@ const ProductAdd = () => {
             },
           });
 
-          console.log("API Response for Sub-Services:", response.data.data.category);
+          console.log(
+            "API Response for Sub-Services:",
+            response.data.data.category
+          );
 
           // Log the IDs of the categories in the API response
           response.data.data.category.forEach((cat: any) => {
@@ -249,8 +256,12 @@ const ProductAdd = () => {
       console.log("Selected Service ID:", selectedService);
       console.log("Selected SubService ID:", selectedSubService);
 
-      const selectedServiceObj = services.find(service => service.id === selectedService);
-      const selectedSubServiceObj = subServices.find(subService => subService.id === selectedSubService);
+      const selectedServiceObj = services.find(
+        (service) => service.id === selectedService
+      );
+      const selectedSubServiceObj = subServices.find(
+        (subService) => subService.id === selectedSubService
+      );
 
       console.log("Found Service Object:", selectedServiceObj);
       console.log("Found SubService Object:", selectedSubServiceObj);
@@ -261,13 +272,13 @@ const ProductAdd = () => {
           name: selectedServiceObj.name,
           subService: {
             id: selectedSubServiceObj.id,
-            name: selectedSubServiceObj.name
-          }
+            name: selectedSubServiceObj.name,
+          },
         };
 
         console.log("New Selected Service Object:", newSelectedService);
 
-        setSelectedServices(prev => {
+        setSelectedServices((prev) => {
           const updated = [...prev, newSelectedService];
           console.log("Updated Selected Services:", updated);
           return updated;
@@ -280,7 +291,9 @@ const ProductAdd = () => {
   };
 
   const removeService = (serviceId: number) => {
-    setSelectedServices(selectedServices.filter(service => service.id !== serviceId));
+    setSelectedServices(
+      selectedServices.filter((service) => service.id !== serviceId)
+    );
   };
 
   const onSubmit = async (data: any) => {
@@ -557,7 +570,9 @@ const ProductAdd = () => {
                     Add Service
                   </button>
                   <div className="mt-4">
-                    <h4 className="text-lg font-semibold mb-2">Selected Services</h4>
+                    <h4 className="text-lg font-semibold mb-2">
+                      Selected Services
+                    </h4>
                     <ul className="space-y-2">
                       {selectedServices.map((service) => (
                         <li
@@ -565,10 +580,12 @@ const ProductAdd = () => {
                           className="flex justify-between items-center p-3 bg-gray-50 rounded-lg"
                         >
                           <div className="flex items-center gap-3">
-                            <span className="font-medium text-gray-800">{service.name}</span>
+                            <span className="font-medium text-gray-800">
+                              {service.name}
+                            </span>
                             <span className="text-gray-400">→</span>
                             <span className="text-gray-600">
-                              {service.subService?.name || 'No sub-service'}
+                              {service.subService?.name || "No sub-service"}
                             </span>
                           </div>
                           <div className="flex items-center gap-4">
