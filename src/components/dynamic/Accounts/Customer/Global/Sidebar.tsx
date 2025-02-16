@@ -5,6 +5,7 @@ import { LuSettings } from "react-icons/lu";
 import { FiUser } from "react-icons/fi";
 import { IoCalendarOutline } from "react-icons/io5";
 import { TiHeartOutline } from "react-icons/ti";
+import { LiaCoinsSolid } from "react-icons/lia";
 
 interface SidebarProps {
   isOpen: boolean;
@@ -21,6 +22,11 @@ const sidenavItems = [
     name: "Appointments",
     icon: <IoCalendarOutline className="size-5 text-[#f47c66]" />,
     link: "/appointments",
+  },
+  {
+    name: "My Points",
+    icon: <LiaCoinsSolid className="size-7 text-[#f47c66]" />,
+    link: "/mypoints",
   },
   {
     name: "Favorites",

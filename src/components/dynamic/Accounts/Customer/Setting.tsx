@@ -70,6 +70,11 @@ const Setting = () => {
   const [updatingPhone, setUpdatingPhone] = useState(false); // Add updating state for phone
   const [updatingBirthday, setUpdatingBirthday] = useState(false); // Add updating state for birthday
 
+  const [isNameChanged, setIsNameChanged] = useState(false);
+  const [isEmailChanged, setIsEmailChanged] = useState(false);
+  const [isPhoneChanged, setIsPhoneChanged] = useState(false);
+  const [isBirthdayChanged, setIsBirthdayChanged] = useState(false);
+
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
@@ -196,6 +201,7 @@ const Setting = () => {
       console.log("User name updated successfully:", response.data.data);
       handleUserDataFetched(response.data.data);
       Swal.fire("Success", "Data updated successfully", "success");
+      setIsNameChanged(false);
     } catch (error) {
       console.error("Error updating user name:", error);
       Swal.fire("Error", "Failed to update data", "error");
@@ -215,6 +221,7 @@ const Setting = () => {
       console.log("User email updated successfully:", response.data.data);
       handleUserDataFetched(response.data.data);
       Swal.fire("Success", "Data updated successfully", "success");
+      setIsEmailChanged(false);
     } catch (error) {
       console.error("Error updating user email:", error);
       Swal.fire("Error", "Failed to update data", "error");
@@ -235,6 +242,7 @@ const Setting = () => {
       console.log("User phone number updated successfully:", response.data.data);
       handleUserDataFetched(response.data.data);
       Swal.fire("Success", "Data updated successfully", "success");
+      setIsPhoneChanged(false);
     } catch (error) {
       console.error("Error updating user phone number:", error);
       Swal.fire("Error", "Failed to update data", "error");
@@ -254,6 +262,7 @@ const Setting = () => {
       console.log("User birthday updated successfully:", response.data.data);
       handleUserDataFetched(response.data.data);
       Swal.fire("Success", "Data updated successfully", "success");
+      setIsBirthdayChanged(false);
     } catch (error) {
       console.error("Error updating user birthday:", error);
       Swal.fire("Error", "Failed to update data", "error");
@@ -342,7 +351,10 @@ const Setting = () => {
                       <input
                         type="text"
                         value={newFirstName}
-                        onChange={(e) => setNewFirstName(e.target.value)}
+                        onChange={(e) => {
+                          setNewFirstName(e.target.value);
+                          setIsNameChanged(true);
+                        }}
                         className="w-full shadow appearance-none border border-gray-300 rounded py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                       />
                     </div>
@@ -351,18 +363,23 @@ const Setting = () => {
                       <input
                         type="text"
                         value={newLastName}
-                        onChange={(e) => setNewLastName(e.target.value)}
+                        onChange={(e) => {
+                          setNewLastName(e.target.value);
+                          setIsNameChanged(true);
+                        }}
                         className="w-full shadow appearance-none border border-gray-300 rounded py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                       />
                     </div>
                   </div>
                   <button
-                      className="py-2 px-6 rounded bg-slate-900 text-white font-semibold text-sm mt-4"
-                      onClick={handleUpdateName}
-                      disabled={updatingName}
-                    >
-                      {updatingName ? "Updating..." : "Update Name"}
-                    </button>
+                    className={`py-2 px-6 rounded bg-slate-900 text-white font-semibold text-sm mt-4 ${
+                      !isNameChanged || updatingName ? "opacity-50" : ""
+                    }`}
+                    onClick={handleUpdateName}
+                    disabled={!isNameChanged || updatingName}
+                  >
+                    {updatingName ? "Updating..." : "Update Name"}
+                  </button>
                 </div>
 
                 {/* Change Email */}
@@ -374,14 +391,19 @@ const Setting = () => {
                       <input
                         type="email"
                         value={newEmail}
-                        onChange={(e) => setNewEmail(e.target.value)}
+                        onChange={(e) => {
+                          setNewEmail(e.target.value);
+                          setIsEmailChanged(true);
+                        }}
                         className="w-full sm:w-[400px] shadow appearance-none border-gray-300 border rounded py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                       />
                     </div>
                     <button
-                      className="py-2 px-6 rounded bg-slate-900 text-white font-semibold text-sm"
+                      className={`py-2 px-6 rounded bg-slate-900 text-white font-semibold text-sm ${
+                        !isEmailChanged || updatingEmail ? "opacity-50" : ""
+                      }`}
                       onClick={handleUpdateEmail}
-                      disabled={updatingEmail}
+                      disabled={!isEmailChanged || updatingEmail}
                     >
                       {updatingEmail ? "Updating..." : "Update Email"}
                     </button>
@@ -399,6 +421,7 @@ const Setting = () => {
                         value={newPhoneNumber}
                         onChange={(phone, country) => {
                           setNewPhoneNumber(phone);
+                          setIsPhoneChanged(true);
                           // setNewDialCode(country.dialCode);
                         }}
                         inputProps={{
@@ -414,9 +437,11 @@ const Setting = () => {
                       />
                     </div>
                     <button
-                      className="py-2 px-6 rounded bg-slate-900 text-white font-semibold text-sm"
+                      className={`py-2 px-6 rounded bg-slate-900 text-white font-semibold text-sm ${
+                        !isPhoneChanged || updatingPhone ? "opacity-50" : ""
+                      }`}
                       onClick={handleUpdatePhoneNumber}
-                      disabled={updatingPhone}
+                      disabled={!isPhoneChanged || updatingPhone}
                     >
                       {updatingPhone ? "Updating..." : "Update Phone Number"}
                     </button>
@@ -432,14 +457,19 @@ const Setting = () => {
                       <input
                         type="date"
                         value={newBirthday ? newBirthday.toISOString().split('T')[0] : ''}
-                        onChange={(e) => setNewBirthday(e.target.value ? new Date(e.target.value) : null)}
+                        onChange={(e) => {
+                          setNewBirthday(e.target.value ? new Date(e.target.value) : null);
+                          setIsBirthdayChanged(true);
+                        }}
                         className="w-full sm:w-[400px] shadow appearance-none border border-gray-300 rounded py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                       />
                     </div>
                     <button
-                      className="py-2 px-6 rounded bg-slate-900 text-white font-semibold text-sm"
+                      className={`py-2 px-6 rounded bg-slate-900 text-white font-semibold text-sm ${
+                        !isBirthdayChanged || updatingBirthday ? "opacity-50" : ""
+                      }`}
                       onClick={handleUpdateBirthday}
-                      disabled={updatingBirthday}
+                      disabled={!isBirthdayChanged || updatingBirthday}
                     >
                       {updatingBirthday ? "Updating..." : "Update Birthday"}
                     </button>

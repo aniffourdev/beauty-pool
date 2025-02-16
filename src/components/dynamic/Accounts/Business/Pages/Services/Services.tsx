@@ -335,8 +335,8 @@ const Services: React.FC = () => {
           </div>
         </div>
         <div className="flex items-center">
-          <span className="text-[#b64077] font-bold text-sm">
-            €{subService.price}
+          <span className="text-[#b64077] font-bold text-xs">
+          {subService.price} AED
           </span>
           <HiOutlineDotsVertical
             className="ml-4 cursor-pointer text-gray-800 size-5"

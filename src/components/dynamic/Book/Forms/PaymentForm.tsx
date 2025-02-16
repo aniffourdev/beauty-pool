@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
-import axios from "axios";
 import api from "@/services/auth";
 import { Alert, AlertDescription, AlertTitle } from "@/app/ui/alert";
+import { PiCoins } from "react-icons/pi";
+import { IoCheckmark, IoCloseOutline } from "react-icons/io5";
 
 interface PaymentFormProps {
   calculateTotal: () => number;
@@ -21,6 +22,12 @@ interface UserData {
   id: string;
   first_name: string;
   last_name: string;
+  points: number;
+}
+
+interface Switcher3Props {
+  isChecked: boolean;
+  onChange: () => void;
 }
 
 const fetchCurrentUser = async (): Promise<UserData> => {
@@ -33,14 +40,51 @@ const fetchCurrentUser = async (): Promise<UserData> => {
   }
 };
 
-const PaymentForm: React.FC<PaymentFormProps> = ({ calculateTotal, articleId, selectedServices, time, date, setPaymentSuccess }) => {
+const Switcher3 = ({ isChecked, onChange }: Switcher3Props) => {
+  return (
+    <label className="flex cursor-pointer select-none items-center">
+      <div className="relative">
+        <input
+          type="checkbox"
+          checked={isChecked}
+          onChange={onChange}
+          className="sr-only"
+        />
+        <div className="block h-5 w-10 rounded-full bg-teal-200"></div>
+        <div
+          className={`dot absolute left-1 top-0.5 flex h-4 w-4 items-center justify-center rounded-full transition ${
+            isChecked ? "bg-green-800 translate-x-4" : "bg-white"
+          }`}
+        >
+          {isChecked ? (
+            <IoCheckmark className="text-white size-3" />
+          ) : (
+            <IoCloseOutline className="text-body-color size-3" />
+          )}
+        </div>
+      </div>
+    </label>
+  );
+};
+
+const PaymentForm: React.FC<PaymentFormProps> = ({
+  calculateTotal,
+  articleId,
+  selectedServices,
+  time,
+  date,
+  setPaymentSuccess,
+}) => {
   const stripe = useStripe();
   const elements = useElements();
-  const [paymentIntent, setPaymentIntent] = useState<PaymentIntent | null>(null);
+  const [paymentIntent, setPaymentIntent] = useState<PaymentIntent | null>(
+    null
+  );
   const [cardHolderName, setCardHolderName] = useState("");
   const [currentUser, setCurrentUser] = useState<UserData | null>(null);
   const [showSuccessAlert, setShowSuccessAlert] = useState(false);
   const [isLoading, setIsLoading] = useState(false); // Add loading state
+  const [usePoints, setUsePoints] = useState(false); // Add state to track if points are used
 
   useEffect(() => {
     // Fetch payment intent from your backend
@@ -51,7 +95,10 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ calculateTotal, articleId, se
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ amount: calculateTotal() * 100, currency: "AED" }),
+          body: JSON.stringify({
+            amount: calculateTotal() * 100,
+            currency: "AED",
+          }),
         });
         const data = await response.json();
         setPaymentIntent(data);
@@ -83,116 +130,198 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ calculateTotal, articleId, se
 
     setIsLoading(true); // Set loading state to true
 
-    const cardElement = elements.getElement(CardElement);
-
-    if (!cardElement) {
-      console.error("Card element not found");
-      setIsLoading(false); // Set loading state to false
-      return;
-    }
-
-    const { error, paymentMethod } = await stripe.createPaymentMethod({
-      type: "card",
-      card: cardElement,
-      billing_details: {
-        name: cardHolderName,
-      },
-    });
-
-    if (error) {
-      console.error(error);
-      setIsLoading(false); // Set loading state to false
-    } else {
-      const { error: confirmationError, paymentIntent: confirmedPaymentIntent } = await stripe.confirmCardPayment(
-        paymentIntent.client_secret,
-        {
-          payment_method: paymentMethod!.id,
-        }
-      );
-
-      if (confirmationError) {
-        console.error(confirmationError);
-        setIsLoading(false); // Set loading state to false
-      } else {
-        console.log("Payment successful!");
-
-        // Capture payment details
-        const paymentDetails = {
+    if (usePoints) {
+      // Handle payment using points
+      try {
+        // Create the appointment
+        const appointmentData = {
           status: "published",
           article: articleId,
-          card_type: paymentMethod.card?.brand,
-          last4: paymentMethod.card?.last4,
-          exp_month: paymentMethod.card?.exp_month,
-          exp_year: paymentMethod.card?.exp_year,
+          services: {
+            create: selectedServices.map((service) => ({
+              appointments_id: "+",
+              sub_services_id: {
+                id: service.id,
+              },
+            })),
+            update: [],
+            delete: [],
+          },
+          time: time,
+          date: date,
+          sales: 0, // Use 'sales' instead of 'price'
+          user_created: currentUser?.id,
         };
 
-        try {
-          // Send payment details to API
-          await api.post("/items/payments_history", paymentDetails);
-          console.log("Payment details sent to API");
+        const response = await api.post("/items/appointments", appointmentData);
+        console.log("Appointment created:", response.data);
 
-          // Calculate the remaining 80% of the total price
-          const totalPrice = calculateTotal();
-          const remainingPrice = totalPrice * 0.8;
+        // Create the item in the clients collection
+        const clientItemData = {
+          article: articleId,
+          sales: 0,
+          card_type: "Points",
+        };
 
-          // Create the appointment
-          const appointmentData = {
+        const clientResponse = await api.post("items/clients", clientItemData);
+        console.log("Client item created:", clientResponse.data);
+
+        // Create the client entry
+        const clientData = {
+          ...appointmentData,
+          card_type: "Points",
+          sales: 0, // Include the total price in the client data
+        };
+
+        await api.post("/items/clients", clientData);
+        console.log("Client entry created");
+
+        // Deduct points from the user
+        const newPoints = Math.round(currentUser.points - calculateTotal());
+        await api.patch(`/users/${currentUser.id}`, { points: newPoints });
+        console.log("Points deducted");
+
+        // Show success alert
+        setShowSuccessAlert(true);
+
+        // Optionally hide the alert after some time
+        setTimeout(() => {
+          setShowSuccessAlert(false);
+        }, 5000);
+
+        // Set payment success to true
+        setPaymentSuccess(true);
+
+        setIsLoading(false); // Set loading state to false
+      } catch (error) {
+        console.error("Error in payment process:", error);
+        setIsLoading(false); // Set loading state to false
+      }
+    } else {
+      const cardElement = elements.getElement(CardElement);
+
+      if (!cardElement) {
+        console.error("Card element not found");
+        setIsLoading(false); // Set loading state to false
+        return;
+      }
+
+      const { error, paymentMethod } = await stripe.createPaymentMethod({
+        type: "card",
+        card: cardElement,
+        billing_details: {
+          name: cardHolderName,
+        },
+      });
+
+      if (error) {
+        console.error(error);
+        setIsLoading(false); // Set loading state to false
+      } else {
+        const {
+          error: confirmationError,
+          paymentIntent: confirmedPaymentIntent,
+        } = await stripe.confirmCardPayment(paymentIntent.client_secret, {
+          payment_method: paymentMethod!.id,
+        });
+
+        if (confirmationError) {
+          console.error(confirmationError);
+          setIsLoading(false); // Set loading state to false
+        } else {
+          console.log("Payment successful!");
+
+          // Capture payment details
+          const paymentDetails = {
             status: "published",
             article: articleId,
-            services: {
-              create: selectedServices.map((service) => ({
-                appointments_id: "+",
-                sub_services_id: {
-                  id: service.id,
-                },
-              })),
-              update: [],
-              delete: [],
-            },
-            time: time,
-            date: date,
-            sales: remainingPrice, // Use 'sales' instead of 'price'
-            user_created: currentUser?.id,
-          };
-
-          const response = await api.post("/items/appointments", appointmentData);
-          console.log("Appointment created:", response.data);
-
-          // Create the item in the clients collection
-          const clientItemData = {
-            article: articleId,
-            sales: totalPrice,
             card_type: paymentMethod.card?.brand,
+            last4: paymentMethod.card?.last4,
+            exp_month: paymentMethod.card?.exp_month,
+            exp_year: paymentMethod.card?.exp_year,
           };
 
-          const clientResponse = await api.post("items/clients", clientItemData);
-          console.log("Client item created:", clientResponse.data);
-          // Create the client entry
-          const clientData = {
-            ...appointmentData,
-            card_type: paymentMethod.card?.brand,
-            sales: totalPrice, // Include the total price in the client data
-          };
+          try {
+            // Send payment details to API
+            await api.post("/items/payments_history", paymentDetails);
+            console.log("Payment details sent to API");
 
-          await api.post("/items/clients", clientData);
-          console.log("Client entry created");
+            // Calculate the remaining 80% of the total price
+            const totalPrice = calculateTotal();
+            const remainingPrice = totalPrice * 0.8;
 
-          // Show success alert
-          setShowSuccessAlert(true);
+            // Create the appointment
+            const appointmentData = {
+              status: "published",
+              article: articleId,
+              services: {
+                create: selectedServices.map((service) => ({
+                  appointments_id: "+",
+                  sub_services_id: {
+                    id: service.id,
+                  },
+                })),
+                update: [],
+                delete: [],
+              },
+              time: time,
+              date: date,
+              sales: remainingPrice, // Use 'sales' instead of 'price'
+              user_created: currentUser?.id,
+            };
 
-          // Optionally hide the alert after some time
-          setTimeout(() => {
-            setShowSuccessAlert(false);
-          }, 5000);
+            const response = await api.post(
+              "/items/appointments",
+              appointmentData
+            );
+            console.log("Appointment created:", response.data);
 
-          // Set payment success to true
-          setPaymentSuccess(true);
+            // Create the item in the clients collection
+            const clientItemData = {
+              article: articleId,
+              sales: totalPrice,
+              card_type: paymentMethod.card?.brand,
+            };
 
-          setIsLoading(false); // Set loading state to false
+            const clientResponse = await api.post(
+              "items/clients",
+              clientItemData
+            );
+            console.log("Client item created:", clientResponse.data);
 
-        } catch (error) {
-          console.error("Error in payment process:", error);
-          setIsLoading(false); // Set loading state to false
+            // Create the client entry
+            const clientData = {
+              ...appointmentData,
+              card_type: paymentMethod.card?.brand,
+              sales: totalPrice, // Include the total price in the client data
+            };
+
+            await api.post("/items/clients", clientData);
+            console.log("Client entry created");
+
+            // Update user points
+            const newPoints = Math.round(
+              (currentUser.points || 0) + totalPrice
+            );
+            await api.patch(`/users/${currentUser.id}`, { points: newPoints });
+            console.log("Points updated");
+
+            // Show success alert
+            setShowSuccessAlert(true);
+
+            // Optionally hide the alert after some time
+            setTimeout(() => {
+              setShowSuccessAlert(false);
+            }, 5000);
+
+            // Set payment success to true
+            setPaymentSuccess(true);
+
+            setIsLoading(false); // Set loading state to false
+          } catch (error) {
+            console.error("Error in payment process:", error);
+            setIsLoading(false); // Set loading state to false
+          }
         }
       }
     }
@@ -203,9 +332,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ calculateTotal, articleId, se
       {showSuccessAlert && (
         <Alert className="mb-4">
           <AlertTitle>Success!</AlertTitle>
-          <AlertDescription>
-            DRISS BK TOLD ME YOU NEED LA BASE
-          </AlertDescription>
+          <AlertDescription>DRISS BK TOLD ME YOU NEED LA BASE</AlertDescription>
         </Alert>
       )}
 
@@ -260,11 +387,41 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ calculateTotal, articleId, se
         </div>
         <button
           type="submit"
-          disabled={!stripe || isLoading}
-          className="w-full py-3 font-semibold bg-black text-white rounded-lg"
+          disabled={!stripe || isLoading || usePoints}
+          className={`w-full py-3 font-semibold bg-black text-white rounded-lg ${
+            usePoints ? "opacity-50 cursor-not-allowed" : ""
+          }`}
         >
-          {isLoading ? "Processing..." : `Pay €${calculateTotal()}`}
+          {isLoading ? "Processing..." : `Pay ${calculateTotal()} AED`}
         </button>
+        {currentUser?.points! >= 1000 && (
+          <div className="mt-4 p-4 bg-teal-100 border border-teal-300 rounded-lg text-teal-700">
+            <p className="font-semibold">
+              <PiCoins className="inline size-6 relative -top-[1.5px] mr-0.5" />{" "}
+              Congratulations! You've earned over 1000 points, so you can now
+              pay using your points.
+            </p>
+            <div className="mt-2 flex items-center">
+              <Switcher3
+                isChecked={usePoints}
+                onChange={() => setUsePoints(!usePoints)}
+              />
+              <label htmlFor="usePoints" className="text-sm ml-2">
+                Use points to pay
+              </label>
+            </div>
+            <button
+              type="button"
+              onClick={() => setUsePoints(true)}
+              disabled={!usePoints}
+              className={`mt-6 w-full py-3 font-semibold bg-black text-white rounded-lg ${
+                !usePoints ? "opacity-50 cursor-not-allowed" : ""
+              }`}
+            >
+              Pay using points
+            </button>
+          </div>
+        )}
       </form>
     </div>
   );
