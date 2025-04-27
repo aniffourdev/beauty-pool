@@ -1,3 +1,4 @@
+"use client"
 import React, { useState } from "react";
 
 interface Props {
@@ -38,10 +39,7 @@ const AddSubServiceModal: React.FC<Props> = ({ toggleModal }) => {
         onChange={(e) => setDuration(Number(e.target.value))}
       />
       <label>Price Type</label>
-      <input
-        value={priceType}
-        onChange={(e) => setPriceType(e.target.value)}
-      />
+      <input value={priceType} onChange={(e) => setPriceType(e.target.value)} />
       <button onClick={handleSubmit}>Submit</button>
       <button onClick={toggleModal}>Cancel</button>
     </div>

@@ -96,21 +96,7 @@ const Services: React.FC = () => {
       await api.patch(`/users/me`, payload);
 
       // Refresh data after deletion
-      const response = await api.get(`/users/me`, {
-        params: {
-          "fields[]": [
-            "category.id",
-            "category.Categorie_id.label",
-            "category.Categorie_id.services.Categorie_id.services.Services_id.name",
-            "category.Categorie_id.services.Categorie_id.services.Services_id.sub_services.sub_services_id.name",
-            "category.Categorie_id.services.Categorie_id.services.Services_id.sub_services.sub_services_id.price",
-            "category.Categorie_id.services.Categorie_id.services.Services_id.sub_services.sub_services_id.duration",
-            "category.Categorie_id.services.Categorie_id.services.Services_id.sub_services.sub_services_id.price_type",
-            "category.Categorie_id.services.Categorie_id.services.Services_id.sub_services.sub_services_id.description",
-          ],
-        },
-      });
-      setData(response.data.data);
+      await fetchData();
       toast.success("Category Removed");
     } catch (err: unknown) {
       console.error("Error removing category:", err);
@@ -134,39 +120,39 @@ const Services: React.FC = () => {
   };
 
   const handleSaveCategories = async () => {
-    if (userData && selectedCategories.length > 0) {
-      const payload = {
-        category: {
-          create: selectedCategories.map((id) => ({
-            directus_users_id: userData.id,
-            Categorie_id: { id },
-          })),
-        },
-      };
+    console.log("Save button clicked");
+    if (!userData) {
+      console.error("User data is missing");
+      toast.error("User data is missing");
+      return;
+    }
+    if (selectedCategories.length === 0) {
+      console.error("No categories selected");
+      toast.error("No categories selected");
+      return;
+    }
 
-      try {
-        await api.patch(`/users/${userData.id}`, payload);
-        setAddCategory(false);
-        // Refresh the data
-        const response = await api.get(`/users/me`, {
-          params: {
-            "fields[]": [
-              "category.id",
-              "category.Categorie_id.label",
-              "category.Categorie_id.services.Categorie_id.services.Services_id.name",
-              "category.Categorie_id.services.Categorie_id.services.Services_id.sub_services.sub_services_id.name",
-              "category.Categorie_id.services.Categorie_id.services.Services_id.sub_services.sub_services_id.price",
-              "category.Categorie_id.services.Categorie_id.services.Services_id.sub_services.sub_services_id.duration",
-              "category.Categorie_id.services.Categorie_id.services.Services_id.sub_services.sub_services_id.price_type",
-              "category.Categorie_id.services.Categorie_id.services.Services_id.sub_services.sub_services_id.description",
-            ],
-          },
-        });
-        setData(response.data.data);
-        toast.success("Category Added");
-      } catch (err: unknown) {
-        console.error("Error saving categories:", err);
-      }
+    const payload = {
+      category: {
+        create: selectedCategories.map((id) => ({
+          directus_users_id: userData.id,
+          Categorie_id: { id },
+        })),
+      },
+    };
+
+    console.log("Payload:", payload);
+
+    try {
+      await api.patch(`/users/${userData.id}`, payload);
+      console.log("Categories saved successfully");
+      setAddCategory(false);
+      // Refresh the data
+      await fetchData();
+      toast.success("Category Added");
+    } catch (err: unknown) {
+      console.error("Error saving categories:", err);
+      toast.error("Error saving categories");
     }
   };
 
@@ -176,6 +162,14 @@ const Services: React.FC = () => {
       await api.delete(`/items/sub_services/${subServiceId}`);
 
       // Refresh data after deletion
+      await fetchData();
+    } catch (err: unknown) {
+      console.error("Error deleting sub-service:", err);
+    }
+  };
+
+  const fetchData = async () => {
+    try {
       const response = await api.get(`/users/me`, {
         params: {
           "fields[]": [
@@ -191,41 +185,18 @@ const Services: React.FC = () => {
         },
       });
       setData(response.data.data);
+
+      const categoriesResponse = await api.get(`/items/Categorie`);
+      setAvailableCategories(categoriesResponse.data.data);
+      console.log(categoriesResponse.data.data);
     } catch (err: unknown) {
-      console.error("Error deleting sub-service:", err);
+      console.error("Error fetching data:", err);
+    } finally {
+      setLoading(false);
     }
   };
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await api.get(`/users/me`, {
-          params: {
-            "fields[]": [
-              "category.id",
-              "category.Categorie_id.label",
-              "category.Categorie_id.services.Categorie_id.services.Services_id.name",
-              "category.Categorie_id.services.Categorie_id.services.Services_id.sub_services.sub_services_id.id",
-              "category.Categorie_id.services.Categorie_id.services.Services_id.sub_services.sub_services_id.name",
-              "category.Categorie_id.services.Categorie_id.services.Services_id.sub_services.sub_services_id.price",
-              "category.Categorie_id.services.Categorie_id.services.Services_id.sub_services.sub_services_id.duration",
-              "category.Categorie_id.services.Categorie_id.services.Services_id.sub_services.sub_services_id.price_type",
-              "category.Categorie_id.services.Categorie_id.services.Services_id.sub_services.sub_services_id.description",
-            ],
-          },
-        });
-        setData(response.data.data);
-
-        const categoriesResponse = await api.get(`/items/Categorie`);
-        setAvailableCategories(categoriesResponse.data.data);
-        console.log(categoriesResponse.data.data);
-      } catch (err: unknown) {
-        console.error("Error fetching data:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchData();
   }, []);
 
@@ -314,7 +285,7 @@ const Services: React.FC = () => {
             <div
               className="h-7 w-7 bg-cover bg-center mb-2"
               style={{
-                backgroundImage: `url('https://maoulaty.shop/assets/${icon}')`,
+                backgroundImage: `url('https://luxeenbois.com/assets/${icon}')`,
               }}
             ></div>
             <p className="text-black font-semibold text-sm">{label}</p>
@@ -336,7 +307,7 @@ const Services: React.FC = () => {
         </div>
         <div className="flex items-center">
           <span className="text-[#b64077] font-bold text-xs">
-          {subService.price} AED
+            {subService.price} AED
           </span>
           <HiOutlineDotsVertical
             className="ml-4 cursor-pointer text-gray-800 size-5"

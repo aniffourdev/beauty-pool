@@ -62,7 +62,7 @@ const RightBar = () => {
               <>
                 {userData.avatar ? (
                   <Image
-                    src={`https://maoulaty.shop/assets/${userData.avatar}`}
+                    src={`https://luxeenbois.com/assets/${userData.avatar}`}
                     alt={userData.first_name || ""}
                     width={30}
                     height={30}

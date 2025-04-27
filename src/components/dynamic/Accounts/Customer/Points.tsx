@@ -27,6 +27,12 @@ const Points = () => {
     setUserData(data);
   };
 
+  const [activeTab, setActiveTab] = useState<string>("points");
+
+  const handleTabClick = (tab: string) => {
+    setActiveTab(tab);
+  };
+
   return (
     <>
       <div className="">
@@ -38,11 +44,56 @@ const Points = () => {
           }`}
         >
           <div className="p-4 mt-20 max-w-6xl mx-auto">
-            <h1 className={`${gruppo.className} text-3xl font-bold mb-8`}>My Points</h1>
+            <h1 className={`${gruppo.className} text-3xl font-bold mb-8`}>
+              My Points
+            </h1>
 
-
-            {/* HNA CALENDAR */}
-
+            <div className="max-w-screen-md">
+              <div className="lg:flex gap-5 mb-8">
+                <div className="lg:w-6/12">
+                  <div className="bg-slate-200 h-48 rounded w-full"></div>
+                </div>
+                <div className="lg:w-6/12">
+                  <div className="bg-slate-200 h-48 rounded w-full"></div>
+                </div>
+              </div>
+              <div className="flex flex-col items-start w-full">
+                <div className="flex space-x-2">
+                  <button
+                    onClick={() => handleTabClick("points")}
+                    className={`px-4 py-2 rounded-t-lg ${
+                      activeTab === "points"
+                        ? "bg-blue-500 text-white"
+                        : "bg-gray-200 text-gray-700"
+                    } transition-colors duration-300`}
+                  >
+                    Paying Using Points
+                  </button>
+                  <button
+                    onClick={() => handleTabClick("money")}
+                    className={`px-4 py-2 rounded-t-lg ${
+                      activeTab === "money"
+                        ? "bg-blue-500 text-white"
+                        : "bg-gray-200 text-gray-700"
+                    } transition-colors duration-300`}
+                  >
+                    Paying Using Money
+                  </button>
+                </div>
+                <div className="w-full border-t border-gray-300">
+                  {activeTab === "points" && (
+                    <div className="p-4 bg-white rounded-b-lg shadow-md transition-opacity duration-300">
+                      Content for Paying Using Points
+                    </div>
+                  )}
+                  {activeTab === "money" && (
+                    <div className="p-4 bg-white rounded-b-lg shadow-md transition-opacity duration-300">
+                      Content for Paying Using Money
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

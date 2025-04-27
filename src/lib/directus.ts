@@ -1,7 +1,7 @@
 // lib/axios.ts
 import axios from 'axios';
 
-const directusUrl = 'https://maoulaty.shop';
+const directusUrl = 'https://luxeenbois.com';
 
 export const clientAxios = axios.create({
   baseURL: directusUrl,

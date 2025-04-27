@@ -112,7 +112,7 @@ const OnBoarding = ({ initialData }: { initialData: SignUpFormData }) => {
     const getCategories = async () => {
       try {
         const response = await axios.get(
-          "https://maoulaty.shop/items/Categorie"
+          "https://luxeenbois.com/items/Categorie"
         );
         setCategories(response.data.data); // Storing data as an array
       } catch (error) {
@@ -214,7 +214,7 @@ const OnBoarding = ({ initialData }: { initialData: SignUpFormData }) => {
         setLoading(true); // Set loading state while submitting data
         try {
           const response = await axios.post(
-            "https://maoulaty.shop/register-user",
+            "https://luxeenbois.com/register-user",
             finalFormData
           ); // Send post request to register the user
           console.log("User registered successfully:", response.data); // Log success response
@@ -333,7 +333,7 @@ const OnBoarding = ({ initialData }: { initialData: SignUpFormData }) => {
             className="cursor-pointer flex justify-center items-center flex-col space-y-2"
           >
             <img
-              src={`https://maoulaty.shop/assets/${icon}`}
+              src={`https://luxeenbois.com/assets/${icon}`}
               alt={label}
               className="w-9 h-9"
             />

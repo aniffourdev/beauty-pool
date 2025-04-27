@@ -89,7 +89,7 @@ const RightBar = () => {
                   <div
                     className="bg-slate-200 h-7 w-7 bg-cover bg-center rounded-full"
                     style={{
-                      backgroundImage: `url('https://maoulaty.shop/assets/${userData.avatar}')`,
+                      backgroundImage: `url('https://luxeenbois.com/assets/${userData.avatar}')`,
                     }}
                   ></div>
                 ) : (

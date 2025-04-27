@@ -28,6 +28,8 @@ interface Article {
   user_created: string;
 }
 
+interface PaymentFormProps {}
+
 const Payments = () => {
   const [userData, setUserData] = useState<UserData | null>(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -40,6 +42,29 @@ const Payments = () => {
     setUserData(data);
   };
 
+  const [formData, setFormData] = useState({
+    fullName: "",
+    email: "",
+    phoneNumber: "",
+    iban: "",
+    swift: "",
+    stripeAccountId: "",
+  });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Handle form submission, e.g., send data to your backend
+    console.log("Form data submitted:", formData);
+  };
+
   return (
     <div className="">
       <Header toggleSidebar={toggleSidebar} />
@@ -49,7 +74,87 @@ const Payments = () => {
           isSidebarOpen ? "sm:ml-64" : "sm:ml-64"
         }`}
       >
-        <div className="p-4 mt-20">PAYMENTS</div>
+        <div className="p-4 mt-20">
+          <div className="max-w-md mx-auto mt-10 p-6 bg-white shadow-md rounded-md">
+            <h2 className="text-2xl font-bold mb-6">Payment Form</h2>
+            <form onSubmit={handleSubmit}>
+              <div className="mb-4">
+                <label className="block text-gray-700">
+                  Full Name or Business Name
+                </label>
+                <input
+                  type="text"
+                  name="fullName"
+                  value={formData.fullName}
+                  onChange={handleChange}
+                  className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
+                  required
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block text-gray-700">Email Address</label>
+                <input
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
+                  required
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block text-gray-700">Phone Number</label>
+                <input
+                  type="tel"
+                  name="phoneNumber"
+                  value={formData.phoneNumber}
+                  onChange={handleChange}
+                  className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
+                  required
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block text-gray-700">IBAN</label>
+                <input
+                  type="text"
+                  name="iban"
+                  value={formData.iban}
+                  onChange={handleChange}
+                  className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
+                  required
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block text-gray-700">SWIFT</label>
+                <input
+                  type="text"
+                  name="swift"
+                  value={formData.swift}
+                  onChange={handleChange}
+                  className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
+                  required
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block text-gray-700">Stripe Account ID</label>
+                <input
+                  type="text"
+                  name="stripeAccountId"
+                  value={formData.stripeAccountId}
+                  onChange={handleChange}
+                  className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
+                  required
+                />
+              </div>
+              <button
+                type="submit"
+                className="w-full px-4 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:bg-blue-700"
+              >
+                Submit
+              </button>
+            </form>
+          </div>
+        </div>
       </div>
     </div>
   );

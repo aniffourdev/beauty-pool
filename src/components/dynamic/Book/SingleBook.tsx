@@ -311,7 +311,7 @@ const SingleBook: React.FC<SingleBookProps> = ({ slug }) => {
 
             // Fetch services data
             const servicesResponse = await api.get(
-              `https://maoulaty.shop/items/articles/${articleId}?fields=service.Services_id.name,service.Services_id.sub_services.sub_services_id.name,service.Services_id.sub_services.sub_services_id.price,service.Services_id.sub_services.sub_services_id.duration,service.Services_id.sub_services.sub_services_id.description`
+              `https://luxeenbois.com/items/articles/${articleId}?fields=service.Services_id.name,service.Services_id.sub_services.sub_services_id.name,service.Services_id.sub_services.sub_services_id.price,service.Services_id.sub_services.sub_services_id.duration,service.Services_id.sub_services.sub_services_id.description`
             );
             const servicesData = servicesResponse.data.data.service;
 
@@ -492,10 +492,10 @@ const SingleBook: React.FC<SingleBookProps> = ({ slug }) => {
   if (error) return <div>{error}</div>;
 
   const allImages = [
-    `https://maoulaty.shop/assets/${article?.featured_image}`,
+    `https://luxeenbois.com/assets/${article?.featured_image}`,
     ...(article?.galleries || []).map(
       (gallery) =>
-        `https://maoulaty.shop/assets/${gallery.directus_files_id.id}`
+        `https://luxeenbois.com/assets/${gallery.directus_files_id.id}`
     ),
   ];
 
@@ -721,7 +721,7 @@ const SingleBook: React.FC<SingleBookProps> = ({ slug }) => {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
                   <div className="col-span-2">
                     <Image
-                      src={`https://maoulaty.shop/assets/${article?.featured_image}`}
+                      src={`https://luxeenbois.com/assets/${article?.featured_image}`}
                       alt={`Featured image of ${article?.label}`}
                       className="w-full rounded-lg"
                       width={600}
@@ -738,7 +738,7 @@ const SingleBook: React.FC<SingleBookProps> = ({ slug }) => {
                         }
                       >
                         <Image
-                          src={`https://maoulaty.shop/assets/${gallery.directus_files_id.id}`}
+                          src={`https://luxeenbois.com/assets/${gallery.directus_files_id.id}`}
                           alt={gallery.directus_files_id.filename_download}
                           className="w-full rounded-lg"
                           width={800}
@@ -940,7 +940,7 @@ const SingleBook: React.FC<SingleBookProps> = ({ slug }) => {
                         <div
                           className="h-11 w-11 bg-cover bg-center"
                           style={{
-                            backgroundImage: `url(https://maoulaty.shop/assets/12247141-da04-4eb2-bff5-205417bc924b?cache-buster=2024-12-07T13:14:36.000Z&key=system-large-contain)`,
+                            backgroundImage: `url(https://luxeenbois.com/assets/12247141-da04-4eb2-bff5-205417bc924b?cache-buster=2024-12-07T13:14:36.000Z&key=system-large-contain)`,
                           }}
                         >
                           <div className="flex justify-center text-center items-center flex-col bg-[#dd0067dc] h-5 w-5 rounded-full absolute left-[12px] top-[7px]">

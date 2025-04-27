@@ -187,7 +187,7 @@ const CustomerAppointments = () => {
                               <div
                                 className="w-12 h-12 bg-gray-200 rounded-full bg-cover bg-center mr-4"
                                 style={{
-                                  backgroundImage: `url(https://maoulaty.shop/assets/${appointment.article.featured_image})`,
+                                  backgroundImage: `url(https://luxeenbois.com/assets/${appointment.article.featured_image})`,
                                 }}
                               ></div>
                               <div>
@@ -221,7 +221,7 @@ const CustomerAppointments = () => {
                               <div
                                 className="w-12 h-12 bg-gray-200 rounded-full bg-cover bg-center mr-4"
                                 style={{
-                                  backgroundImage: `url(https://maoulaty.shop/assets/${appointment.article.featured_image})`,
+                                  backgroundImage: `url(https://luxeenbois.com/assets/${appointment.article.featured_image})`,
                                 }}
                               ></div>
                               <div>
@@ -247,7 +247,7 @@ const CustomerAppointments = () => {
                       {selectedAppointment.article.label}
                     </h2>
                     <img
-                      src={`https://maoulaty.shop/assets/${selectedAppointment.article.featured_image}`}
+                      src={`https://luxeenbois.com/assets/${selectedAppointment.article.featured_image}`}
                       alt={selectedAppointment.article.label}
                       className="w-full h-64 object-cover mb-4 rounded-lg"
                     />

@@ -418,7 +418,7 @@ export default function BookingForm() {
                     {/* <div
                       className="w-7 h-7 bg-cover bg-center relative -top-1.5"
                       style={{
-                        backgroundImage: `url(https://maoulaty.shop/assets/3ecb5a75-ab7e-4d31-b1ea-91a642ca59d0)`,
+                        backgroundImage: `url(https://luxeenbois.com/assets/3ecb5a75-ab7e-4d31-b1ea-91a642ca59d0)`,
                       }}
                     ></div>
                     <span className="font-medium mb-3">All treatments</span> */}
@@ -439,7 +439,7 @@ export default function BookingForm() {
                           <div
                             className="w-7 h-7 bg-cover bg-center"
                             style={{
-                              backgroundImage: `url(https://maoulaty.shop/assets/${category.icon})`,
+                              backgroundImage: `url(https://luxeenbois.com/assets/${category.icon})`,
                             }}
                           ></div>
                           <span>{category.label}</span>

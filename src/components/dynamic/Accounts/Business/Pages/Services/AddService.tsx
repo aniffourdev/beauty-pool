@@ -116,7 +116,7 @@ const AddService = () => {
         } else {
           console.error(
             "Services data is not an array or is empty:",
-            response.data
+            response.data.data
           );
         }
       } catch (error) {
@@ -131,7 +131,7 @@ const AddService = () => {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
-  
+
     const payload = {
       sub_services: {
         create: [
@@ -149,9 +149,9 @@ const AddService = () => {
         delete: [],
       },
     };
-  
+
     console.log("Payload:", payload);
-  
+
     try {
       const response = await api.patch(
         `items/Services/${formData.service}`,
@@ -162,9 +162,9 @@ const AddService = () => {
           },
         }
       );
-  
+
       console.log("Response:", response);
-  
+
       if (response.status === 200 || response.status === 201) {
         setFormData({
           name: "",
@@ -190,7 +190,6 @@ const AddService = () => {
       setLoading(false);
     }
   };
-  
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -209,7 +208,6 @@ const AddService = () => {
       return newData;
     });
   };
-  
 
   return (
     <div className="">
@@ -280,11 +278,17 @@ const AddService = () => {
                           className="shadow appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                           required
                         >
-                          {categories.map((category) => (
-                            <option key={category.id} value={category.id}>
-                              {category.label}
+                          {categories && categories.length > 0 ? (
+                            categories.map((category) => (
+                              <option key={category.id} value={category.id}>
+                                {category.label}
+                              </option>
+                            ))
+                          ) : (
+                            <option value="" disabled>
+                              No categories available
                             </option>
-                          ))}
+                          )}
                         </select>
                       </div>
                       <div className="mb-5">
@@ -302,7 +306,7 @@ const AddService = () => {
                           className="shadow appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                           required
                         >
-                          {services.length > 0 ? (
+                          {services && services.length > 0 ? (
                             services.map((service) => (
                               <option key={service.id} value={service.id}>
                                 {service.name}

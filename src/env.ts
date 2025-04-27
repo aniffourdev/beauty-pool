@@ -2,7 +2,7 @@ import "dotenv/config";
 
 const DEFAULTS = {
   PORT: 3000,
-  DIRECTUS_URL: "https://maoulaty.shop",
+  DIRECTUS_URL: "https://luxeenbois.com",
   PUBLIC_URL: "http://localhost:300",
   DIRECTUS_COOKIE_NAME: "directus_session_token",
 };
