@@ -134,7 +134,7 @@ export default function Footer() {
                 <h2 className="font-semibold mb-1.5 text-lg">Our Location</h2>
                 <p>
                   <HiOutlineLocationMarker className="inline size-5 text-[#f47c66] relative -top-[1px]" />{" "}
-                  401 Broadway, 24th Floor, Orchard Cloud View, London
+                  Business Bay, Dubai, UAE
                 </p>
               </div>
             </div>
@@ -149,7 +149,7 @@ export default function Footer() {
                 </p>
                 <p>
                   <BiPhoneCall className="inline size-5 relative text-[#f47c66] -top-[1px]" />{" "}
-                  +971 589 40 76 74
+                  +971 585 212 534
                 </p>
               </div>
             </div>
@@ -191,22 +191,22 @@ export default function Footer() {
                 </span>
               </Link>
             </div>
-            <div className="text-gray-500 text-sm">
-              © 2024 Beautypool | All Rights Reserved
+            <div className="text-gray-500 text-sm ml-3">
+              © 2025 Beautypool | All Rights Reserved
             </div>
             <div className="flex space-x-4 mt-4 md:mt-0">
-              <a href="#" className="text-gray-500 hover:text-gray-700">
+              {/* <a href="#" className="text-gray-500 hover:text-gray-700">
                 <i className="fab fa-facebook-f"></i>
               </a>
               <a href="#" className="text-gray-500 hover:text-gray-700">
                 <i className="fab fa-twitter"></i>
-              </a>
-              <a href="#" className="text-gray-500 hover:text-gray-700">
+              </a> */}
+              <a href="https://www.instagram.com/beautypool/" target="_blank" className="text-gray-500 hover:text-gray-700">
                 <i className="fab fa-instagram"></i>
               </a>
-              <a href="#" className="text-gray-500 hover:text-gray-700">
+              {/* <a href="#" className="text-gray-500 hover:text-gray-700">
                 <i className="fab fa-linkedin-in"></i>
-              </a>
+              </a> */}
             </div>
       <div className="max-w-5xl mx-auto">
         {/* Brand and App Links */}
