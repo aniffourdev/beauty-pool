@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   FaFacebookF,
   FaTwitter,
@@ -15,6 +15,9 @@ import { HiOutlineLocationMarker } from "react-icons/hi";
 import { BiPhoneCall } from "react-icons/bi";
 import { TbMailOpened } from "react-icons/tb";
 import { BsChevronRight } from "react-icons/bs";
+import LoyaltyPopup from "@/components/popup/PopUp";
+import gsap from "gsap";
+
 
 const gruppo = Gruppo({ weight: "400", subsets: ["latin"] });
 
@@ -38,6 +41,38 @@ export default function Footer() {
     };
     getNewArticles();
   }, []);
+
+  const [isPopupOpen, setIsPopupOpen] = useState(true);
+  const headingRef = useRef(null);
+  const bookingFormRef = useRef(null);
+
+  useEffect(() => {
+    // Optionally, you can use localStorage to show the popup only once per session
+    // const hasSeenPopup = localStorage.getItem("hasSeenPopup");
+    // if (hasSeenPopup) {
+    //   setIsPopupOpen(false);
+    // } else {
+    //   localStorage.setItem("hasSeenPopup", "true");
+    // }
+
+    // // GSAP animations
+    // gsap.fromTo(
+    //   headingRef.current,
+    //   { opacity: 0, y: 50 },
+    //   { opacity: 1, y: 0, duration: 1, ease: "power2.out" }
+    // );
+
+    // gsap.fromTo(
+    //   bookingFormRef.current,
+    //   { opacity: 0, x: -50 },
+    //   { opacity: 1, x: 0, duration: 1, ease: "power2.out", delay: 0.5 }
+    // );
+  }, []);
+
+  const closePopup = () => {
+    setIsPopupOpen(false);
+  };
+
 
   return (
     // <footer className="bg-gray-50 py-4 px-4 sm:py-6 md:py-8">
@@ -145,7 +180,7 @@ export default function Footer() {
                 </h2>
                 <p>
                   <TbMailOpened className="inline size-5 relative text-[#f47c66] -top-[1px]" />{" "}
-                  support@beautypool.ae
+                  info@beautypool.ae
                 </p>
                 <p>
                   <BiPhoneCall className="inline size-5 relative text-[#f47c66] -top-[1px]" />{" "}
@@ -245,6 +280,7 @@ export default function Footer() {
     </div>
     </div>
     </div>
+    <LoyaltyPopup isOpen={isPopupOpen} onClose={closePopup} />
     </div>
   );
 }

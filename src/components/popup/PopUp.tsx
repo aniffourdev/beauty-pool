@@ -34,7 +34,7 @@ const LoyaltyPopup: React.FC<LoyaltyPopupProps> = ({ isOpen, onClose }) => {
         </button>
         <div className="text-center">
           <div className="flex justify-center items-center">
-            <FaCoins className="text-gold text-6xl mb-4" />
+            <FaCoins className="!text-amber-400 text-6xl mb-4" />
           </div>
           <h2 className="text-2xl font-bold mb-4">
             Earn Free Services with Loyalty Points!
