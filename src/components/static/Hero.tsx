@@ -1,4 +1,3 @@
-"use client";
 import { BackgroundGradientAnimation } from "@/app/ui/background";
 import React, { useEffect, useRef, useState } from "react";
 import BookingForm from "@/components/dynamic/Book/Forms/Booking";
