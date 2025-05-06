@@ -11,7 +11,7 @@ const PartnerServices: React.FC = () => {
     location: "",
     device_id: "",
     business_name: "",
-    website: "",
+    // website: "",
     selectedCategories: [],
     business_address: "",
     noBusinessAddress: false,
