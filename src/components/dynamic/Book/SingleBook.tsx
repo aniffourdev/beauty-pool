@@ -106,7 +106,9 @@ const formatTime = (time: string | null): string => {
   return `${hours}:${minutes}`;
 };
 
-const getCurrentOpeningTime = (article: ArticleData): string => {
+const getCurrentOpeningTime = (article: ArticleData | null): string => {
+  if (!article) return "Closed";
+  
   const now = new Date();
   const dayOfWeek = now.getDay();
   const currentHour = now.getHours();
@@ -135,7 +137,7 @@ const getCurrentOpeningTime = (article: ArticleData): string => {
   ];
 
   const today = days[dayOfWeek];
-  if (!today.open || !today.close) return "Closed";
+  if (!today || !today.open || !today.close) return "Closed";
 
   const [openHour, openMinute] = today.open.split(":").map(Number);
   const [closeHour, closeMinute] = today.close.split(":").map(Number);
@@ -151,8 +153,11 @@ const getCurrentOpeningTime = (article: ArticleData): string => {
   } else {
     const nextOpenDay = days.findIndex(
       (day, index) =>
-        index > dayOfWeek && day.open && day.close && day.open !== "Closed"
+        index > dayOfWeek && day && day.open && day.close && day.open !== "Closed"
     );
+    
+    if (nextOpenDay === -1) return "Closed";
+    
     const nextOpenDayName = [
       "Sunday",
       "Monday",
@@ -162,7 +167,7 @@ const getCurrentOpeningTime = (article: ArticleData): string => {
       "Friday",
       "Saturday",
     ][nextOpenDay];
-    const nextOpenTime = days[nextOpenDay].open;
+    const nextOpenTime = days[nextOpenDay]?.open;
     return `Closed opens on ${nextOpenDayName} at ${formatTime(nextOpenTime)}`;
   }
 };
@@ -254,6 +259,7 @@ const SingleBook: React.FC<SingleBookProps> = ({ slug }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const modalRef = useRef<HTMLDivElement>(null);
   const [isMobile, setIsMobile] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [booking, setBooking] = useState(false);
   const [showLoginPopup, setShowLoginPopup] = useState(false);
@@ -267,6 +273,7 @@ const SingleBook: React.FC<SingleBookProps> = ({ slug }) => {
   } | null>(null);
 
   useEffect(() => {
+    setMounted(true);
     const handleResize = () => {
       setIsMobile(window.innerWidth < 768);
     };
@@ -316,30 +323,34 @@ const SingleBook: React.FC<SingleBookProps> = ({ slug }) => {
             const servicesData = servicesResponse.data.data.service;
 
             const parentServices: { [key: string]: ParentService } = {};
-            servicesData.forEach(
-              (service: {
-                Services_id: {
-                  name: string;
-                  sub_services: { sub_services_id: SubService }[];
-                };
-              }) => {
-                const serviceName = service.Services_id.name;
-                if (!parentServices[serviceName]) {
-                  parentServices[serviceName] = {
-                    name: serviceName,
-                    description: "",
-                    sub_services: [],
+            
+            // Add null check for servicesData
+            if (servicesData && Array.isArray(servicesData)) {
+              servicesData.forEach(
+                (service: {
+                  Services_id: {
+                    name: string;
+                    sub_services: { sub_services_id: SubService }[];
                   };
-                }
-                service.Services_id.sub_services.forEach((subService) => {
-                  if (subService.sub_services_id) {
-                    parentServices[serviceName].sub_services.push(
-                      subService.sub_services_id
-                    );
+                }) => {
+                  const serviceName = service.Services_id.name;
+                  if (!parentServices[serviceName]) {
+                    parentServices[serviceName] = {
+                      name: serviceName,
+                      description: "",
+                      sub_services: [],
+                    };
                   }
-                });
-              }
-            );
+                  service.Services_id.sub_services.forEach((subService) => {
+                    if (subService.sub_services_id) {
+                      parentServices[serviceName].sub_services.push(
+                        subService.sub_services_id
+                      );
+                    }
+                  });
+                }
+              );
+            }
 
             const formattedServices = Object.keys(parentServices).map(
               (key, index) => ({
@@ -641,12 +652,12 @@ const SingleBook: React.FC<SingleBookProps> = ({ slug }) => {
                   </span>
                   <span
                     className={`text-slate-800 text-sm font-semibold ${
-                      getCurrentOpeningTime(article!).includes("Open")
+                      getCurrentOpeningTime(article).includes("Open")
                         ? "text-green-400"
                         : "text-amber-500"
                     }`}
                   >
-                    {getCurrentOpeningTime(article!)}
+                    {getCurrentOpeningTime(article)}
                   </span>
                   <span className="text-slate-800 text-sm font-semibold mx-2">
                     •
@@ -688,7 +699,7 @@ const SingleBook: React.FC<SingleBookProps> = ({ slug }) => {
                 </div>
               </div>
 
-              {isMobile ? (
+              {mounted && isMobile ? (
                 // Mobile view with Swiper
                 <div className="mt-4">
                   <Swiper
@@ -790,7 +801,7 @@ const SingleBook: React.FC<SingleBookProps> = ({ slug }) => {
                 >
                   <CiClock1 className="size-7 text-slate-600 -mr-0.5" />
                   <span className="ml-2">
-                    {getCurrentOpeningTime(article!)}
+                    {getCurrentOpeningTime(article)}
                   </span>
                   {isOpen ? (
                     <IoChevronUpSharp className="ml-2" />
