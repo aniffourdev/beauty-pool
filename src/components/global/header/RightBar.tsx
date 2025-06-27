@@ -81,7 +81,7 @@ const RightBar = () => {
         <div className="relative">
           <button
             onClick={toggleDropdown}
-            className="flex items-center gap-0.5 py-1 px-2 sm:py-1.5 sm:px-3 md:py-2 md:px-4 lg:py-1.5 lg:px-2 rounded-full border-2 border-[#f4b9ae55] text-white font-semibold hover:bg-slate-100 transition-all"
+            className="flex items-center gap-0.5 rounded-full text-white font-semibold"
           >
             {userData ? (
               <>
@@ -89,7 +89,7 @@ const RightBar = () => {
                   <div
                     className="bg-slate-200 h-7 w-7 bg-cover bg-center rounded-full"
                     style={{
-                      backgroundImage: `url('https://luxeenbois.com/assets/${userData.avatar}')`,
+                      backgroundImage: `url('https://brandlybook.store/assets/${userData.avatar}')`,
                     }}
                   ></div>
                 ) : (

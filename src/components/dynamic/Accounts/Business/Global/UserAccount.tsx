@@ -75,7 +75,7 @@
 //                   <div
 //                     className="bg-purple-100 rounded-full h-7 w-7 bg-cover bg-center"
 //                     style={{
-//                       backgroundImage: `url(https://luxeenbois.com/assets/${userData.avatar})`,
+//                       backgroundImage: `url(https://brandlybook.store/assets/${userData.avatar})`,
 //                     }}
 //                   ></div>
 //                 ) : (
@@ -164,7 +164,7 @@ const UserAccount = () => {
         <div
           className="bg-purple-100 rounded-full h-7 w-7 bg-cover bg-center"
           style={{
-            backgroundImage: `url(https://luxeenbois.com/assets/${userData.avatar})`,
+            backgroundImage: `url(https://brandlybook.store/assets/${userData.avatar})`,
           }}
         ></div>
       );

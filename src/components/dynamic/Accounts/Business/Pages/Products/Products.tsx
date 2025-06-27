@@ -119,7 +119,7 @@ const Products = () => {
                     <div className="relative">
                       <Image
                         className="w-full"
-                        src={`https://luxeenbois.com/assets/${article.featured_image}`}
+                        src={`https://brandlybook.store/assets/${article.featured_image}`}
                         alt={article.label}
                         height={300}
                         width={600}

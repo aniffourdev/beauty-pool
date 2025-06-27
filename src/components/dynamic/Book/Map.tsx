@@ -57,7 +57,7 @@ const MapComponent: React.FC<MapProps> = ({
                 setSelected(article);
               }}
             >
-              <div className="h-11 w-11 bg-cover bg-center" style={{ backgroundImage: `url(https://luxeenbois.com/assets/12247141-da04-4eb2-bff5-205417bc924b?cache-buster=2024-12-07T13:14:36.000Z&key=system-large-contain)` }}>
+              <div className="h-11 w-11 bg-cover bg-center" style={{ backgroundImage: `url(https://brandlybook.store/assets/12247141-da04-4eb2-bff5-205417bc924b?cache-buster=2024-12-07T13:14:36.000Z&key=system-large-contain)` }}>
                 <div className="flex justify-center text-center items-center flex-col bg-[#dd0067dc] h-5 w-5 rounded-full absolute left-[12px] top-[7px]">
                   <span className="text-xs font-bold text-white -mb-0.5">5.0</span>
                   <span><IoStar className="size-3 text-amber-200" /></span>
@@ -77,7 +77,7 @@ const MapComponent: React.FC<MapProps> = ({
               >
                 <div>
                   <img
-                    src={`https://luxeenbois.com/assets/${selected.featured_image}`}
+                    src={`https://brandlybook.store/assets/${selected.featured_image}`}
                     alt={selected.label}
                     className="mb-1"
                     style={{

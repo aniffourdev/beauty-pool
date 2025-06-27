@@ -97,7 +97,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({
           },
           body: JSON.stringify({
             amount: calculateTotal() * 100,
-            currency: "AED",
+            currency: "$",
           }),
         });
         const data = await response.json();
@@ -392,7 +392,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({
             usePoints ? "opacity-50 cursor-not-allowed" : ""
           }`}
         >
-          {isLoading ? "Processing..." : `Pay ${calculateTotal()} AED`}
+          {isLoading ? "Processing..." : `Pay ${calculateTotal()} $`}
         </button>
         {currentUser?.points! >= 1000 && (
           <div className="mt-4 p-4 bg-teal-100 border border-teal-300 rounded-lg text-teal-700">

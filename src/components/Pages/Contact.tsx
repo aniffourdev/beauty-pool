@@ -70,7 +70,7 @@ const Contact = () => {
         </li>
       </ul>
       <ul className="flex mt-12 space-x-4">
-        <li className="bg-[#f4b8ae] hover:bg-[#ee9d8f] h-10 w-10 rounded-full flex items-center justify-center shrink-0">
+        <li className="bg-[#ff6937] hover:bg-[#ee9d8f] h-10 w-10 rounded-full flex items-center justify-center shrink-0">
           <a href="javascript:void(0)">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -86,7 +86,7 @@ const Contact = () => {
             </svg>
           </a>
         </li>
-        <li className="bg-[#f4b8ae] hover:bg-[#ed998a] h-10 w-10 rounded-full flex items-center justify-center shrink-0">
+        <li className="bg-[#ff6937] hover:bg-[#ed998a] h-10 w-10 rounded-full flex items-center justify-center shrink-0">
           <a href="javascript:void(0)">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -102,7 +102,7 @@ const Contact = () => {
             </svg>
           </a>
         </li>
-        <li className="bg-[#f4b8ae] hover:bg-[#ef9b8d] h-10 w-10 rounded-full flex items-center justify-center shrink-0">
+        <li className="bg-[#ff6937] hover:bg-[#ef9b8d] h-10 w-10 rounded-full flex items-center justify-center shrink-0">
           <a href="javascript:void(0)">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -124,7 +124,7 @@ const Contact = () => {
       <div className="space-y-4 max-lg:mt-4">
         <button
           type="button"
-          className="px-4 py-2 rounded-lg bg-[#f4b8ae] text-white text-sm tracking-wider font-medium outline-none border-2 border-[#f4b8ae] mr-4"
+          className="px-4 py-2 rounded-lg bg-[#ff6937] text-white text-sm tracking-wider font-medium outline-none border-2 border-[#ff6937] mr-4"
         >
           Web design
         </button>
@@ -145,27 +145,27 @@ const Contact = () => {
         <input
           type="text"
           placeholder="Name"
-          className="w-full rounded-lg py-3 px-4 text-gray-800 text-sm outline-[#f4b8ae] border border-gray-300 border-opacity-50"
+          className="w-full rounded-lg py-3 px-4 text-gray-800 text-sm outline-[#ff6937] border border-gray-300 border-opacity-50"
         />
         <input
           type="email"
           placeholder="Email"
-          className="w-full rounded-lg py-3 px-4 text-gray-800 text-sm outline-[#f4b8ae] border border-gray-300 border-opacity-50"
+          className="w-full rounded-lg py-3 px-4 text-gray-800 text-sm outline-[#ff6937] border border-gray-300 border-opacity-50"
         />
         <input
           type="text"
           placeholder="Subject"
-          className="w-full rounded-lg py-3 px-4 text-gray-800 text-sm outline-[#f4b8ae] border border-gray-300 border-opacity-50"
+          className="w-full rounded-lg py-3 px-4 text-gray-800 text-sm outline-[#ff6937] border border-gray-300 border-opacity-50"
         />
         <textarea
           placeholder="Message"
           rows={6}
-          className="w-full rounded-lg px-4 text-gray-800 text-sm pt-3 outline-[#f4b8ae] border border-gray-300 border-opacity-50"
+          className="w-full rounded-lg px-4 text-gray-800 text-sm pt-3 outline-[#ff6937] border border-gray-300 border-opacity-50"
           defaultValue={""}
         />
         <button
           type="button"
-          className="text-white bg-[#f4b8ae] hover:bg-[#ed9f92] tracking-wide rounded-lg text-sm px-4 py-3 flex items-center justify-center w-full !mt-6"
+          className="text-white bg-[#ff6937] hover:bg-[#ed9f92] tracking-wide rounded-lg text-sm px-4 py-3 flex items-center justify-center w-full !mt-6"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"

@@ -120,7 +120,7 @@ const Services: React.FC<NavTabsProps> = ({ services }) => {
                   <h2 className="text-lg font-semibold">{subService.name}</h2>
                   <p className="text-gray-500 text-sm mt-0.5">{subService.description}</p>
                   <p className="text-lg font-semibold mt-3 text-[#f47c66]">
-                    {subService.price} AED
+                    {subService.price} $
                   </p>
                   <p className="text-gray-500 text-sm mt-0.5">{subService.duration} minutes</p>
                 </div>

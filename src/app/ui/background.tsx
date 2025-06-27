@@ -19,11 +19,11 @@ export const BackgroundGradientAnimation = ({
   const [tgY, setTgY] = useState(0);
 
   useEffect(() => {
-    document.body.style.setProperty("--primary-color", "#f4b8ae");
-    document.body.style.setProperty("--secondary-color", "#ffd6cc");
-    document.body.style.setProperty("--tertiary-color", "#ffe6e6");
-    document.body.style.setProperty("--quaternary-color", "#ffcccc");
-    document.body.style.setProperty("--quinary-color", "#ffb3b3");
+    document.body.style.setProperty("--primary-color", "#38bdf8");
+    document.body.style.setProperty("--secondary-color", "#34d399");
+    document.body.style.setProperty("--tertiary-color", "#a7f3d0");
+    document.body.style.setProperty("--quaternary-color", "#bae6fd");
+    document.body.style.setProperty("--quinary-color", "#67e8f9");
     document.body.style.setProperty("--pointer-color", "#ffffff");
     document.body.style.setProperty("--size", "15%"); // Adjusted size
     document.body.style.setProperty("--blending-value", "hard-light");

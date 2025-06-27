@@ -42,7 +42,7 @@ const Register = () => {
             height: "100vh",
           }}
         >
-          <div className="h-full w-full bg-gradient-to-r px-5 lg:px-0 from-[#f4b8ae]/60 via-[#f9c8bf]/60 to-[#f48673]/60  flex items-center justify-center"></div>
+          <div className="h-full w-full bg-gradient-to-r px-5 lg:px-0 from-[#ff6937]/60 via-[#f9c8bf]/60 to-[#f48673]/60  flex items-center justify-center"></div>
         </div>
       </div>
 

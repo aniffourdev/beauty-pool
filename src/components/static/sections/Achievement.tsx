@@ -20,7 +20,7 @@ export default function Achievement() {
         and beauty services.
       </p>
       <div
-        className={`${gruppo.className} text-[#f4b8ae] font-extrabold text-5xl sm:text-6xl md:text-8xl mb-4`}
+        className={`${gruppo.className} text-[#ff6937] font-extrabold text-5xl sm:text-6xl md:text-8xl mb-4`}
       >
         100K+
       </div>

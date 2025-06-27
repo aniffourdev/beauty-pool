@@ -6,10 +6,10 @@ import LiveCounter from "@/components/static/LiveCounter";
 import { Gruppo } from "next/font/google";
 
 const gruppo = Gruppo({
-  subsets: ['latin'],
-  variable: "--font-geist-mono",
-  weight: "400",
-});
+    subsets: ["latin"],
+    variable: "--font-geist-mono",
+    weight: "400",
+  });
 
 const Hero = () => {
   return (
@@ -20,10 +20,10 @@ const Hero = () => {
       <div className="absolute z-40 inset-0 flex pl-5 lg:pl-0 pr-8 lg:pr-0 items-center">
         <div className="max-w-5xl mx-auto mt-36 lg:mt-20">
           <h1
-            className={`${gruppo.className} text-gray-900 text-3xl md:text-4xl lg:text-6xl xl:text-6xl text-center mx-auto`}
+            className={`${gruppo.className} text-gray-900 text-3xl md:text-4xl lg:text-6xl xl:text-6xl text-center mx-auto font-serif`}
           >
-            Explore local <span className="text-[#f4b8ae]">beauty</span> and
-            wellness services tailored for you
+            Discover local <span className="text-[#ff6937]">excursions</span> and
+            adventures made just for you
           </h1>
           <div className="mt-10">
             <BookingForm />

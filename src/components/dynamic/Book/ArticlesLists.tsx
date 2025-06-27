@@ -81,7 +81,7 @@ const ArticlesLists: React.FC<ArticlesListsProps> = ({ venues, location }) => {
           >
             <div className="bg-white rounded-lg overflow-hidden">
               <img
-                src={`https://luxeenbois.com/assets/${article.featured_image}`}
+                src={`https://brandlybook.store/assets/${article.featured_image}`}
                 alt={article.label}
                 className="w-full"
               />

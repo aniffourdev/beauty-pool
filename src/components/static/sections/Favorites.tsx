@@ -175,7 +175,7 @@ export default function Favorites() {
                             alt="Therapy room with two massage tables"
                             className="w-full h-48 object-cover"
                             height={400}
-                            src={`https://luxeenbois.com/assets/${favorite.article?.featured_image}`}
+                            src={`https://brandlybook.store/assets/${favorite.article?.featured_image}`}
                             width={600}
                           />
                           <div className="absolute top-2 right-2">

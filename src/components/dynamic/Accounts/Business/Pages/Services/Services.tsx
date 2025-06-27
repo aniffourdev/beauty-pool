@@ -265,7 +265,7 @@ const Services: React.FC = () => {
     return (
       <div
         className={`border-2 rounded-lg p-4 flex items-center justify-between relative ${
-          isSelected ? "border-[#f4b8ae]" : "border-gray-300"
+          isSelected ? "border-[#ff6937]" : "border-gray-300"
         }`}
         style={{ opacity: isDisabled ? 0.5 : 1 }}
       >
@@ -285,7 +285,7 @@ const Services: React.FC = () => {
             <div
               className="h-7 w-7 bg-cover bg-center mb-2"
               style={{
-                backgroundImage: `url('https://luxeenbois.com/assets/${icon}')`,
+                backgroundImage: `url('https://brandlybook.store/assets/${icon}')`,
               }}
             ></div>
             <p className="text-black font-semibold text-sm">{label}</p>
@@ -307,7 +307,7 @@ const Services: React.FC = () => {
         </div>
         <div className="flex items-center">
           <span className="text-[#b64077] font-bold text-xs">
-            {subService.price} AED
+            {subService.price} $
           </span>
           <HiOutlineDotsVertical
             className="ml-4 cursor-pointer text-gray-800 size-5"

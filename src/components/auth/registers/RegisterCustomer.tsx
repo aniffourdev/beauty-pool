@@ -48,7 +48,7 @@ const defaultFormData: SignUpFormData = {
   description: "",
   location: "",
   avatar: "b1fcd062-fc30-4c9f-a48f-804b70510da9",
-  role: "fd8c9450-7c5c-432b-963d-d46bf20aef11",
+  role: "74fec042-e4b5-4c47-ba58-8e8b37ef3fe4",
   device_id: "",
 };
 
@@ -109,7 +109,7 @@ const RegisterCustomer = () => {
       const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
       setGeneratedOtp(otpCode);
 
-      await axios.post("https://luxeenbois.com/otp-verification", {
+      await axios.post("https://brandlybook.store/otp-verification", {
         email: email,
         code: otpCode,
       });

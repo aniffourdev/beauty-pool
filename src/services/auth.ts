@@ -1,7 +1,7 @@
 import axios from "axios";
 import Cookies from "js-cookie";
 
-const API_URL = "https://luxeenbois.com";
+const API_URL = "https://brandlybook.store";
 
 // Define public routes that don't need authentication
 const PUBLIC_ROUTES = [

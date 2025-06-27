@@ -14,7 +14,7 @@ export default function WhyUs() {
           <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {/* Feature 1 */}
             <div className="flex flex-col items-center">
-              <div className="bg-white p-3 md:p-4 rounded-full text-[#f4b8ae] text-3xl md:text-4xl shadow-md">
+              <div className="bg-white p-3 md:p-4 rounded-full text-[#ff6937] text-3xl md:text-4xl shadow-md">
                 <MdOutlineFaceRetouchingNatural />
               </div>
               <h3 className="text-base md:text-lg lg:text-xl font-bold mt-4 text-gray-800">
@@ -28,7 +28,7 @@ export default function WhyUs() {
 
             {/* Feature 2 */}
             <div className="flex flex-col items-center">
-              <div className="bg-white p-3 md:p-4 rounded-full text-[#f4b8ae] text-3xl md:text-4xl shadow-md">
+              <div className="bg-white p-3 md:p-4 rounded-full text-[#ff6937] text-3xl md:text-4xl shadow-md">
                 <MdCleanHands />
               </div>
               <h3 className="text-base md:text-lg lg:text-xl font-bold mt-4 text-gray-800">
@@ -42,7 +42,7 @@ export default function WhyUs() {
 
             {/* Feature 3 */}
             <div className="flex flex-col items-center">
-              <div className="bg-white p-3 md:p-4 rounded-full text-[#f4b8ae] text-3xl md:text-4xl shadow-md">
+              <div className="bg-white p-3 md:p-4 rounded-full text-[#ff6937] text-3xl md:text-4xl shadow-md">
                 <FaHandHoldingMedical />
               </div>
               <h3 className="text-base md:text-lg lg:text-xl font-bold mt-4 text-gray-800">
@@ -55,7 +55,7 @@ export default function WhyUs() {
 
             {/* Feature 4 */}
             <div className="flex flex-col items-center">
-              <div className="bg-white p-3 md:p-4 rounded-full text-[#f4b8ae] text-3xl md:text-4xl shadow-md">
+              <div className="bg-white p-3 md:p-4 rounded-full text-[#ff6937] text-3xl md:text-4xl shadow-md">
                 <IoDiamondOutline />
               </div>
               <h3 className="text-base md:text-lg lg:text-xl font-bold mt-4 text-gray-800">
@@ -68,7 +68,7 @@ export default function WhyUs() {
 
             {/* Feature 5 */}
             <div className="flex flex-col items-center">
-              <div className="bg-white p-3 md:p-4 rounded-full text-[#f4b8ae] text-3xl md:text-4xl shadow-md">
+              <div className="bg-white p-3 md:p-4 rounded-full text-[#ff6937] text-3xl md:text-4xl shadow-md">
                 <CiDiscount1 />
               </div>
               <h3 className="text-base md:text-lg lg:text-xl font-bold mt-4 text-gray-800">
@@ -82,7 +82,7 @@ export default function WhyUs() {
 
             {/* Feature 6 */}
             <div className="flex flex-col items-center">
-              <div className="bg-white p-3 md:p-4 rounded-full text-[#f4b8ae] text-3xl md:text-4xl shadow-md">
+              <div className="bg-white p-3 md:p-4 rounded-full text-[#ff6937] text-3xl md:text-4xl shadow-md">
                 <CiLight />
               </div>
               <h3 className="text-base md:text-lg lg:text-xl font-bold mt-4 text-gray-800">

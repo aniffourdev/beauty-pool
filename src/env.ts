@@ -2,7 +2,7 @@ import "dotenv/config";
 
 const DEFAULTS = {
   PORT: 3000,
-  DIRECTUS_URL: "https://luxeenbois.com",
+  DIRECTUS_URL: "https://brandlybook.store",
   PUBLIC_URL: "http://localhost:300",
   DIRECTUS_COOKIE_NAME: "directus_session_token",
 };

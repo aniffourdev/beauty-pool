@@ -309,7 +309,7 @@ const ProductAdd = () => {
         formData.append("folder", "your-folder-id"); // Replace with your folder ID
 
         const response = await axios.post(
-          "https://luxeenbois.com/files",
+          "https://brandlybook.store/files",
           formData,
           {
             headers: {
@@ -328,7 +328,7 @@ const ProductAdd = () => {
           formData.append("folder", "your-folder-id"); // Replace with your folder ID
 
           const response = await axios.post(
-            "https://luxeenbois.com/files",
+            "https://brandlybook.store/files",
             formData,
             {
               headers: {

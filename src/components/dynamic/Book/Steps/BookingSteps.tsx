@@ -199,7 +199,7 @@
 //             <div className="flex justify-start items-center gap-5">
 //               <div>
 //                 <p className="mask mask-squircle font-bold text-md h-14 w-14 bg-red-100 text-red-700 flex justify-center items-center">
-//                   AED {subService.price}
+//                   $ {subService.price}
 //                 </p>
 //               </div>
 //               <div>
@@ -238,7 +238,7 @@
 //         {subService.description && (
 //           <p className="text-sm text-gray-500">{subService.description}</p>
 //         )}
-//         <p className="font-bold">AED {subService.price}</p>
+//         <p className="font-bold">$ {subService.price}</p>
 //       </div>
 //     ));
 //   };
@@ -246,7 +246,7 @@
 //   const calculateTotal = () => {
 //     return selectedServices.reduce(
 //       (total, subService) =>
-//         total + parseFloat(String(subService.price).replace("AED ", "")),
+//         total + parseFloat(String(subService.price).replace("$ ", "")),
 //       0
 //     );
 //   };
@@ -320,7 +320,7 @@
 //               <div className="border rounded-lg p-4">
 //                 <div className="flex items-center mb-4">
 //                   <img
-//                     src={`https://luxeenbois.com/assets/${article.featured_image}`}
+//                     src={`https://brandlybook.store/assets/${article.featured_image}`}
 //                     alt={article.label}
 //                     className="w-12 h-12 rounded-full mr-4"
 //                   />
@@ -350,7 +350,7 @@
 //                 <div className="flex justify-between items-center mb-4">
 //                   <span className="font-bold">Total</span>
 //                   <span className="font-bold text-green-500">
-//                     AED {calculateTotal()}
+//                     $ {calculateTotal()}
 //                   </span>
 //                 </div>
 //                 <button
@@ -446,7 +446,7 @@
 //                 <div className="border rounded-lg p-4">
 //                   <div className="flex items-center mb-4">
 //                     <img
-//                       src={`https://luxeenbois.com/assets/${article.featured_image}`}
+//                       src={`https://brandlybook.store/assets/${article.featured_image}`}
 //                       alt={article.label}
 //                       className="w-12 h-12 rounded-full mr-4"
 //                     />
@@ -474,7 +474,7 @@
 //                       className="flex justify-between items-center space-y-2"
 //                     >
 //                       <p>{subService.name}</p>{" "}
-//                       <p className="font-bold">AED {subService.price}</p>
+//                       <p className="font-bold">$ {subService.price}</p>
 //                     </div>
 //                   ))}
 //                   <div className="mb-4 mt-5 border-t border-slate-300 pt-5">
@@ -482,7 +482,7 @@
 //                       <div className="flex justify-between items-center">
 //                         <span className="font-bold">Total</span>
 //                         <span className="font-bold text-green-500">
-//                           AED {calculateTotal()}
+//                           $ {calculateTotal()}
 //                         </span>
 //                       </div>
 //                     </div>
@@ -615,7 +615,7 @@
 //               <div className="border rounded-lg p-4 sticky top-0">
 //                 <div className="flex items-center mb-4">
 //                   <img
-//                     src={`https://luxeenbois.com/assets/${article.featured_image}`}
+//                     src={`https://brandlybook.store/assets/${article.featured_image}`}
 //                     alt={article.label}
 //                     className="w-12 h-12 rounded-full mr-4"
 //                   />
@@ -641,7 +641,7 @@
 //                     className="flex justify-between items-center space-y-2"
 //                   >
 //                     <p>{subService.name}</p>{" "}
-//                     <p className="font-bold">AED {subService.price}</p>
+//                     <p className="font-bold">$ {subService.price}</p>
 //                   </div>
 //                 ))}
 //                 <div className="mb-4 mt-5 border-t border-slate-300 pt-5">
@@ -650,10 +650,10 @@
 //                       <span className="font-bold">Total</span>
 //                       <div>
 //                         <span className="line-through text-gray-500">
-//                           AED {calculateTotal()}
+//                           $ {calculateTotal()}
 //                         </span>
 //                         <span className="font-bold text-green-500 ml-2">
-//                           AED {calculateDiscountedTotal()}
+//                           $ {calculateDiscountedTotal()}
 //                         </span>
 //                       </div>
 //                     </div>
@@ -706,7 +706,7 @@
 //                     {savedServices.map((service, index) => (
 //                       <div key={index} className="flex justify-between mt-2">
 //                         <span>{service.name}</span>
-//                         <span>AED {service.price}</span>
+//                         <span>$ {service.price}</span>
 //                       </div>
 //                     ))}
 //                   </div>
@@ -977,7 +977,7 @@ const BookingSteps: React.FC<BookingStepsProps> = ({
             <div className="flex justify-start items-center gap-5">
               <div>
                 <p className="mask mask-squircle font-bold text-md text-xs h-14 w-14 bg-red-100 text-red-700 flex justify-center items-center">
-                  {subService.price} AED
+                  {subService.price} $
                 </p>
               </div>
               <div>
@@ -1016,7 +1016,7 @@ const BookingSteps: React.FC<BookingStepsProps> = ({
         {subService.description && (
           <p className="text-sm text-gray-500">{subService.description}</p>
         )}
-        <p className="font-bold">{subService.price} AED</p>
+        <p className="font-bold">{subService.price} $</p>
       </div>
     ));
   };
@@ -1024,7 +1024,7 @@ const BookingSteps: React.FC<BookingStepsProps> = ({
   const calculateTotal = () => {
     return selectedServices.reduce(
       (total, subService) =>
-        total + parseFloat(String(subService.price).replace("AED ", "")),
+        total + parseFloat(String(subService.price).replace("$ ", "")),
       0
     );
   };
@@ -1093,7 +1093,7 @@ const BookingSteps: React.FC<BookingStepsProps> = ({
               <div className="border rounded-lg p-4">
                 <div className="flex items-center mb-4">
                   <img
-                    src={`https://luxeenbois.com/assets/${article.featured_image}`}
+                    src={`https://brandlybook.store/assets/${article.featured_image}`}
                     alt={article.label}
                     className="w-12 h-12 rounded-full mr-4"
                   />
@@ -1123,7 +1123,7 @@ const BookingSteps: React.FC<BookingStepsProps> = ({
                 <div className="flex justify-between items-center mb-4">
                   <span className="font-bold">Total</span>
                   <span className="font-bold text-green-500">
-                    {calculateTotal()} AED
+                    {calculateTotal()} $
                   </span>
                 </div>
                 <button
@@ -1191,7 +1191,7 @@ const BookingSteps: React.FC<BookingStepsProps> = ({
                 <div className="border rounded-lg p-4">
                   <div className="flex items-center mb-4">
                     <img
-                      src={`https://luxeenbois.com/assets/${article.featured_image}`}
+                      src={`https://brandlybook.store/assets/${article.featured_image}`}
                       alt={article.label}
                       className="w-12 h-12 rounded-full mr-4"
                     />
@@ -1219,7 +1219,7 @@ const BookingSteps: React.FC<BookingStepsProps> = ({
                       className="flex justify-between items-center space-y-2"
                     >
                       <p>{subService.name}</p>{" "}
-                      <p className="font-bold">{subService.price} AED</p>
+                      <p className="font-bold">{subService.price} $</p>
                     </div>
                   ))}
                   <div className="mb-4 mt-5 border-t border-slate-300 pt-5">
@@ -1227,7 +1227,7 @@ const BookingSteps: React.FC<BookingStepsProps> = ({
                       <div className="flex justify-between items-center">
                         <span className="font-bold">Total</span>
                         <span className="font-bold text-green-500">
-                        {calculateTotal()} AED
+                        {calculateTotal()} $
                         </span>
                       </div>
                     </div>
@@ -1360,7 +1360,7 @@ const BookingSteps: React.FC<BookingStepsProps> = ({
               <div className="border rounded-lg p-4 sticky top-0">
                 <div className="flex items-center mb-4">
                   <img
-                    src={`https://luxeenbois.com/assets/${article.featured_image}`}
+                    src={`https://brandlybook.store/assets/${article.featured_image}`}
                     alt={article.label}
                     className="w-12 h-12 rounded-full mr-4"
                   />
@@ -1386,7 +1386,7 @@ const BookingSteps: React.FC<BookingStepsProps> = ({
                     className="flex justify-between items-center space-y-2"
                   >
                     <p>{subService.name}</p>{" "}
-                    <p className="font-bold">{subService.price} AED</p>
+                    <p className="font-bold">{subService.price} $</p>
                   </div>
                 ))}
                 <div className="mb-4 mt-5 border-t border-slate-300 pt-5">
@@ -1395,10 +1395,10 @@ const BookingSteps: React.FC<BookingStepsProps> = ({
                       <span className="font-bold">Total</span>
                       <div>
                         <span className="line-through text-gray-500">
-                        {calculateTotal()} AED
+                        {calculateTotal()} $
                         </span>
                         <span className="font-bold text-green-500 ml-2">
-                        {calculateDiscountedTotal()} AED
+                        {calculateDiscountedTotal()} $
                         </span>
                       </div>
                     </div>
@@ -1451,7 +1451,7 @@ const BookingSteps: React.FC<BookingStepsProps> = ({
                     {savedServices.map((service, index) => (
                       <div key={index} className="flex justify-between mt-2">
                         <span>{service.name}</span>
-                        <span>{service.price} AED</span>
+                        <span>{service.price} $</span>
                       </div>
                     ))}
                   </div>

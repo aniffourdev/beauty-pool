@@ -187,7 +187,7 @@ const CustomerAppointments = () => {
                               <div
                                 className="w-12 h-12 bg-gray-200 rounded-full bg-cover bg-center mr-4"
                                 style={{
-                                  backgroundImage: `url(https://luxeenbois.com/assets/${appointment.article.featured_image})`,
+                                  backgroundImage: `url(https://brandlybook.store/assets/${appointment.article.featured_image})`,
                                 }}
                               ></div>
                               <div>
@@ -221,7 +221,7 @@ const CustomerAppointments = () => {
                               <div
                                 className="w-12 h-12 bg-gray-200 rounded-full bg-cover bg-center mr-4"
                                 style={{
-                                  backgroundImage: `url(https://luxeenbois.com/assets/${appointment.article.featured_image})`,
+                                  backgroundImage: `url(https://brandlybook.store/assets/${appointment.article.featured_image})`,
                                 }}
                               ></div>
                               <div>
@@ -247,7 +247,7 @@ const CustomerAppointments = () => {
                       {selectedAppointment.article.label}
                     </h2>
                     <img
-                      src={`https://luxeenbois.com/assets/${selectedAppointment.article.featured_image}`}
+                      src={`https://brandlybook.store/assets/${selectedAppointment.article.featured_image}`}
                       alt={selectedAppointment.article.label}
                       className="w-full h-64 object-cover mb-4 rounded-lg"
                     />
@@ -305,7 +305,7 @@ const CustomerAppointments = () => {
                     <div className="flex justify-between">
                       <p className="text-lg font-semibold">Total</p>
                       <p className="text-xl text-emerald-600 font-bold">
-                        {selectedAppointment.price} AED
+                        {selectedAppointment.price} $
                       </p>
                     </div>
                     <div className="mt-5 font-semibold text-slate-800">

@@ -9,7 +9,7 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import api from "@/services/auth";
-import Logo from "../../../../public/assets/logo-2.png";
+import Logo from "../../../../public/assets/logom.svg";
 import { Gruppo } from "next/font/google";
 import { HiOutlineLocationMarker } from "react-icons/hi";
 import { BiPhoneCall } from "react-icons/bi";
@@ -89,7 +89,7 @@ export default function Footer() {
     //           className="object-contain sm:w-[90px] md:w-[120px] lg:w-[140px]"
     //         />
     //       </Link>
-    //       <div className="flex gap-4 text-[#f4b8ae] mt-2">
+    //       <div className="flex gap-4 text-[#ff6937] mt-2">
     //         {/* Social Media Icons */}
     //         <FaFacebookF
     //           className="text-xl cursor-pointer hover:text-[#de7664] transition-all duration-200"
@@ -209,7 +209,7 @@ export default function Footer() {
               </div>
             </div>
           </div>
-          <div className="border-t border-gray-200 pt-4 flex flex-col md:flex-row justify-between items-center">
+          <div className="border-t border-gray-200 pt-10 flex flex-col md:flex-row justify-between items-center">
             <div className="flex items-center mb-4 md:mb-0">
               <Link href="/" className="flex justify-center items-center">
                 <Image
@@ -217,17 +217,12 @@ export default function Footer() {
                   alt="logo"
                   width={0}
                   height={0}
-                  className="-mr-4 w-16"
+                  className="mr-3 w-40"
                 />
-                <span
-                  className={`${gruppo.className} text-3xl hidden md:block text-[#f4b8ae] font-bold`}
-                >
-                  eautypool
-                </span>
               </Link>
             </div>
             <div className="text-gray-500 text-sm ml-3">
-              © 2025 Beautypool | All Rights Reserved
+              © 2025 MedFaik's Booking | All Rights Reserved
             </div>
             <div className="flex space-x-4 mt-4 md:mt-0">
               {/* <a href="#" className="text-gray-500 hover:text-gray-700">
@@ -245,18 +240,8 @@ export default function Footer() {
             </div>
       <div className="max-w-5xl mx-auto">
         {/* Brand and App Links */}
-        <div className="flex flex-col items-center justify-center mb-4">
-          <Link href="/">
-            {/* Responsive Logo */}
-            <Image
-              src="/assets/logo-2.png"
-              alt="logo"
-              width={120}
-              height={40}
-              className="object-contain sm:w-[90px] md:w-[120px] lg:w-[140px]"
-            />
-          </Link>
-          <div className="flex gap-4 text-[#f4b8ae] mt-2">
+        <div className="flex flex-col items-center justify-center mb-4 pt-10">
+          <div className="flex gap-4 text-[#ff6937] mt-2">
             {/* Social Media Icons */}
             <FaFacebookF
               className="text-xl cursor-pointer hover:text-[#de7664] transition-all duration-200"

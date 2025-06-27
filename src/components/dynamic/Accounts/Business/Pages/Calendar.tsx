@@ -55,7 +55,7 @@ const CustomEvent = ({ event }: { event: CalendarEvent }) => {
         <div className="font-bold mb-1">{event.title}</div>
         <div className="text-sm">
           <div>{event.article}</div>
-          <div>Price: {event.price} AED</div>
+          <div>Price: {event.price} $</div>
         </div>
       </div>
     </div>
@@ -227,7 +227,7 @@ const CalendarComponent = () => {
               
               <div>
                 <h4 className="text-sm font-semibold text-gray-500">Price</h4>
-                <p className="text-lg">{selectedEvent.price} AED</p>
+                <p className="text-lg">{selectedEvent.price} $</p>
               </div>
               
               <div>

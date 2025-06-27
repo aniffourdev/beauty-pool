@@ -76,7 +76,7 @@
 
 //       try {
 //         const response = await axios.post(
-//           "https://luxeenbois.com/files",
+//           "https://brandlybook.store/files",
 //           formData,
 //           {
 //             headers: {
@@ -166,7 +166,7 @@
 //                             style={
 //                               userData.avatar
 //                                 ? {
-//                                     backgroundImage: `url(https://luxeenbois.com/assets/${userData.avatar})`,
+//                                     backgroundImage: `url(https://brandlybook.store/assets/${userData.avatar})`,
 //                                   }
 //                                 : {}
 //                             }
@@ -383,7 +383,7 @@ const CustomerProfile = () => {
 
       try {
         const response = await axios.post(
-          "https://luxeenbois.com/files",
+          "https://brandlybook.store/files",
           formData,
           {
             headers: {
@@ -482,7 +482,7 @@ const CustomerProfile = () => {
                             style={
                               userData.avatar
                                 ? {
-                                    backgroundImage: `url(https://luxeenbois.com/assets/${userData.avatar})`,
+                                    backgroundImage: `url(https://brandlybook.store/assets/${userData.avatar})`,
                                   }
                                 : {}
                             }

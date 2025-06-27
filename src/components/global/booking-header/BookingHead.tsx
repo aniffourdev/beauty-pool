@@ -313,7 +313,7 @@ export default function BookingHead() {
                           <div
                             className="w-7 h-7 bg-cover bg-center"
                             style={{
-                              backgroundImage: `url(https://luxeenbois.com/assets/${category.icon})`,
+                              backgroundImage: `url(https://brandlybook.store/assets/${category.icon})`,
                             }}
                           ></div>
                           <span>{category.label}</span>

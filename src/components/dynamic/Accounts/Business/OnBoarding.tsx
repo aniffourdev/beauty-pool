@@ -112,7 +112,7 @@
 //     const getCategories = async () => {
 //       try {
 //         const response = await axios.get(
-//           "https://luxeenbois.com/items/Categorie"
+//           "https://brandlybook.store/items/Categorie"
 //         );
 //         setCategories(response.data.data); // Storing data as an array
 //       } catch (error) {
@@ -214,7 +214,7 @@
 //         setLoading(true); // Set loading state while submitting data
 //         try {
 //           const response = await axios.post(
-//             "https://luxeenbois.com/register-user",
+//             "https://brandlybook.store/register-user",
 //             finalFormData
 //           ); // Send post request to register the user
 //           console.log("User registered successfully:", response.data); // Log success response
@@ -311,11 +311,11 @@
 //     return (
 //       <div
 //         className={`border-2 rounded-lg p-4 flex items-center justify-center relative ${
-//           isSelected ? "border-[#f4b8ae]" : "border-gray-300"
+//           isSelected ? "border-[#ff6937]" : "border-gray-300"
 //         }`}
 //       >
 //         {isSelected && (
-//           <div className="absolute top-2 right-2 h-6 w-6 bg-[#f4b8ae] text-slate-900 text-xs font-bold rounded-full flex justify-center items-center">
+//           <div className="absolute top-2 right-2 h-6 w-6 bg-[#ff6937] text-slate-900 text-xs font-bold rounded-full flex justify-center items-center">
 //             {getTag()}
 //           </div>
 //         )}
@@ -333,7 +333,7 @@
 //             className="cursor-pointer flex justify-center items-center flex-col space-y-2"
 //           >
 //             <img
-//               src={`https://luxeenbois.com/assets/${icon}`}
+//               src={`https://brandlybook.store/assets/${icon}`}
 //               alt={label}
 //               className="w-9 h-9"
 //             />
@@ -695,7 +695,7 @@ const OnBoarding = ({ initialData }: { initialData: SignUpFormData }) => {
     const getCategories = async () => {
       try {
         const response = await axios.get(
-          "https://luxeenbois.com/items/Categorie"
+          "https://brandlybook.store/items/Categorie"
         );
         setCategories(response.data.data); // Storing data as an array
       } catch (error) {
@@ -797,7 +797,7 @@ const OnBoarding = ({ initialData }: { initialData: SignUpFormData }) => {
         setLoading(true); // Set loading state while submitting data
         try {
           const response = await axios.post(
-            "https://luxeenbois.com/register-user",
+            "https://brandlybook.store/register-user",
             finalFormData
           ); // Send post request to register the user
           console.log("User registered successfully:", response.data); // Log success response
@@ -892,11 +892,11 @@ const OnBoarding = ({ initialData }: { initialData: SignUpFormData }) => {
     return (
       <div
         className={`border-2 rounded-lg p-4 flex items-center justify-center relative ${
-          isSelected ? "border-[#f4b8ae]" : "border-gray-300"
+          isSelected ? "border-[#ff6937]" : "border-gray-300"
         }`}
       >
         {isSelected && (
-          <div className="absolute top-2 right-2 h-6 w-6 bg-[#f4b8ae] text-slate-900 text-xs font-bold rounded-full flex justify-center items-center">
+          <div className="absolute top-2 right-2 h-6 w-6 bg-[#ff6937] text-slate-900 text-xs font-bold rounded-full flex justify-center items-center">
             {getTag()}
           </div>
         )}
@@ -913,7 +913,7 @@ const OnBoarding = ({ initialData }: { initialData: SignUpFormData }) => {
             className="cursor-pointer flex justify-center items-center flex-col space-y-2"
           >
             <img
-              src={`https://luxeenbois.com/assets/${icon}`}
+              src={`https://brandlybook.store/assets/${icon}`}
               alt={label}
               className="w-9 h-9"
             />

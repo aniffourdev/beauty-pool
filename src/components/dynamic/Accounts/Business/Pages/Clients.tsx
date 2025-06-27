@@ -242,7 +242,7 @@ const Clients = () => {
                               </div>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap flex justify-start items-center gap-1 text-sm font-medium text-gray-800">
-                              <div className="mask mask-hexagon h-9 w-9 bg-orange-100 text-orange-500 text-lg flex items-center justify-center bg-cover bg-center" style={{ backgroundImage: `url(https://luxeenbois.com/assets/${client.user_created.avatar})` }}></div>
+                              <div className="mask mask-hexagon h-9 w-9 bg-orange-100 text-orange-500 text-lg flex items-center justify-center bg-cover bg-center" style={{ backgroundImage: `url(https://brandlybook.store/assets/${client.user_created.avatar})` }}></div>
                               <span className="whitespace-nowrap text-sm text-gray-800">
                                 {client.user_created.first_name}{" "}
                                 {client.user_created.last_name}

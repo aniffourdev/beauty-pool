@@ -12,21 +12,21 @@ const Reviews = () => {
   const reviews = [
     {
       name: "John Doe",
-      image: `https://luxeenbois.com/assets/7a6c834d-ec06-48eb-b3e9-87baae178c08?cache-buster=2024-12-21T19:28:22.000Z&key=system-large-contain`,
+      image: `https://brandlybook.store/assets/7a6c834d-ec06-48eb-b3e9-87baae178c08?cache-buster=2024-12-21T19:28:22.000Z&key=system-large-contain`,
       review:
         "BeautyPool is amazing! Booking my appointments has never been this easy. Highly recommend it!",
       rating: 5,
     },
     {
       name: "Jane Smith",
-      image: `https://luxeenbois.com/assets/7a6c834d-ec06-48eb-b3e9-87baae178c08?cache-buster=2024-12-21T19:28:22.000Z&key=system-large-contain`,
+      image: `https://brandlybook.store/assets/7a6c834d-ec06-48eb-b3e9-87baae178c08?cache-buster=2024-12-21T19:28:22.000Z&key=system-large-contain`,
       review:
         "Great platform with excellent service providers. It saves so much time, and I always find top-rated salons.",
       rating: 4,
     },
     {
       name: "Michael Lee",
-      image: `https://luxeenbois.com/assets/7a6c834d-ec06-48eb-b3e9-87baae178c08?cache-buster=2024-12-21T19:28:22.000Z&key=system-large-contain`,
+      image: `https://brandlybook.store/assets/7a6c834d-ec06-48eb-b3e9-87baae178c08?cache-buster=2024-12-21T19:28:22.000Z&key=system-large-contain`,
       review:
         "A very user-friendly platform! It helped me discover hidden gems in my city. Absolutely love it!",
       rating: 5,
